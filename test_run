@@ -1,0 +1,18 @@
+#!/bin/bash
+PATH1='test_suite/valid/array/*.wacc'
+COMPILE='./compile'
+VALID_CODE=0
+INVALID_SYNTAX=100
+INVALID_SEMANTIC=200
+
+compile_set() {
+  CUR_PATH=$1
+  for prog in $CUR_PATH;
+  do
+    echo "Compiling: $prog"
+    ./compile $prog                      # Try to compile each program
+    echo -e "Exit code: $? \n"           # Print exit code
+  done
+}
+
+compile_set "$PATH1"

@@ -3,4 +3,4 @@
 # You are free to change the language used for this script,
 # but do *not* change its name.
 
-puts "TODO: setup this script to call your WACC compiler"
+puts "Hi group! Our compiler front-end should run here and return relevant exit code"
