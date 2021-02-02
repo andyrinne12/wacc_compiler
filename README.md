@@ -1,6 +1,3 @@
-This is the provided git repository for the WACC compilers lab. You should work 
-in this repository regularly committing and pushing your work back to GitLab.
-
 ### Using our compiler
 
 Use the **Makefile** to build the executables necessary to run the compiler:
