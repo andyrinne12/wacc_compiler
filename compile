@@ -1,6 +1,4 @@
-#!/usr/bin/ruby
-# Ruby front-end for your compiler.
-# You are free to change the language used for this script,
-# but do *not* change its name.
+#!/bin/bash
+# Bash front-end for OUR compiler.
 
-puts "Hi group! Our compiler front-end should run here and return relevant exit code"
+java -cp bin:lib/antlr-4.9.1-complete.jar Main "$@"

@@ -1,6 +1,30 @@
 This is the provided git repository for the WACC compilers lab. You should work 
 in this repository regularly committing and pushing your work back to GitLab.
 
+### Using our compiler
+
+Use the **Makefile** to build the executables necessary to run the compiler:
+```shell
+make
+```
+
+Then you can use the **compile** script as a front-end of our compiler.
+
+Run the script with one argument in order to put the given program through the full pipeline.
+```shell
+./compile path/program.wacc
+```
+
+Or you can specify what stage do you want your compiler to stop (only ***one*** at a time).
+
+```shell
+./compile -t path/program.wacc
+```
+
+- ```-t``` : Print the program as a stream of tokens: [SYMBOL, TEXT].
+- ```-p``` : Print the parse tree and check for syntactic errors only.
+- ```-s``` : Check for semantic errors and build the AST.
+
 ----------------------------
 Provided files/directories  
 ----------------------------

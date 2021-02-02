@@ -10,7 +10,7 @@ compile_set() {
   for prog in $CUR_PATH;
   do
     echo "Compiling: $prog"
-    ./compile $prog                      # Try to compile each program
+    $COMPILE $prog                      # Try to compile each program
     echo -e "Exit code: $? \n"           # Print exit code
   done
 }
