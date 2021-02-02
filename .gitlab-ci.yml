@@ -1,0 +1,10 @@
+compile:
+  stage: build
+  script:
+    - make
+
+test:
+  stage: test
+  script:
+    - ./test_run
+

@@ -2,9 +2,12 @@ import antlr.WACCLexer;
 import antlr.WACCParser;
 import java.io.IOException;
 import java.util.stream.Collectors;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -14,6 +17,8 @@ public class Main {
   public final static int TOKENIZE = 1;       // Convert the input file into a token stream
   public final static int PARSE = 2;          // Create the parse tree and perform syntactic check
   public final static int SEMANTIC_CHECK = 3; // Perform semantic check and build AST
+
+  public static int EXIT_CODE = 0;
 
   public static void main(String[] args) {
 
@@ -54,6 +59,7 @@ public class Main {
 
     // create a lexer that feeds off of input CharStream
     WACCLexer lexer = new WACCLexer(inputStream);
+    lexer.addErrorListener(new CustomErrorHandler());
 
     // create a buffer of tokens pulled from the lexer
     CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -71,7 +77,7 @@ public class Main {
           .map(token -> "[" + vocabulary.getSymbolicName(token.getType()) + ", " + token.getText()
               + "] ").collect(
               Collectors.joining()));
-      System.exit(0);
+      System.exit(EXIT_CODE);
     }
 
     ParseTree tree = parser.prog(); // begin parsing at prog rule
@@ -79,11 +85,20 @@ public class Main {
     if (option == PARSE) {
       System.out.println("Parse tree:");
       System.out.println(tree.toStringTree(parser)); // print LISP-style tree
-      System.exit(0);
+      System.exit(EXIT_CODE);
     }
 
     //TODO: Otherwise perform the semantic check and build the
 
   }
 
+}
+
+class CustomErrorHandler extends BaseErrorListener {
+
+  @Override
+  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+      int charPositionInLine, String msg, RecognitionException e) {
+    Main.EXIT_CODE = 100;
+  }
 }

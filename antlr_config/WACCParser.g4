@@ -4,7 +4,7 @@ options {
   tokenVocab=WACCLexer;
 }
 //
-elem: (CHAR_LTR |  STR_LTR) elem;
+//elem: (CHAR_LTR |  STR_LTR) elem;
 //
 //expr: expr binaryOper expr
 //| INTEGER
