@@ -1,5 +1,5 @@
-import antlr.BasicLexer;
-import antlr.BasicParser;
+import antlr.WACCLexer;
+import antlr.WACCParser;
 import java.io.IOException;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStream;
@@ -53,13 +53,13 @@ public class Main {
     }
 
     // create a lexer that feeds off of input CharStream
-    BasicLexer lexer = new BasicLexer(inputStream);
+    WACCLexer lexer = new WACCLexer(inputStream);
 
     // create a buffer of tokens pulled from the lexer
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
     // create a parser that feeds off the tokens buffer
-    BasicParser parser = new BasicParser(tokens);
+    WACCParser parser = new WACCParser(tokens);
 
     // Vocabulary for interpreting symbol types
     Vocabulary vocabulary = parser.getVocabulary();
@@ -68,7 +68,8 @@ public class Main {
       System.out.println("Converted token stream:");
       tokens.fill();
       System.out.println(tokens.getTokens().stream()
-          .map(token -> "[" + vocabulary.getSymbolicName(token.getType()) + ", " + token.getText() + "] ").collect(
+          .map(token -> "[" + vocabulary.getSymbolicName(token.getType()) + ", " + token.getText()
+              + "] ").collect(
               Collectors.joining()));
       System.exit(0);
     }
