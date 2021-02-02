@@ -1,10 +1,6 @@
-compile:
-  stage: build
-  script:
-    - make
-
 test:
   stage: test
   script:
+    - make # build in the test stage to let the runner delete the executable afterwards
     - ./test_run
 
