@@ -23,7 +23,7 @@ compile_set() {
   do
     ((TOTAL+=1))
     echo "Compiling: $prog"
-    $COMPILE -t "$prog"                       # Try to compile each program
+    $COMPILE -p "$prog"                       # Try to compile each program
     EXIT_CODE=$?
     if ((EXIT_CODE==REQ_CODE))
       then
@@ -70,7 +70,7 @@ then
   echo -e '=========='
   exit 1
 else
-  echo "Compiler works as expected yay :( (0)"
+  echo "Compiler works as expected yay : ) (0)"
   echo -e '=========='
   exit 0
 fi

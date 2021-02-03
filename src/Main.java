@@ -66,6 +66,7 @@ public class Main {
 
     // create a parser that feeds off the tokens buffer
     WACCParser parser = new WACCParser(tokens);
+    parser.addErrorListener(new CustomErrorHandler());
 
     // Vocabulary for interpreting symbol types
     Vocabulary vocabulary = parser.getVocabulary();
