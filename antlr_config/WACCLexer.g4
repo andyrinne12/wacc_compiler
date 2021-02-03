@@ -11,6 +11,7 @@ RETURN: 'return';
 EXIT: 'exit';
 PRINT: 'print';
 PRINTLN: 'println';
+CALL: 'call';
 SEMI: ';';
 CMA: ',';
 
@@ -69,4 +70,3 @@ WS: [ \n\r\t] -> skip;
 COMM: '#' ~('\n' | '\r')* -> skip;
 
 NOISE: .; // any other case should be caught by this noise
-
