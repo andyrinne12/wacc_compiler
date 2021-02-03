@@ -43,7 +43,7 @@ DQ: '"';
 ESC: '\\';
 fragment USCORE: '_';
 
-fragment CHAR: ~('\\' | '\'' | '"') | '\\' ESC_CHAR;
+fragment CHAR: ~('\\' | '\'' | '"') | ESC ESC_CHAR;
 fragment ESC_CHAR: SQ | DQ | ESC | '0' | 'b' | 't' | 'n' | 'f' | 'r';
 
 fragment DIGIT: [0-9] ;
@@ -68,5 +68,5 @@ INT_LTR: INT_SGN? DIGIT+;
 WS: [ \n\r\t] -> skip;
 COMM: '#' ~('\n' | '\r')* -> skip;
 
-
+NOISE: .; // any other case should be caught by this noise
 

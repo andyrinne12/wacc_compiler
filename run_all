@@ -35,7 +35,7 @@ compile_set() {
 }
 
 # compile all sub-sets of programs that you want to test
-PATH1="test_suite/invalid/syntaxErr/basic/*"
+PATH1="test_suite/*"
 for SUBPATH in $PATH1
 do
   compile_set "$SUBPATH" "$VALID_CODE"
