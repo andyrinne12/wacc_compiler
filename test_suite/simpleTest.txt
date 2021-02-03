@@ -1,2 +1,1 @@
-"n \r \f -" 'c' '\\' # 1234 'abc'# ABC
-#abc
+int x = "c"

@@ -11,7 +11,7 @@ RETURN: 'return';
 EXIT: 'exit';
 PRINT: 'print';
 PRINTLN: 'println';
-SCLN: ';';
+SEMI: ';';
 CMA: ',';
 
 IF: 'if';
@@ -28,6 +28,7 @@ FST: 'fst';
 SND: 'snd';
 PAIR: 'pair';
 
+ASGN: '=';
 LBR: '(';
 RBR: ')';
 LSBR: '[';
@@ -37,11 +38,16 @@ RPR: '}';
 
 TYPE: 'int' | 'bool' | 'char' | 'string';
 
+SQ: '\'';
+DQ: '"';
+ESC: '\\';
+fragment USCORE: '_';
+
+fragment CHAR: ~('\\' | '\'' | '"') | '\\' ESC_CHAR;
+fragment ESC_CHAR: SQ | DQ | ESC | '0' | 'b' | 't' | 'n' | 'f' | 'r';
+
 fragment DIGIT: [0-9] ;
 fragment ALPHA: [a-z] | [A-Z];
-fragment ESC_CHAR: '\\' | '\'' | '"' | 'b' | 't' | 'n' | 'f' | 'r';
-fragment CHAR: ~('\\' | '\'' | '"') | '\\' ESC_CHAR;
-fragment USCORE: '_';
 
 MINUS: '-';
 PLUS: '+';
@@ -52,12 +58,12 @@ IDENT: (ALPHA | USCORE) (ALPHA | USCORE | DIGIT)*;
 
 BOOL_LTR: 'true' | 'false';
 PAIR_LTR: 'null';
-CHAR_LTR: '\'' CHAR '\'';
-STR_LTR: '"' CHAR+ '"';
+
+CHAR_LTR: SQ CHAR SQ;
+STR_LTR: DQ CHAR* DQ;
 
 fragment INT_SGN: PLUS | MINUS;
 INT_LTR: INT_SGN? DIGIT+;
-
 
 WS: [ \n\r\t] -> skip;
 COMM: '#' ~('\n' | '\r')* -> skip;

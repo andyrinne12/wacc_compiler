@@ -1,5 +1,5 @@
 #!/bin/bash
-PATH1='test_suite/valid'
+PATH0='test_suite/valid'
 COMPILE='./compile'
 VALID_CODE=0
 INVALID_SYNTAX=100
@@ -13,29 +13,35 @@ compile_set() {
   VALID=0
   CUR_PATH=$1
   REQ_CODE=$2
-  echo "Starting set $CUR_PATH"
-  for prog in $CUR_PATH;
+ # echo "Starting set $CUR_PATH"
+  # shellcheck disable=SC2044
+  for prog in $(find $CUR_PATH -name '*.wacc');
   do
     ((TOTAL+=1))
-    echo "Compiling: $prog"
+ #   echo "Compiling: $prog"
     $COMPILE -t "$prog"                       # Try to compile each program
     EXIT_CODE=$?
     if ((EXIT_CODE==REQ_CODE))
       then
-        echo -e "   O Expected: $REQ_CODE Code: $EXIT_CODE $prog\n"
+     #   echo -e "   O Expected: $REQ_CODE Code: $EXIT_CODE $prog\n"
         ((VALID+=1))
       else
         echo -e "   X Expected: $REQ_CODE Code: $EXIT_CODE $prog\n"
     fi
-    echo "$VALID/$TOTAL in $CUR_PATH"
+    #echo "$VALID/$TOTAL in $CUR_PATH"
   done
   ((TTOTAL+=TOTAL))
   ((TVALID+=VALID))
 }
 
 # compile all sub-sets of programs that you want to test
-PATH=$(find test_suite/invalid/syntaxErr -name '*.wacc')
-compile_set "$PATH" "$INVALID_SYNTAX"
+PATH1="test_suite/invalid/syntaxErr/basic/*"
+for SUBPATH in $PATH1
+do
+  compile_set "$SUBPATH" "$VALID_CODE"
+done
+
+exit 0
 
 echo "$TVALID/$TTOTAL test passed!"
 if((TVALID!=TTOTAL))
