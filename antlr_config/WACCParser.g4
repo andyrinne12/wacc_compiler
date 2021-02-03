@@ -47,12 +47,15 @@ param: type IDENT;
 
 paramList: param (CMA param)*;
 
-
 argList: expr (CMA expr)*;
 
-type: .*?;
+type: TYPE
+  | arrayType
+  | pairType;
 
-arrayType: type LSBR RSBR;
+arrayType: TYPE LSBR RSBR
+        | arrayType LSBR RSBR
+        | pairType LSBR RSBR;
 
 arrayElem: IDENT (LSBR expr RSBR)+;
 
