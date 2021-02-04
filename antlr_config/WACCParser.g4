@@ -1,5 +1,16 @@
 parser grammar WACCParser;
 
+@parser::members {
+    private boolean inBounds(Token t) {
+        long n = Long.parseLong(t.getText());
+        boolean result = n >= Integer.MIN_VALUE && n <= Integer.MAX_VALUE;
+        if (!result) {
+          System.out.println("Integer value " + n + " at line " + t.getLine() + " is too large for a 32-bit signed integer.");
+        }
+        return result;
+    }
+}
+
 options {
   tokenVocab=WACCLexer;
 }
@@ -18,7 +29,7 @@ stat: SKP
    | BEGIN stat END
    | stat SEMI stat;
 
-expr: INT_LTR
+expr: INT_LTR {inBounds($INT_LTR)}?
   | BOOL_LTR
   | CHAR_LTR
   | STR_LTR
