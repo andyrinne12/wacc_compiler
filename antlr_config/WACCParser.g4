@@ -36,8 +36,8 @@ expr: INT_LTR {inBounds($INT_LTR)}?
   | PAIR_LTR
   | IDENT
   | arrayElem
-  | UN_OP expr
-  | expr BIN_OP expr
+  | unaryOp expr
+  | expr binaryOp expr
   | LBR expr RBR;
 
 lhs: IDENT
@@ -50,7 +50,7 @@ rhs: expr
   | pairElem
   | CALL IDENT LBR argList? RBR;
 
-prog: BEGIN stat END EOF ;
+prog: BEGIN (func)* stat END EOF ;
 
 func: type IDENT LBR paramList? RBR IS stat END;
 
@@ -80,3 +80,7 @@ pairElem: FST expr
 pairElemType: TYPE
           | arrayType
           | PAIR;
+
+unaryOp: NOT | MINUS | LEN | ORD | CHR;
+
+binaryOp: STAR | DIV | MOD | GREATER | GREATER_EQUAL | LESSER | LESSER_EQUAL | EQUAL | NOT_EQUAL | AND | OR | PLUS | MINUS;
