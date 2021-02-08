@@ -22,42 +22,46 @@ options {
   tokenVocab=WACCLexer;
 }
 
-stat: SKP
-   | type IDENT ASGN rhs
-   | lhs ASGN rhs
-   | READ lhs
-   | FREE expr
-   | RETURN expr
-   | EXIT expr
-   | PRINT expr
-   | PRINTLN expr
-   | IF expr THEN stat ELSE stat FI
-   | WHILE expr DO stat DONE
-   | BEGIN stat END
-   | stat SEMI stat;
-
-expr: BOOL_LTR
-  | CHAR_LTR
-  | STR_LTR
-  | PAIR_LTR
-  | IDENT
-  | arrayElem
-  | expr binaryOp expr
-  | (sign=(PLUS | MINUS)?) UINT_LTR {inBounds($sign, $UINT_LTR)}?
-  | unaryOp expr
-  | LBR expr RBR;
-
-lhs: IDENT
-  | arrayElem
-  | pairElem;
-
-rhs: expr
-  | arrayLtr
-  | NEW_PR LBR expr CMA expr RBR
-  | pairElem
-  | CALL IDENT LBR argList? RBR;
-
 prog: BEGIN (func)* stat END EOF ;
+
+stat: SKP                             #skipST
+   | type IDENT ASGN rhs              #asignST
+   | lhs ASGN rhs                     #initST
+   | READ lhs                         #readST
+   | FREE expr                        #freeST
+   | RETURN expr                      #returnST
+   | EXIT expr                        #exitST
+   | PRINT expr                       #printST
+   | PRINTLN expr                     #printlnST
+   | IF expr THEN stat ELSE stat FI   #ifST
+   | WHILE expr DO stat DONE          #whileST
+   | BEGIN stat END                   #beginST
+   | stat SEMI stat                   #statSeqST
+;
+
+expr: BOOL_LTR                                                        #boolEXP
+  | CHAR_LTR                                                          #charEXP
+  | STR_LTR                                                           #strEXP
+  | PAIR_LTR                                                          #pairLtrEXP
+  | IDENT                                                             #identEXP
+  | arrayElem                                                         #arrayElemEXP
+  | expr binaryOp expr                                                #binOpEXP
+  | (sign=(PLUS | MINUS)?) UINT_LTR {inBounds($sign, $UINT_LTR)}?     #signedIntEXP
+  | unaryOp expr                                                      #unOpEXP
+  | LBR expr RBR                                                      #bracketEXP
+;
+
+lhs: IDENT                           #identLHS
+  | arrayElem                        #arrayElemLHS
+  | pairElem                         #pairElemLHS
+;
+
+rhs: expr                            #expRHS
+  | arrayLtr                         #arrayLtrRHS
+  | NEW_PR LBR expr CMA expr RBR     #newPairRHS
+  | pairElem                         #pairElemRHS
+  | CALL IDENT LBR argList? RBR      #funcCallRHS
+;
 
 func: type IDENT LBR paramList? RBR IS stat END;
 
@@ -67,13 +71,15 @@ paramList: param (CMA param)*;
 
 argList: expr (CMA expr)*;
 
-type: TYPE
-  | arrayType
-  | pairType;
+type: TYPE                           #primTypeTP
+  | arrayType                        #arrayTypeTP
+  | pairType                         #pairTypeTP
+;
 
-arrayType: TYPE LSBR RSBR
-        | arrayType LSBR RSBR
-        | pairType LSBR RSBR;
+arrayType: TYPE LSBR RSBR            #primTypeARTP
+        | arrayType LSBR RSBR        #arrayTypeARTP
+        | pairType LSBR RSBR         #pairTypeARTP
+;
 
 arrayElem: IDENT (LSBR expr RSBR)+;
 
@@ -81,13 +87,15 @@ arrayLtr: LSBR (expr (CMA expr)*)? RSBR;
 
 pairType: PAIR LBR pairElemType CMA pairElemType RBR;
 
-pairElem: FST expr
-      | SND expr;
+pairElem: FST expr                  #firstElemPR
+      | SND expr                    #secondElemPR
+;
 
-pairElemType: TYPE
-          | arrayType
-          | PAIR;
+pairElemType: TYPE                  #primTypePRTP
+          | arrayType               #arrayTypePRTP
+          | PAIR                    #pairPRTP
+;
 
-unaryOp: NOT | MINUS | LEN | ORD | CHR;
+unaryOp: op=(NOT | MINUS | LEN | ORD | CHR);
 
-binaryOp: STAR | DIV | MOD | GREATER | GREATER_EQUAL | LESSER | LESSER_EQUAL | EQUAL | NOT_EQUAL | AND | OR | PLUS | MINUS;
+binaryOp: op=(STAR | DIV | MOD | GREATER | GREATER_EQUAL | LESSER | LESSER_EQUAL | EQUAL | NOT_EQUAL | AND | OR | PLUS | MINUS);
