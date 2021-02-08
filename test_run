@@ -3,9 +3,9 @@ VALID_BASIC='test_suite/valid/basic'
 INVALID_BASIC='test_suite/invalid/syntaxErr/basic'
 # shellcheck disable=SC2034
 VALID_DIR='test_suite/valid'
+INVALID_SYNTAX_DIR='test_suite/invalid/syntaxErr'
 COMPILE='./compile'
 VALID_CODE=0
-# shellcheck disable=SC2034
 INVALID_SYNTAX=100
 # shellcheck disable=SC2034
 INVALID_SEMANTIC=200
@@ -56,7 +56,7 @@ compile_parent_set(){
 
 # compile all programs in the particular folder $1 and check for code $2
 compile_set "$VALID_DIR" "$VALID_CODE"
-compile_set "$INVALID_BASIC" "$INVALID_SYNTAX"
+compile_set "$INVALID_SYNTAX_DIR" "$INVALID_SYNTAX"
 
 # compile all programs in the sub-folders (recursively) of $1 and check for code $2
 # compile_parent_set "$PARENTPATH" "$INVALID_SYNTAX"

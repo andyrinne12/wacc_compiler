@@ -1,9 +1,16 @@
 parser grammar WACCParser;
 
 @parser::members {
-    private boolean inBounds(Token t) {
+    private boolean inBounds(Token sign,Token t) {
         long n = Long.parseLong(t.getText());
-        boolean result = n >= Integer.MIN_VALUE && n <= Integer.MAX_VALUE;
+        long MAX = Integer.MAX_VALUE;
+        if(sign != null){
+          String sgn = sign.getText();
+          if(sgn.equals("-")){
+          MAX +=1;
+          }
+        }
+        boolean result = n <= MAX;
         if (!result) {
           System.out.println("Integer value " + n + " at line " + t.getLine() + " is too large for a 32-bit signed integer.");
         }
@@ -29,15 +36,15 @@ stat: SKP
    | BEGIN stat END
    | stat SEMI stat;
 
-expr: INT_LTR {inBounds($INT_LTR)}?
-  | BOOL_LTR
+expr: BOOL_LTR
   | CHAR_LTR
   | STR_LTR
   | PAIR_LTR
   | IDENT
   | arrayElem
-  | unaryOp expr
   | expr binaryOp expr
+  | (sign=(PLUS | MINUS)?) UINT_LTR {inBounds($sign, $UINT_LTR)}?
+  | unaryOp expr
   | LBR expr RBR;
 
 lhs: IDENT

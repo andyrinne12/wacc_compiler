@@ -81,7 +81,7 @@ PAIR_LTR: 'null';
 CHAR_LTR: SQ CHAR SQ;
 STR_LTR: DQ CHAR* DQ;
 
-INT_LTR: (PLUS | MINUS)? DIGIT+;
+UINT_LTR: DIGIT+;
 
 WS: [ \n\r\t] -> skip;
 COMM: '#' ~('\n' | '\r')* -> skip;
