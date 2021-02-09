@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
 echo running the ANTLR TestRig grammar tool
-java -cp bin:lib/antlr-4.9.1-complete.jar org.antlr.v4.gui.TestRig $@
+java -cp bin:lib/antlr-4.9.1-complete.jar org.antlr.v4.gui.TestRig "$@"
 
