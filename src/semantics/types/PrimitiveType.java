@@ -2,13 +2,13 @@ package semantics.types;
 
 public class PrimitiveType implements Type{
 
-  private final PrimitiveType type;
+  private final PrimitiveTypeEnum type;
 
-  public PrimitiveType(PrimitiveType type) {
+  public PrimitiveType(PrimitiveTypeEnum type) {
     this.type = type;
   }
 
-  public PrimitiveType getType() {
+  public PrimitiveTypeEnum getType() {
     return type;
   }
 

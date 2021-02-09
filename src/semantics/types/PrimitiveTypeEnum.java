@@ -1,6 +1,6 @@
 package semantics.types;
 
-public enum PrimitiveTypes {
+public enum PrimitiveTypeEnum {
   INT,
   BOOL,
   CHAR,
