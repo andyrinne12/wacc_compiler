@@ -3,6 +3,8 @@ package front_end;
 import antlr.WACCParser.*;
 import antlr.WACCParserBaseVisitor;
 import antlr.WACCParserVisitor;
+
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import front_end.AST.*;
 import front_end.types.*;
@@ -282,4 +284,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   public ASTNode visitBinaryOp(BinaryOpContext ctx) {
     return null;
   }
+
+  // for semantic errors
+  public static void error(ParserRuleContext ctx, String message) {
+    System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
+            + " " + ctx.start.getText() + " " + message);
+    System.exit(200);
+}
 }
