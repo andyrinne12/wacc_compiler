@@ -8,8 +8,8 @@ import front_end.types.TYPE;
 
 public class PrimTypeAST extends TypeAST {
 
-    String typeName;
-    TYPE typeObj;
+    private String typeName;
+    private TYPE typeObj;
 
     public PrimTypeAST(ParserRuleContext ctx, String typeName) {
         super(ctx);

@@ -4,9 +4,13 @@ import antlr.WACCParser.*;
 import antlr.WACCParserBaseVisitor;
 import antlr.WACCParserVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import front_end.AST.*;
+import front_end.AST.FunctionDeclaration.*;
 import front_end.AST.TypeAST.PrimTypeAST;
 import front_end.types.*;
 
@@ -17,17 +21,25 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   public Visitor() {
     Top_ST = new SymbolTable(null);
-    ST = Top_ST;
 
     ST.add("int", new INT());
     ST.add("char", new CHAR());
     ST.add("bool", new BOOLEAN());
     ST.add("string", new STRING());
 
+    SymbolTable nextST = new SymbolTable(Top_ST);
+    ST = nextST;
   }
 
   @Override
   public ASTNode visitProg(ProgContext ctx) {
+    // List<FuncContext> functions = ctx.func();
+    // List<FunctionDeclAST> functionDecASTs = new ArrayList<>();
+
+    // for (FuncContext f: functions) {
+    //   FunctionDeclAST functionDeclAST = visitFunc(f);
+    // }
+    
     return null;
   }
 
@@ -47,7 +59,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitAsignST(AsignSTContext ctx) {
+  public ASTNode visitAssignST(AssignSTContext ctx) {
     return null;
   }
 
@@ -187,7 +199,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitFunc(FuncContext ctx) {
+  public FunctionDeclAST visitFunc(FuncContext ctx) {
     return null;
   }
 
@@ -207,7 +219,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitPrimTypeTP(PrimTypeTPContext ctx) {
+  public PrimTypeAST visitPrimTypeTP(PrimTypeTPContext ctx) {
     PrimTypeAST primType = new PrimTypeAST(ctx, ctx.getText());
     primType.check();
     return primType;

@@ -25,7 +25,7 @@ options {
 prog: BEGIN (func)* stat END EOF ;
 
 stat: SKP                             #skipST
-   | type IDENT ASGN rhs              #asignST
+   | type IDENT ASGN rhs              #assignST
    | lhs ASGN rhs                     #initST
    | READ lhs                         #readST
    | FREE expr                        #freeST
