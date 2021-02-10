@@ -7,12 +7,13 @@ import antlr.WACCParserVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import front_end.AST.*;
+import front_end.AST.TypeAST.PrimTypeAST;
 import front_end.types.*;
 
 public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
-  private static SymbolTable Top_ST;
-  private static SymbolTable ST;
+  public static SymbolTable Top_ST;
+  public static SymbolTable ST;
 
   public Visitor() {
     Top_ST = new SymbolTable(null);
@@ -207,7 +208,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitPrimTypeTP(PrimTypeTPContext ctx) {
-    return null;
+    PrimTypeAST primType = new PrimTypeAST(ctx, ctx.getText());
+    primType.check();
+    return primType;
   }
 
   @Override

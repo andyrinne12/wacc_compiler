@@ -1,5 +1,8 @@
 import antlr.WACCLexer;
 import antlr.WACCParser;
+import front_end.Visitor;
+import front_end.AST.ASTNode;
+
 import java.io.IOException;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -89,7 +92,9 @@ public class Main {
       System.exit(EXIT_CODE);
     }
 
-    //TODO: Otherwise perform the semantic check and build the
+    // Semantic analyzer
+    Visitor semanticVisitor = new Visitor();
+    ASTNode prog = semanticVisitor.visit(tree);
 
   }
 
