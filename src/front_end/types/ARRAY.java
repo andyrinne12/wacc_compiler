@@ -3,7 +3,7 @@ package front_end.types;
 public class ARRAY extends TYPE {
 
   private final TYPE elemType;
-  private int size;
+  private final int size;
 
   public ARRAY(TYPE elemType, int size) {
     this.elemType = elemType;

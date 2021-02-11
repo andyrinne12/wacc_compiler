@@ -25,8 +25,8 @@ options {
 prog: BEGIN (func)* stat END EOF ;
 
 stat: SKP                             #skipST
-   | type IDENT ASGN rhs              #assignST
-   | lhs ASGN rhs                     #initST
+   | type IDENT ASGN rhs              #initST
+   | lhs ASGN rhs                     #assignST
    | READ lhs                         #readST
    | FREE expr                        #freeST
    | RETURN expr                      #returnST
@@ -87,9 +87,7 @@ arrayLtr: LSBR (expr (CMA expr)*)? RSBR;
 
 pairType: PAIR LBR pairElemType CMA pairElemType RBR;
 
-pairElem: FST expr                  #firstElemPR
-      | SND expr                    #secondElemPR
-;
+pairElem: elem=(FST | SND) expr;
 
 pairElemType: TYPE                  #primTypePRTP
           | arrayType               #arrayTypePRTP

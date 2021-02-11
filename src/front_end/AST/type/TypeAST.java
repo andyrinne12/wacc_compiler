@@ -1,4 +1,4 @@
-package front_end.AST.TypeAST;
+package front_end.AST.type;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 

@@ -17,4 +17,8 @@ public class FUNCTION extends TYPE {
     public TYPE getType() {
         return this;
     }
+
+    public PARAM[] getParams() {
+        return params;
+    }
 }

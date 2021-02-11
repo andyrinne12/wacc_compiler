@@ -1,9 +1,9 @@
-package front_end.AST.FunctionDeclaration;
+package front_end.AST.function;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import front_end.AST.ASTNode;
-import front_end.AST.TypeAST.TypeAST;
+import front_end.AST.type.TypeAST;
 
 public class FunctionDeclAST extends ASTNode {
 
