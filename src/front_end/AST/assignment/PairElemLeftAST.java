@@ -1,5 +1,6 @@
 package front_end.AST.assignment;
 
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PairElemLeftAST extends AssignmentLeftAST {
@@ -15,5 +16,10 @@ public class PairElemLeftAST extends AssignmentLeftAST {
   @Override
   public void check() {
     pairElem.check();
+  }
+
+  @Override
+  public TYPE getEvalType() {
+    return pairElem.getEvalType();
   }
 }

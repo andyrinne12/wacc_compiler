@@ -25,7 +25,7 @@ public class UnaryOpExprAST extends ExpressionAST {
         identObj = Visitor.ST.lookupAll(returnType);
 
         // check if the unary operator is compatible with the expression.
-        Class expressionClass = expression.getType().getClass();
+        Class expressionClass = expression.getIdentObj().getClass();
         if (!(expressionClass.equals(expectedElemType.getClass()))) {
            error("The unary operator " + unaryOp + " received an unexcpeted type." + 
            "\nExpected: " + expectedElemType.getClass().getName() + 

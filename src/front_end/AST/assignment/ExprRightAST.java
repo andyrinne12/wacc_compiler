@@ -1,6 +1,7 @@
 package front_end.AST.assignment;
 
 import front_end.AST.expression.ExpressionAST;
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ExprRightAST extends AssignmentRightAST {
@@ -17,7 +18,8 @@ public class ExprRightAST extends AssignmentRightAST {
     expr.check();
   }
 
-  public ExpressionAST getExpr() {
-    return expr;
+  @Override
+  public TYPE getEvalType() {
+    return expr.getIdentObj().getType();
   }
 }

@@ -4,6 +4,7 @@ import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.FUNCTION;
 import front_end.types.PARAM;
+import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -33,10 +34,17 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       for (int i = 0; i < argList.size(); i++) {
         ExpressionAST arg = argList.get(i);
         arg.check();
-        if (!(arg.getType().getType().equalsType(params[i].getType()))) {
+        if (!(arg.getIdentObj().getType().equalsType(params[i].getType()))) {
           error("Invalid argument type for arg " + i);
         }
       }
     }
+  }
+
+
+  @Override
+  public TYPE getEvalType() {
+    FUNCTION func = (FUNCTION) identObj;
+    return func.getReturnType();
   }
 }

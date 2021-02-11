@@ -56,11 +56,11 @@ lhs: IDENT                           #identLHS
   | pairElem                         #pairElemLHS
 ;
 
-rhs: expr                            #expRHS
-  | arrayLtr                         #arrayLtrRHS
-  | NEW_PR LBR expr CMA expr RBR     #newPairRHS
-  | pairElem                         #pairElemRHS
-  | CALL IDENT LBR argList? RBR      #funcCallRHS
+rhs: expr                                #expRHS
+  | LSBR (expr (CMA expr)*)? RSBR        #arrayLtrRHS
+  | NEW_PR LBR expr CMA expr RBR         #newPairRHS
+  | pairElem                             #pairElemRHS
+  | CALL IDENT LBR argList? RBR          #funcCallRHS
 ;
 
 func: type IDENT LBR paramList? RBR IS stat END;
@@ -82,8 +82,6 @@ arrayType: TYPE LSBR RSBR            #primTypeARTP
 ;
 
 arrayElem: IDENT (LSBR expr RSBR)+;
-
-arrayLtr: LSBR (expr (CMA expr)*)? RSBR;
 
 pairType: PAIR LBR pairElemType CMA pairElemType RBR;
 

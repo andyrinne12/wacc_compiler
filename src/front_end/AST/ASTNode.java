@@ -21,7 +21,7 @@ public abstract class ASTNode { // to be inherited by other ASTNodes.
         Visitor.error(ctx, msg);
     }
 
-    public IDENTIFIER getType() {
+    public IDENTIFIER getIdentObj() {
         return identObj;
     }
 

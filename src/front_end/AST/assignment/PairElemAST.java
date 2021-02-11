@@ -1,26 +1,27 @@
 package front_end.AST.assignment;
 
-import antlr.WACCParser.PairElemLHSContext;
+import antlr.WACCParser.PairElemContext;
 import front_end.AST.ASTNode;
 import front_end.AST.expression.ExpressionAST;
 import front_end.AST.expression.IdentAST;
 import front_end.Visitor;
 import front_end.types.PAIR;
+import front_end.types.TYPE;
 
 public class PairElemAST extends ASTNode {
 
   private final PairElemEnum elem;
   private final ExpressionAST identExp;
 
-  public PairElemAST(PairElemLHSContext ctx, ExpressionAST identExp) {
+  public PairElemAST(PairElemContext ctx, ExpressionAST identExp) {
     super(ctx);
     this.identExp = identExp;
-    this.elem = ctx.pairElem().elem.getText().equals("fst") ? PairElemEnum.FST : PairElemEnum.SND;
+    this.elem = ctx.elem.getText().equals("fst") ? PairElemEnum.FST : PairElemEnum.SND;
   }
 
   @Override
   public void check() {
-    String className = identExp.getType().getClass().getName();
+    String className = identExp.getIdentObj().getClass().getName();
     if (!(identExp instanceof IdentAST)) {
       error("Invalid pair element access. Expression of type + " + className
           + "is not a valid identifier.");
@@ -39,5 +40,15 @@ public class PairElemAST extends ASTNode {
 
   public PairElemEnum getElem() {
     return elem;
+  }
+
+  //@Override
+  public TYPE getEvalType() {
+    PAIR pair = (PAIR) identObj;
+    if (elem == PairElemEnum.FST) {
+      return pair.getFirstType();
+    } else {
+      return pair.getSecondType();
+    }
   }
 }

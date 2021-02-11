@@ -1,5 +1,7 @@
 package front_end.AST.assignment;
 
+import front_end.types.PAIR;
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class NewPairRightAST extends AssignmentRightAST {
@@ -18,13 +20,11 @@ public class NewPairRightAST extends AssignmentRightAST {
   public void check() {
     expr1.check();
     expr2.check();
+    identObj = new PAIR(expr1.getEvalType(), expr2.getEvalType());
   }
 
-  public ExprRightAST getExpr1() {
-    return expr1;
-  }
-
-  public ExprRightAST getExpr2() {
-    return expr2;
+  @Override
+  public TYPE getEvalType() {
+    return identObj.getType();
   }
 }

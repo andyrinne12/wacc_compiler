@@ -22,7 +22,7 @@ public class While extends Statement {
     //check the validity of th expression
     expression.wasChecked();
 
-    if(expression.getType().equals(Visitor.ST.lookupAll("bool"))) {
+    if(expression.getIdentObj().equals(Visitor.ST.lookupAll("bool"))) {
       //check the validity of the statement
       stat.wasChecked();
     } else {

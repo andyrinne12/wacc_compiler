@@ -32,7 +32,7 @@ public class BinaryOpExprAST extends ExpressionAST {
         expr1.wasChecked();
         expr2.wasChecked();
 
-        Class expr1Class = expr1.getType().getClass();
+        Class expr1Class = expr1.getIdentObj().getClass();
         boolean expr1CorrectType = false;
 
         for (TYPE t: expectedElemTypes) {
@@ -43,7 +43,7 @@ public class BinaryOpExprAST extends ExpressionAST {
         }
 
         if (expr1CorrectType) {
-            Class expr2Class = expr2.getType().getClass();
+            Class expr2Class = expr2.getIdentObj().getClass();
             if (!expr1Class.equals(expr2Class)) {
                 error("Both LHS and RHS expressions have different types." +
                 "\nExpected: " + expr1Class.getName() +

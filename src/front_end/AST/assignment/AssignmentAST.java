@@ -1,6 +1,7 @@
 package front_end.AST.assignment;
 
 import front_end.AST.ASTNode;
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class AssignmentAST extends ASTNode {
@@ -16,6 +17,12 @@ public class AssignmentAST extends ASTNode {
 
   @Override
   public void check() {
-
+    lhs.check();
+    rhs.check();
+    TYPE lhsType = lhs.getEvalType();
+    TYPE rhsType = rhs.getEvalType();
+    if (lhsType.equalsType(rhsType)) {
+      error("Invalid expression type assignment. Expected: " + rhsType + " actual: " + lhsType);
+    }
   }
 }

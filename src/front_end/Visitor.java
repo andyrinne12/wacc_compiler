@@ -4,7 +4,6 @@ import antlr.WACCParser.ArgListContext;
 import antlr.WACCParser.ArrayElemContext;
 import antlr.WACCParser.ArrayElemEXPContext;
 import antlr.WACCParser.ArrayElemLHSContext;
-import antlr.WACCParser.ArrayLtrContext;
 import antlr.WACCParser.ArrayLtrRHSContext;
 import antlr.WACCParser.ArrayTypeARTPContext;
 import antlr.WACCParser.ArrayTypeTPContext;
@@ -49,6 +48,17 @@ import antlr.WACCParser.UnOpEXPContext;
 import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
 import front_end.AST.ASTNode;
+import front_end.AST.assignment.ArrayElemAST;
+import front_end.AST.assignment.ArrayLtrRightAST;
+import front_end.AST.assignment.AssignmentAST;
+import front_end.AST.assignment.AssignmentLeftAST;
+import front_end.AST.assignment.AssignmentRightAST;
+import front_end.AST.assignment.ExprRightAST;
+import front_end.AST.assignment.FunctionCallRightAST;
+import front_end.AST.assignment.IdentLeftAST;
+import front_end.AST.assignment.NewPairRightAST;
+import front_end.AST.assignment.PairElemAST;
+import front_end.AST.assignment.PairElemLeftAST;
 import front_end.AST.expression.ArrayElemExprAST;
 import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
@@ -111,7 +121,6 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
     // for (FuncContext f: functions) {
     //   FunctionDeclAST functionDeclAST = visitFunc(f);
     // }
-
     return null;
   }
 
@@ -146,7 +155,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitAssignST(AssignSTContext ctx) {
-    return null;
+    AssignmentAST assignment = new AssignmentAST(ctx, (AssignmentLeftAST) visit(ctx.lhs()),
+        (AssignmentRightAST) visit(ctx.rhs()));
+    assignment.check();
+    return assignment;
   }
 
   @Override
@@ -171,9 +183,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public Skip visitSkipST(SkipSTContext ctx) {
-    Skip skip = new Skip(ctx);
-
-    return skip;
+    return new Skip(ctx);
   }
 
   @Override
@@ -221,8 +231,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
       statASTs.add((Statement) visit(stat));
     }
 
-    Sequence sequence = new Sequence(ctx, statASTs);
-    return sequence;
+    return new Sequence(ctx, statASTs);
   }
 
   @Override
@@ -303,7 +312,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public BinaryOpExprAST visitBinOpEXP(BinOpEXPContext ctx) {
-    BinaryOpExprAST binaryOpExpr = new BinaryOpExprAST(ctx, visitExpr(ctx.expr(0)), visitExpr(ctx.expr(1)), ctx.binaryOp().getText());
+    BinaryOpExprAST binaryOpExpr = new BinaryOpExprAST(ctx, visitExpr(ctx.expr(0)),
+        visitExpr(ctx.expr(1)), ctx.binaryOp().getText());
     binaryOpExpr.check();
     return binaryOpExpr;
   }
@@ -350,43 +360,59 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitIdentLHS(IdentLHSContext ctx) {
-    return null;
+  public IdentLeftAST visitIdentLHS(IdentLHSContext ctx) {
+    return new IdentLeftAST(ctx);
   }
 
   @Override
   public ASTNode visitArrayElemLHS(ArrayElemLHSContext ctx) {
-    return null;
+    List<ExpressionAST> indices = new ArrayList<>();
+    for (ExprContext expr : ctx.arrayElem().expr()) {
+      indices.add(visitExpr(expr));
+    }
+    return new ArrayElemAST(ctx, indices);
   }
 
   @Override
   public ASTNode visitPairElemLHS(PairElemLHSContext ctx) {
-    return null;
+    PairElemAST pairElem = new PairElemAST(ctx.pairElem(), visitExpr(ctx.pairElem().expr()));
+    return new PairElemLeftAST(ctx, pairElem);
   }
 
   @Override
   public ASTNode visitExpRHS(ExpRHSContext ctx) {
-    return null;
+    return new ExprRightAST(ctx, visitExpr(ctx.expr()));
   }
 
   @Override
   public ASTNode visitArrayLtrRHS(ArrayLtrRHSContext ctx) {
-    return null;
+    List<ExpressionAST> array = new ArrayList<>();
+    for (ExprContext expr : ctx.expr()) {
+      array.add(visitExpr(expr));
+    }
+    return new ArrayLtrRightAST(ctx, array);
   }
 
   @Override
   public ASTNode visitNewPairRHS(NewPairRHSContext ctx) {
-    return null;
+    ExprRightAST expr1 = new ExprRightAST(ctx, visitExpr(ctx.expr(0)));
+    ExprRightAST expr2 = new ExprRightAST(ctx, visitExpr(ctx.expr(1)));
+    return new NewPairRightAST(ctx, expr1, expr2);
   }
 
   @Override
   public ASTNode visitPairElemRHS(PairElemRHSContext ctx) {
-    return null;
+    PairElemAST pairElem = new PairElemAST(ctx.pairElem(), visitExpr(ctx.pairElem().expr()));
+    return new PairElemLeftAST(ctx, pairElem);
   }
 
   @Override
   public ASTNode visitFuncCallRHS(FuncCallRHSContext ctx) {
-    return null;
+    List<ExpressionAST> argList = new ArrayList<>();
+    for (ExprContext argExpr : ctx.argList().expr()) {
+      argList.add(visitExpr(argExpr));
+    }
+    return new FunctionCallRightAST(ctx, ctx.IDENT().getText(), argList);
   }
 
   @Override
@@ -443,11 +469,6 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitArrayElem(ArrayElemContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitArrayLtr(ArrayLtrContext ctx) {
     return null;
   }
 

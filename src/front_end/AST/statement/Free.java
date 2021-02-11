@@ -15,7 +15,7 @@ public class Free extends Statement{
   @Override
   public void check() {
     expression.wasChecked();
-    if(!(expression.getType() instanceof PAIR)) {
+    if(!(expression.getIdentObj() instanceof PAIR)) {
       error("the only expression that can be freed is a pair type");
     }
   }
