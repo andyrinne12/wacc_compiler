@@ -23,6 +23,11 @@ public class PAIR extends TYPE {
   }
 
   @Override
+  public String toString() {
+    return "(" + firstType + ", " + secondType + ")";
+  }
+
+  @Override
   public boolean equalsType(TYPE type) {
     if (!(type instanceof PAIR)) {
       return false;

@@ -10,6 +10,11 @@ public class CHAR extends TYPE {
   }
 
   @Override
+  public String toString() {
+    return "char";
+  }
+
+  @Override
   public boolean equalsType(TYPE type) {
     return (type instanceof CHAR);
   }

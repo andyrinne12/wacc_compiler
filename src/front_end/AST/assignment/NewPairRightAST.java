@@ -2,12 +2,12 @@ package front_end.AST.assignment;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class NewPairRHS extends AssignmentRightAST {
+public class NewPairRightAST extends AssignmentRightAST {
 
   private final ExprRightAST expr1;
   private final ExprRightAST expr2;
 
-  public NewPairRHS(ParserRuleContext ctx, ExprRightAST expr1, ExprRightAST expr2) {
+  public NewPairRightAST(ParserRuleContext ctx, ExprRightAST expr1, ExprRightAST expr2) {
     super(ctx);
     this.expr1 = expr1;
     this.expr2 = expr2;

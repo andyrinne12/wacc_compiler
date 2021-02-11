@@ -10,6 +10,11 @@ public class STRING extends TYPE {
   }
 
   @Override
+  public String toString() {
+    return "String";
+  }
+
+  @Override
   public boolean equalsType(TYPE type) {
     return type instanceof STRING;
   }

@@ -16,6 +16,6 @@ public class AssignmentAST extends ASTNode {
 
   @Override
   public void check() {
-    //TODO: implement
+
   }
 }

@@ -10,6 +10,11 @@ public class BOOLEAN extends TYPE {
   }
 
   @Override
+  public String toString() {
+    return "boolean";
+  }
+
+  @Override
   public boolean equalsType(TYPE type) {
     return (type instanceof BOOLEAN);
   }

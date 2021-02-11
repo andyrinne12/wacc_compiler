@@ -23,6 +23,11 @@ public class ARRAY extends TYPE {
   }
 
   @Override
+  public String toString() {
+    return getElemType() + "[]";
+  }
+
+  @Override
   public boolean equalsType(TYPE type2) {
     if (!(type2 instanceof ARRAY)) {
       return false;

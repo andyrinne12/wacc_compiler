@@ -7,12 +7,12 @@ import front_end.types.PARAM;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class FunctionCallRHS extends AssignmentRightAST {
+public class FunctionCallRightAST extends AssignmentRightAST {
 
   private final String ident;
   private final List<ExpressionAST> argList;
 
-  public FunctionCallRHS(ParserRuleContext ctx, String ident,
+  public FunctionCallRightAST(ParserRuleContext ctx, String ident,
       List<ExpressionAST> argList) {
     super(ctx);
     this.ident = ident;
