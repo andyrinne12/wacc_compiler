@@ -3,16 +3,17 @@ package front_end.AST.StatementAST;
 import front_end.AST.ExpressionAST.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Print extends Statement {
+public class Println extends Statement {
   private ExpressionAST expression;
+  private Print printAST;
 
-  public Print(ParserRuleContext ctx, ExpressionAST expression) {
+  public Println(ParserRuleContext ctx, ExpressionAST expression) {
     super(ctx);
     this.expression = expression;
   }
 
   @Override
   public void check() {
-    expression.check();
+    expression.wasChecked();
   }
 }
