@@ -50,6 +50,7 @@ import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
 import front_end.AST.ASTNode;
 import front_end.AST.expression.ArrayElemExprAST;
+import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.CharExprAST;
 import front_end.AST.expression.ExpressionAST;
@@ -249,11 +250,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
     } else if (ctx instanceof ArrayElemEXPContext) {
       exprAST = visitArrayElemEXP((ArrayElemEXPContext) ctx);
     } else if (ctx instanceof BinOpEXPContext) {
-      // to-do
+      exprAST = visitBinOpEXP((BinOpEXPContext) ctx);
     } else if (ctx instanceof StrEXPContext) {
       exprAST = visitStrEXP((StrEXPContext) ctx);
     } else if (ctx instanceof UnOpEXPContext) {
-      // to-do
+      exprAST = visitUnOpEXP((UnOpEXPContext) ctx);
     } else if (ctx instanceof BracketEXPContext) {
       exprAST = visitBracketEXP((BracketEXPContext) ctx);
     } else if (ctx instanceof BoolEXPContext) {
@@ -301,8 +302,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitBinOpEXP(BinOpEXPContext ctx) {
-    return null;
+  public BinaryOpExprAST visitBinOpEXP(BinOpEXPContext ctx) {
+    BinaryOpExprAST binaryOpExpr = new BinaryOpExprAST(ctx, visitExpr(ctx.expr(0)), visitExpr(ctx.expr(1)), ctx.binaryOp().getText());
+    binaryOpExpr.check();
+    return binaryOpExpr;
   }
 
   @Override
