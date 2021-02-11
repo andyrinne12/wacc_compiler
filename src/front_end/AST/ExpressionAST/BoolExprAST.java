@@ -25,9 +25,8 @@ public class BoolExprAST extends ExpressionAST {
 
     @Override
     public void check() {
-        // check if type is in the symbol table.
         IDENTIFIER type = Visitor.ST.lookupAll("bool");
-        if (type == null) { // the type doesn't exist in the symbol table.
+        if (type == null) {
             error("Undefined type: bool");
         }
         boolObj = (BOOLEAN) type;

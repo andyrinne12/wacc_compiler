@@ -10,6 +10,7 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import front_end.AST.*;
+import front_end.AST.ExpressionAST.*;
 import front_end.AST.FunctionDeclaration.*;
 import front_end.AST.TypeAST.PrimTypeAST;
 import front_end.types.*;
@@ -114,8 +115,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitPairLtrEXP(PairLtrEXPContext ctx) {
-    return null;
+  public PairLtrExprAST visitPairLtrEXP(PairLtrEXPContext ctx) {
+    return new PairLtrExprAST(ctx, ctx.getText());
   }
 
   @Override
@@ -129,8 +130,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitStrEXP(StrEXPContext ctx) {
-    return null;
+  public StringExprAST visitStrEXP(StrEXPContext ctx) {
+    StringExprAST strExpr = new StringExprAST(ctx, ctx.getText());
+    strExpr.check();
+    return strExpr;
   }
 
   @Override
@@ -144,18 +147,24 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitBoolEXP(BoolEXPContext ctx) {
-    return null;
+  public BoolExprAST visitBoolEXP(BoolEXPContext ctx) {
+    BoolExprAST boolExpr = new BoolExprAST(ctx, ctx.getText());
+    boolExpr.check();
+    return boolExpr;
   }
 
   @Override
-  public ASTNode visitIdentEXP(IdentEXPContext ctx) {
-    return null;
+  public IdentAST visitIdentEXP(IdentEXPContext ctx) {
+    IdentAST identExpr = new IdentAST(ctx, ctx.getText());
+    identExpr.check();
+    return identExpr;
   }
 
   @Override
-  public ASTNode visitCharEXP(CharEXPContext ctx) {
-    return null;
+  public CharExprAST visitCharEXP(CharEXPContext ctx) {
+    CharExprAST charExpr = new CharExprAST(ctx, ctx.getText());
+    charExpr.check();
+    return charExpr;
   }
 
   @Override
