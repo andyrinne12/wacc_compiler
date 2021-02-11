@@ -33,4 +33,8 @@ public class SymbolTable {
 
         return null;
     }
+
+    public SymbolTable getParentST() {
+        return parentST;
+    }
 }
