@@ -4,6 +4,17 @@ import antlr.WACCParser.*;
 import antlr.WACCParserBaseVisitor;
 import antlr.WACCParserVisitor;
 
+import front_end.AST.StatementAST.Begin;
+import front_end.AST.StatementAST.Exit;
+import front_end.AST.StatementAST.Free;
+import front_end.AST.StatementAST.If;
+import front_end.AST.StatementAST.Print;
+import front_end.AST.StatementAST.Println;
+import front_end.AST.StatementAST.Sequence;
+import front_end.AST.StatementAST.Skip;
+import front_end.AST.StatementAST.Statement;
+import front_end.AST.StatementAST.While;
+import front_end.AST.TypeAST.TypeAST;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,18 +56,30 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitReturnST(ReturnSTContext ctx) {
-    return null;
-  }
+  public ASTNode visitReturnST(ReturnSTContext ctx) {return null;}
 
   @Override
   public ASTNode visitWhileST(WhileSTContext ctx) {
-    return null;
+    Visitor.ST = new SymbolTable(Visitor.ST);
+
+    ExpressionAST expr = visitExpr(ctx.expr());
+    Statement stat = (Statement) visit(ctx.stat());
+
+    While whileAST = new While(ctx, expr, stat, ST);
+    whileAST.check();
+    Visitor.ST = Visitor.ST.getParentST();
+
+    return whileAST;
   }
 
   @Override
-  public ASTNode visitFreeST(FreeSTContext ctx) {
-    return null;
+  public Free visitFreeST(FreeSTContext ctx) {
+    ExpressionAST expr = visitExpr(ctx.expr());
+
+    Free free = new Free(ctx, expr);
+    free.check();
+
+    return free;
   }
 
   @Override
@@ -65,13 +88,30 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitIfST(IfSTContext ctx) {
-    return null;
+  public If visitIfST(IfSTContext ctx) {
+    ExpressionAST expr = visitExpr(ctx.expr());
+    Visitor.ST = new SymbolTable(Visitor.ST);
+
+    Statement then = (Statement) visit(ctx.stat(0));
+    SymbolTable thenST = Visitor.ST;
+    Visitor.ST = Visitor.ST.getParentST();
+
+    Visitor.ST = new SymbolTable(Visitor.ST);
+    Statement elseSt = (Statement) visit(ctx.stat(1));
+    SymbolTable elseST = Visitor.ST;
+    Visitor.ST = Visitor.ST.getParentST();
+
+    If ifAST = new If(ctx, expr, then, elseSt, thenST, elseST);
+    ifAST.check();
+
+    return ifAST;
   }
 
   @Override
-  public ASTNode visitSkipST(SkipSTContext ctx) {
-    return null;
+  public Skip visitSkipST(SkipSTContext ctx) {
+    Skip skip = new Skip(ctx);
+
+    return skip;
   }
 
   @Override
@@ -80,23 +120,47 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitBeginST(BeginSTContext ctx) {
-    return null;
+  public Begin visitBeginST(BeginSTContext ctx) {
+    ST = new SymbolTable(ST);
+    Statement stat = (Statement) visit(ctx.stat());
+
+    Begin begin = new Begin(ctx, stat);
+    ST = ST.getParentST();
+
+    return begin;
   }
 
   @Override
-  public ASTNode visitPrintST(PrintSTContext ctx) {
-    return null;
+  public Print visitPrintST(PrintSTContext ctx) {
+    ExpressionAST expr = visitExpr(ctx.expr());
+
+    Print print = new Print(ctx, expr);
+    print.check();
+
+    return print;
   }
 
   @Override
-  public ASTNode visitExitST(ExitSTContext ctx) {
-    return null;
+  public Exit visitExitST(ExitSTContext ctx) {
+    ExpressionAST expr = visitExpr(ctx.expr());
+
+    Exit exit = new Exit(ctx, expr);
+    exit.check();
+
+    return exit;
   }
 
   @Override
-  public ASTNode visitStatSeqST(StatSeqSTContext ctx) {
-    return null;
+  public Sequence visitStatSeqST(StatSeqSTContext ctx) {
+    List<StatContext> stats = ctx.stat();
+    List<Statement> statASTs = new ArrayList<>();
+
+    for (StatContext stat : stats) {
+      statASTs.add((Statement) visit(stat));
+    }
+
+    Sequence sequence = new Sequence(ctx, statASTs);
+    return sequence;
   }
 
   @Override
@@ -105,8 +169,13 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitPrintlnST(PrintlnSTContext ctx) {
-    return null;
+  public Println visitPrintlnST(PrintlnSTContext ctx) {
+    ExpressionAST expr = visitExpr(ctx.expr());
+
+    Println print = new Println(ctx, expr);
+    print.check();
+
+    return print;
   }
 
   public ExpressionAST visitExpr(ExprContext ctx) {

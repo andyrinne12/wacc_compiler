@@ -106,5 +106,6 @@ class CustomErrorHandler extends BaseErrorListener {
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
       int charPositionInLine, String msg, RecognitionException e) {
     Main.EXIT_CODE = 100;
+    System.err.println("SYNTAX ERROR:" + line + ": " + charPositionInLine);
   }
 }

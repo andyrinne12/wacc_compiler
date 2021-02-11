@@ -9,6 +9,7 @@ public abstract class ASTNode { // to be inherited by other ASTNodes.
 
     protected ParserRuleContext ctx;
     protected IDENTIFIER identObj; // the semantic attribute of the class.
+    protected boolean isChecked;  // variable for marking if the node has already been checked
 
     public ASTNode(ParserRuleContext ctx) {
         this.ctx = ctx;
@@ -22,6 +23,13 @@ public abstract class ASTNode { // to be inherited by other ASTNodes.
 
     public IDENTIFIER getType() {
         return identObj;
+    }
+
+    public void wasChecked(){
+        if(!isChecked) {
+            check();
+            isChecked = true;
+        }
     }
     
 }
