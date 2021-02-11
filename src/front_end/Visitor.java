@@ -193,8 +193,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitUnOpEXP(UnOpEXPContext ctx) {
-    return null;
+  public UnaryOpExprAST visitUnOpEXP(UnOpEXPContext ctx) {
+    UnaryOpExprAST unaryOpExpr = new UnaryOpExprAST(ctx, visitExpr(ctx.expr()), ctx.unaryOp().getText());
+    unaryOpExpr.check();
+    return unaryOpExpr;
   }
 
   @Override
