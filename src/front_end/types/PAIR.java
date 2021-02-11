@@ -1,4 +1,5 @@
 package front_end.types;
+
 public class PAIR extends TYPE {
 
   private final TYPE firstType;
@@ -7,7 +8,6 @@ public class PAIR extends TYPE {
   public PAIR(TYPE firstType, TYPE secondType) {
     this.firstType = firstType;
     this.secondType = secondType;
-
   }
 
   public TYPE getFirstType() {
@@ -22,4 +22,12 @@ public class PAIR extends TYPE {
     return this;
   }
 
+  @Override
+  public boolean equalsType(TYPE type) {
+    if (!(type instanceof PAIR)) {
+      return false;
+    }
+    PAIR pair2 = (PAIR) type;
+    return pair2.firstType.equalsType(firstType) && pair2.secondType.equalsType(secondType);
+  }
 }

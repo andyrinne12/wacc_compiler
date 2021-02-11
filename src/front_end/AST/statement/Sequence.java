@@ -1,4 +1,4 @@
-package front_end.AST.StatementAST;
+package front_end.AST.statement;
 
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;

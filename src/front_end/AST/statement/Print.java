@@ -1,4 +1,4 @@
-package front_end.AST.StatementAST;
+package front_end.AST.statement;
 
 import front_end.AST.ExpressionAST.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
