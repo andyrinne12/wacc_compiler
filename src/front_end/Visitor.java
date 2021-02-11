@@ -1,19 +1,81 @@
 package front_end;
 
+import antlr.WACCParser.ArgListContext;
+import antlr.WACCParser.ArrayElemContext;
+import antlr.WACCParser.ArrayElemEXPContext;
+import antlr.WACCParser.ArrayElemLHSContext;
+import antlr.WACCParser.ArrayLtrContext;
+import antlr.WACCParser.ArrayLtrRHSContext;
+import antlr.WACCParser.ArrayTypeARTPContext;
+import antlr.WACCParser.ArrayTypeTPContext;
+import antlr.WACCParser.AssignSTContext;
+import antlr.WACCParser.BeginSTContext;
+import antlr.WACCParser.BinOpEXPContext;
+import antlr.WACCParser.BoolEXPContext;
+import antlr.WACCParser.BracketEXPContext;
+import antlr.WACCParser.CharEXPContext;
+import antlr.WACCParser.ExitSTContext;
+import antlr.WACCParser.ExpRHSContext;
+import antlr.WACCParser.ExprContext;
 import antlr.WACCParser.FreeSTContext;
+import antlr.WACCParser.FuncCallRHSContext;
+import antlr.WACCParser.FuncContext;
+import antlr.WACCParser.IdentEXPContext;
+import antlr.WACCParser.IdentLHSContext;
+import antlr.WACCParser.IfSTContext;
+import antlr.WACCParser.InitSTContext;
+import antlr.WACCParser.NewPairRHSContext;
+import antlr.WACCParser.PairElemLHSContext;
+import antlr.WACCParser.PairElemRHSContext;
+import antlr.WACCParser.PairLtrEXPContext;
+import antlr.WACCParser.PairTypeARTPContext;
+import antlr.WACCParser.PairTypeContext;
+import antlr.WACCParser.PairTypeTPContext;
+import antlr.WACCParser.ParamContext;
+import antlr.WACCParser.ParamListContext;
+import antlr.WACCParser.PrimTypeARTPContext;
+import antlr.WACCParser.PrimTypeTPContext;
+import antlr.WACCParser.PrintSTContext;
+import antlr.WACCParser.PrintlnSTContext;
 import antlr.WACCParser.ProgContext;
+import antlr.WACCParser.ReadSTContext;
 import antlr.WACCParser.ReturnSTContext;
+import antlr.WACCParser.SignedIntEXPContext;
+import antlr.WACCParser.SkipSTContext;
+import antlr.WACCParser.StatContext;
+import antlr.WACCParser.StatSeqSTContext;
+import antlr.WACCParser.StrEXPContext;
+import antlr.WACCParser.UnOpEXPContext;
 import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
 import front_end.AST.ASTNode;
+import front_end.AST.expression.ArrayElemExprAST;
+import front_end.AST.expression.BoolExprAST;
+import front_end.AST.expression.CharExprAST;
 import front_end.AST.expression.ExpressionAST;
+import front_end.AST.expression.IdentAST;
+import front_end.AST.expression.PairLtrExprAST;
+import front_end.AST.expression.SignedIntExprAST;
+import front_end.AST.expression.StringExprAST;
+import front_end.AST.expression.UnaryOpExprAST;
+import front_end.AST.function.FunctionDeclAST;
+import front_end.AST.statement.Begin;
+import front_end.AST.statement.Exit;
 import front_end.AST.statement.Free;
+import front_end.AST.statement.If;
+import front_end.AST.statement.Print;
+import front_end.AST.statement.Println;
+import front_end.AST.statement.Sequence;
+import front_end.AST.statement.Skip;
 import front_end.AST.statement.Statement;
 import front_end.AST.statement.While;
+import front_end.AST.type.PrimTypeAST;
 import front_end.types.BOOLEAN;
 import front_end.types.CHAR;
 import front_end.types.INT;
 import front_end.types.STRING;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class Visitor extends WACCParserBaseVisitor<ASTNode> {
@@ -388,41 +450,6 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitPairType(PairTypeContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitFirstElemPR(FirstElemPRContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitSecondElemPR(SecondElemPRContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitPrimTypePRTP(PrimTypePRTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitArrayTypePRTP(ArrayTypePRTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitPairPRTP(PairPRTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitUnaryOp(UnaryOpContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitBinaryOp(BinaryOpContext ctx) {
     return null;
   }
 }

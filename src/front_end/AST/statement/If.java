@@ -1,19 +1,21 @@
 package front_end.AST.statement;
 
-import front_end.AST.ExpressionAST.ExpressionAST;
+import front_end.AST.expression.ExpressionAST;
 import front_end.SymbolTable;
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class If extends Statement{
+public class If extends Statement {
+
   private ExpressionAST expression;
   private Statement then;
   private SymbolTable thenST;
   private Statement elseSt;
   private SymbolTable elseST;
 
-  public If(ParserRuleContext ctx, ExpressionAST expression, Statement then, Statement elseSt, SymbolTable thenST, SymbolTable elseST) {
+  public If(ParserRuleContext ctx, ExpressionAST expression, Statement then, Statement elseSt,
+      SymbolTable thenST, SymbolTable elseST) {
     super(ctx);
     this.expression = expression;
     this.then = then;
@@ -27,7 +29,7 @@ public class If extends Statement{
     //assure the validity of the expression
     expression.wasChecked();
     IDENTIFIER ident = Visitor.ST.lookupAll("bool");
-    if(!expression.getType().equals(ident)) {
+    if (!expression.getType().equals(ident)) {
       error("If condition type is not boolean");
     }
 

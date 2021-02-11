@@ -1,6 +1,6 @@
 package front_end.AST.statement;
 
-import front_end.AST.ExpressionAST.ExpressionAST;
+import front_end.AST.expression.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class Print extends Statement {
