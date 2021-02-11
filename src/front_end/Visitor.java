@@ -113,7 +113,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
     ExpressionAST exprAST = null;
 
     if (ctx instanceof SignedIntEXPContext) {
-      // to-do
+      exprAST = visitSignedIntEXP((SignedIntEXPContext) ctx);
     }
     else if (ctx instanceof PairLtrEXPContext) {
       exprAST = visitPairLtrEXP((PairLtrEXPContext) ctx);
@@ -131,7 +131,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
       // to-do
     }
     else if (ctx instanceof BracketEXPContext) {
-      // to-do
+      exprAST = visitBracketEXP((BracketEXPContext) ctx);
     }
     else if (ctx instanceof BoolEXPContext) {
       exprAST = visitBoolEXP((BoolEXPContext) ctx);
@@ -147,8 +147,18 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitSignedIntEXP(SignedIntEXPContext ctx) {
-    return null;
+  public SignedIntExprAST visitSignedIntEXP(SignedIntEXPContext ctx) {
+    String intSign;
+    if (ctx.MINUS() != null) {
+      intSign = "-";
+    }
+    else {
+      intSign = "+";
+    }
+
+    SignedIntExprAST signedInt = new SignedIntExprAST(ctx, intSign, ctx.UINT_LTR().toString());
+    signedInt.check();
+    return signedInt;
   }
 
   @Override
@@ -188,8 +198,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitBracketEXP(BracketEXPContext ctx) {
-    return null;
+  public ExpressionAST visitBracketEXP(BracketEXPContext ctx) {
+    return visitExpr(ctx);
   }
 
   @Override
