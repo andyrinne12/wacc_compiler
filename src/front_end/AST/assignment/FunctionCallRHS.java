@@ -32,11 +32,9 @@ public class FunctionCallRHS extends AssignmentRightAST {
       }
       for (int i = 0; i < argList.size(); i++) {
         ExpressionAST arg = argList.get(i);
-        Class prType = params[i].getType().getClass();
-        Class argType = arg.getType().getClass();
         arg.check();
-        if (!(argType.equals(prType))) {
-          error("Invalid argument type. Exprected: " + prType + "Found: " + argType);
+        if (!(arg.getType().getType().equalsType(params[i].getType()))) {
+          error("Invalid argument type for arg " + i);
         }
       }
     }
