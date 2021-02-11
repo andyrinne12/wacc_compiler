@@ -49,6 +49,9 @@ import antlr.WACCParser.UnOpEXPContext;
 import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
 import front_end.AST.ASTNode;
+import front_end.AST.ProgramAST;
+import front_end.AST.assignment.AssignmentAST;
+import front_end.AST.assignment.AssignmentLeftAST;
 import front_end.AST.expression.ArrayElemExprAST;
 import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
@@ -66,11 +69,13 @@ import front_end.AST.statement.Free;
 import front_end.AST.statement.If;
 import front_end.AST.statement.Print;
 import front_end.AST.statement.Println;
+import front_end.AST.statement.Read;
 import front_end.AST.statement.Sequence;
 import front_end.AST.statement.Skip;
 import front_end.AST.statement.Statement;
 import front_end.AST.statement.While;
 import front_end.AST.type.PrimTypeAST;
+import front_end.AST.type.TypeAST;
 import front_end.types.BOOLEAN;
 import front_end.types.CHAR;
 import front_end.types.INT;
@@ -104,15 +109,17 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitProg(ProgContext ctx) {
-    // List<FuncContext> functions = ctx.func();
-    // List<FunctionDeclAST> functionDecASTs = new ArrayList<>();
+  public ProgramAST visitProg(ProgContext ctx) {
+     List<FuncContext> functions = ctx.func();
+     List<FunctionDeclAST> functionDecASTs = new ArrayList<>();
 
-    // for (FuncContext f: functions) {
-    //   FunctionDeclAST functionDeclAST = visitFunc(f);
-    // }
+     for (FuncContext func : functions) {
+       FunctionDeclAST f = visitFunc(func);
+       functionDecASTs.add(f);
+     }
 
-    return null;
+     Statement stat = (Statement) visit(ctx.stat());
+     return new ProgramAST(ctx, functionDecASTs, stat);
   }
 
   @Override
@@ -145,7 +152,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitAssignST(AssignSTContext ctx) {
+  public AssignmentAST visitAssignST(AssignSTContext ctx) {
     return null;
   }
 
@@ -177,7 +184,13 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitReadST(ReadSTContext ctx) {
+  public Read visitReadST(ReadSTContext ctx) {
+//    AssignmentLeftAST lhs = visitAssignST(ctx.lhs());
+//
+//    Read read = new Read(ctx, lhs);
+//    read.check();
+//
+//    return read;
     return null;
   }
 
