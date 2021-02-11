@@ -109,6 +109,43 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
     return null;
   }
 
+  public ExpressionAST visitExpr(ExprContext ctx) {
+    ExpressionAST exprAST = null;
+
+    if (ctx instanceof SignedIntEXPContext) {
+      // to-do
+    }
+    else if (ctx instanceof PairLtrEXPContext) {
+      exprAST = visitPairLtrEXP((PairLtrEXPContext) ctx);
+    }
+    else if (ctx instanceof ArrayElemEXPContext) {
+      exprAST = visitArrayElemEXP((ArrayElemEXPContext) ctx);
+    }
+    else if (ctx instanceof BinOpEXPContext) {
+      // to-do
+    }
+    else if (ctx instanceof StrEXPContext) {
+      exprAST = visitStrEXP((StrEXPContext) ctx);
+    }
+    else if (ctx instanceof UnOpEXPContext) {
+      // to-do
+    }
+    else if (ctx instanceof BracketEXPContext) {
+      // to-do
+    }
+    else if (ctx instanceof BoolEXPContext) {
+      exprAST = visitBoolEXP((BoolEXPContext) ctx);
+    }
+    else if (ctx instanceof IdentEXPContext) {
+      exprAST = visitIdentEXP((IdentEXPContext) ctx);
+    }
+    else if (ctx instanceof CharEXPContext) {
+      exprAST = visitCharEXP((CharEXPContext) ctx);
+    }
+
+    return exprAST;
+  }
+
   @Override
   public ASTNode visitSignedIntEXP(SignedIntEXPContext ctx) {
     return null;
@@ -120,8 +157,17 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
   }
 
   @Override
-  public ASTNode visitArrayElemEXP(ArrayElemEXPContext ctx) {
-    return null;
+  public ArrayElemExprAST visitArrayElemEXP(ArrayElemEXPContext ctx) {
+    List<ExprContext> exprContexts = ctx.arrayElem().expr();
+    List<ExpressionAST> exprASTs = new ArrayList<>();
+
+    for (ExprContext e: exprContexts) {
+      exprASTs.add(visitExpr(e));
+    }
+
+    ArrayElemExprAST arrElemExprAST = new ArrayElemExprAST(ctx, ctx.getText(), exprASTs);
+    arrElemExprAST.check();
+    return arrElemExprAST;
   }
 
   @Override

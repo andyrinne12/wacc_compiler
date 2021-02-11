@@ -7,12 +7,11 @@ import front_end.types.PAIR;
 public class PairLtrExprAST extends ExpressionAST {
 
     private String nullStr;
-    private PAIR pairObj;
     
     public PairLtrExprAST(ParserRuleContext ctx, String str) {
         super(ctx);
         nullStr = str;
-        pairObj = new PAIR(null, null);
+        identObj = new PAIR(null, null);
     }
 
     @Override
