@@ -4,9 +4,9 @@ import front_end.SymbolTable;
 
 public class FUNCTION extends TYPE {
     
-    private TYPE returnType;
-    private PARAM[] params;
-    private SymbolTable ST;
+    private final TYPE returnType;
+    private final PARAM[] params;
+    private final SymbolTable ST;
 
     public FUNCTION(TYPE returnType, PARAM[] params, SymbolTable ST) {
         this.returnType = returnType;
@@ -20,5 +20,14 @@ public class FUNCTION extends TYPE {
 
     public PARAM[] getParams() {
         return params;
+    }
+
+    public TYPE getReturnType() {
+        return returnType;
+    }
+
+    @Override
+    public boolean equalsType(TYPE type) {
+        return false;
     }
 }

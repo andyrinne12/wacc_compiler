@@ -1,7 +1,7 @@
 package front_end.types;
 
-public abstract class TYPE extends IDENTIFIER{
+public abstract class TYPE extends IDENTIFIER {
 
-  public
+  public abstract boolean equalsType(TYPE type);
 
 }

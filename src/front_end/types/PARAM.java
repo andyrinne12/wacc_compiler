@@ -11,5 +11,4 @@ public class PARAM extends IDENTIFIER {
     public TYPE getType() {
         return type;
     }
-    
 }

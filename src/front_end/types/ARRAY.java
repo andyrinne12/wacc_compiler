@@ -21,4 +21,13 @@ public class ARRAY extends TYPE {
   public int getSize() {
     return size;
   }
+
+  @Override
+  public boolean equalsType(TYPE type2) {
+    if (!(type2 instanceof ARRAY)) {
+      return false;
+    }
+    ARRAY array2 = (ARRAY) type2;
+    return array2.getElemType().equalsType(elemType);
+  }
 }
