@@ -144,7 +144,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public Return visitReturnST(ReturnSTContext ctx) {
-    FuncContext funcContext = getEnclosingFunctionContext(ctx);
+    ParserRuleContext tmpContext = getEnclosingFunctionContext(ctx);
+    if (tmpContext instanceof ProgContext) {
+      return null;
+    }
+    FuncContext funcContext = (FuncContext) tmpContext;
     TypeAST returnType = (TypeAST) visit(funcContext.type());
     ExpressionAST expression = visitExpr(ctx.expr());
 
@@ -154,18 +158,19 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     return returnAST;
   }
 
-  private FuncContext getEnclosingFunctionContext(ParserRuleContext ctx) {
+  private ParserRuleContext getEnclosingFunctionContext(ParserRuleContext ctx) {
     ParserRuleContext parentContext = ctx.getParent();
 
     while (!(parentContext instanceof FuncContext)) {
       parentContext = parentContext.getParent();
 
       if (parentContext instanceof ProgContext) {
-        error(ctx, "must be in a function");
+        error(ctx, "The return statement must be in a function");
+        break;
       }
     }
 
-    return (FuncContext) parentContext;
+    return parentContext;
   }
 
   @Override
