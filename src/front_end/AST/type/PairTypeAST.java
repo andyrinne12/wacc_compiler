@@ -16,6 +16,10 @@ public class PairTypeAST extends TypeAST {
 
   @Override
   public void check() {
+    if (type1 == null && type2 == null) {
+      typeObj = new PAIR(null, null);
+      return;
+    }
     type1.check();
     type2.check();
     typeObj = new PAIR(type1.typeObj, type2.typeObj);

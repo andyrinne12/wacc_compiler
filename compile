@@ -1,4 +1,4 @@
 #!/bin/bash
 # Bash front-end for OUR compiler.
 
-java -cp bin:lib/antlr-4.9.1-complete.jar Main "$@"
+java -cp bin:lib/antlr-4.9.1-complete.jar front_end/Main "$@"

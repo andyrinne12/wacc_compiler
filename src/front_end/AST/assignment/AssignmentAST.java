@@ -1,7 +1,9 @@
 package front_end.AST.assignment;
 
 import front_end.AST.statement.Statement;
+import front_end.Visitor;
 import front_end.types.ARRAY;
+import front_end.types.IDENTIFIER;
 import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -22,10 +24,14 @@ public class AssignmentAST extends Statement {
     rhs.check();
     TYPE lhsType = lhs.getEvalType();
     TYPE rhsType = rhs.getEvalType();
+    IDENTIFIER charIdent = Visitor.ST.lookupAll("char");
     if (lhsType instanceof ARRAY) {
-      error("Array variables cannot be directly assigned to.");
+      ARRAY array = (ARRAY) lhsType;
+      if (!array.getElemType().equalsType(charIdent.getType())) {
+        error("Array variables cannot be directly assigned to: " + lhs.getIdentObj());
+      }
     }
-    if (lhsType.equalsType(rhsType)) {
+    if (!lhsType.equalsType(rhsType)) {
       error("Invalid type at assignment. Expected: " + lhsType + " actual: " + rhsType);
     }
   }

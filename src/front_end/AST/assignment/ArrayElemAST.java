@@ -23,10 +23,10 @@ public class ArrayElemAST extends AssignmentLeftAST {
   public void check() {
     identObj = Visitor.ST.lookupAll(arrayIdent);
     if (identObj == null) {
-      error("undeclared variable");
+      error(arrayIdent + " undeclared variable");
     } else {
       if (!(identObj instanceof ARRAY)) {
-        error("Invalid access on non-array variable");
+        error("Invalid access on non-array variable " + arrayIdent);
       }
       for (ExpressionAST expr : indices) {
         expr.check();

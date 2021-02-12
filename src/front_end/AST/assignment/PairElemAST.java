@@ -29,7 +29,7 @@ public class PairElemAST extends ASTNode {
       IdentAST ident = (IdentAST) identExp;
       identObj = Visitor.ST.lookupAll(ident.getIdentName());
       if (identObj == null) {
-        error("undeclared variable");
+        error(identExp + " undeclared variable");
       }
       if (!(identObj.getType() instanceof PAIR)) {
         error(
@@ -45,6 +45,9 @@ public class PairElemAST extends ASTNode {
   //@Override
   public TYPE getEvalType() {
     PAIR pair = (PAIR) identObj;
+    if (pair == null) {
+      return null;
+    }
     if (elem == PairElemEnum.FST) {
       return pair.getFirstType();
     } else {
