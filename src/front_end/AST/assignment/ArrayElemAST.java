@@ -41,6 +41,9 @@ public class ArrayElemAST extends AssignmentLeftAST {
 
   @Override
   public TYPE getEvalType() {
+    if (!(identObj instanceof ARRAY)) {
+      return null;
+    }
     ARRAY array = (ARRAY) identObj;
     return array.getElemType();
   }
