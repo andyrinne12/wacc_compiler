@@ -1,14 +1,16 @@
 package front_end.types;
 
+import java.util.List;
+
 import front_end.SymbolTable;
 
 public class FUNCTION extends IDENTIFIER{
 
   private final TYPE returnType;
-  private final PARAM[] params;
+  private final List<PARAM> params;
   private final SymbolTable ST;
 
-  public FUNCTION(TYPE returnType, PARAM[] params, SymbolTable ST) {
+  public FUNCTION(TYPE returnType, List<PARAM> params, SymbolTable ST) {
     this.returnType = returnType;
     this.params = params;
     this.ST = ST;
@@ -19,7 +21,7 @@ public class FUNCTION extends IDENTIFIER{
     return null;
   }
 
-  public PARAM[] getParams() {
+  public List<PARAM> getParams() {
     return params;
   }
 
@@ -30,9 +32,9 @@ public class FUNCTION extends IDENTIFIER{
   @Override
   public String toString() {
     StringBuilder str = new StringBuilder(returnType + "(");
-    for (int i = 0; i < params.length; i++) {
-      str.append(params[i].getType());
-      if (i < params.length - 1) {
+    for (int i = 0; i < params.size(); i++) {
+      str.append(params.get(i).getType());
+      if (i < params.size() - 1) {
         str.append(", ");
       }
     }

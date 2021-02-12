@@ -468,11 +468,19 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   public FunctionDeclAST visitFunc(FuncContext ctx) {
     Visitor.ST = new SymbolTable(Visitor.ST);
 
-    // visit params, statements inside the function.
+    // create FunctionDeclAST obj.
+    TypeAST returnType = visitType(ctx.type());
+    ParamListAST paramList = visitParamList(ctx.paramList());
+    FunctionDeclAST function = new FunctionDeclAST(ctx, ctx.IDENT().getText(), returnType, paramList);
+    function.check();
+
+    // visit statements inside the function.
+    Statement statement = (Statement) visit(ctx.stat());
+    function.setStatement(statement);
 
     Visitor.ST = Visitor.ST.getParentST();
 
-    return null;
+    return function;
   }
 
   @Override
@@ -483,9 +491,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public ASTNode visitParamList(ParamListContext ctx) {
+  public ParamListAST visitParamList(ParamListContext ctx) {
     if (ctx.param().isEmpty()) {
-      return new ParamListAST(ctx, new ArrayList<ParamAST>());
+      return null;
     }
     else {
       List<ParamContext> parameters = ctx.param();

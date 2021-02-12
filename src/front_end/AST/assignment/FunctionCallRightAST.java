@@ -27,14 +27,14 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       error("Function " + ident + " is not defined.");
     } else {
       FUNCTION func = (FUNCTION) identObj;
-      PARAM[] params = func.getParams();
-      if (argList.size() != params.length) {
+      List<PARAM> params = func.getParams();
+      if (argList.size() != params.size()) {
         error("Invalid number of arguments on function call");
       }
       for (int i = 0; i < argList.size(); i++) {
         ExpressionAST arg = argList.get(i);
         arg.check();
-        if (!(arg.getIdentObj().getType().equalsType(params[i].getType()))) {
+        if (!(arg.getIdentObj().getType().equalsType(params.get(i).getType()))) {
           error("Invalid argument type for arg " + i);
         }
       }

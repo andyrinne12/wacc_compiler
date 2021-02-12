@@ -36,6 +36,10 @@ public class ParamAST extends ASTNode {
             IDENTIFIER T = Visitor.ST.lookupAll(typeNameInString);
             identObj = new PARAM((TYPE) T);
         }
+
+        if (identObj != null) {
+            Visitor.ST.add(ident, identObj);
+        }
     }
 
     public String getIdent() {
