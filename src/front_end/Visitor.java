@@ -99,10 +99,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   public Visitor() {
     Top_ST = new SymbolTable(null);
 
-    ST.add("int", new INT());
-    ST.add("char", new CHAR());
-    ST.add("bool", new BOOLEAN());
-    ST.add("string", new STRING());
+    Top_ST.add("int", new INT());
+    Top_ST.add("char", new CHAR());
+    Top_ST.add("bool", new BOOLEAN());
+    Top_ST.add("string", new STRING());
 
     ST = new SymbolTable(Top_ST);
   }
