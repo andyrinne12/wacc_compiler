@@ -71,14 +71,25 @@ paramList: param (CMA param)*;
 
 argList: expr (CMA expr)*;
 
-type: TYPE                           #primTypeTP
-  | type (LBR RBR)+                  #arrayTypeTP
-  | PAIR LBR type CMA type RBR       #pairTypeTP
+type: TYPE                          #primTypeTP
+  | arrayType                       #arrayTypeTP
+  | pairType                        #pairTypeTP
 ;
 
 arrayElem: IDENT (LSBR expr RSBR)+;
 
+arrayType: TYPE (LSBR RSBR)+        #primArrayAT
+  |  pairType (LSBR RSBR)+          #pairArrayAT
+ ;
+
 pairElem: elem=(FST | SND) expr;
+
+pairType: PAIR LBR pairElemType CMA pairElemType RBR;
+
+pairElemType: TYPE                  #primTypePET
+  | PAIR                            #pairTypePET
+  | arrayType                       #arrayTypePET
+;
 
 unaryOp: op=(NOT | MINUS | LEN | ORD | CHR);
 

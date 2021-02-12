@@ -21,6 +21,6 @@ public class PairLtrExprAST extends ExpressionAST {
 
   @Override
   public TYPE getEvalType() {
-    return identObj.getType();
+    return (TYPE) identObj;
   }
 }

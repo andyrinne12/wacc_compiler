@@ -1,5 +1,5 @@
 #!/bin/bash
-VALID_BASIC='test_suite/valid/variables'
+VALID_BASIC='test_suite/valid/'
 VALID_DIR='test_suite/valid'
 INVALID_SEMANTIC_BASIC='test_suite/invalid/semanticErr/variables'
 INVALID_SYNTAX_DIR='test_suite/invalid/syntaxErr'
@@ -55,9 +55,9 @@ compile_parent_set(){
 
 
 # compile all programs in the particular folder $1 and check for code $2
-compile_set "$VALID_BASIC" "$VALID_CODE"
+# compile_set "$VALID_BASIC" "$VALID_CODE"
 # compile_set "$INVALID_SYNTAX_DIR" "$INVALID_SYNTAX"
-compile_set "$INVALID_SEMANTIC_BASIC" "$INVALID_SEMANTIC"
+ compile_set "$INVALID_SEMANTIC_DIR" "$INVALID_SEMANTIC"
 
 # compile all programs in the sub-folders (recursively) of $1 and check for code $2
 # compile_parent_set "$PARENTPATH" "$INVALID_SYNTAX"

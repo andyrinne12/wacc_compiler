@@ -37,6 +37,10 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
 
   @Override
   public TYPE getEvalType() {
-    return identObj.getType();
+    if (identObj == null) {
+      return null;
+    } else {
+      return identObj.getType();
+    }
   }
 }

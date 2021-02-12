@@ -1,8 +1,8 @@
+package front_end;
+
 import antlr.WACCLexer;
 import antlr.WACCParser;
-import front_end.Visitor;
 import front_end.AST.ASTNode;
-
 import java.io.IOException;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -92,10 +92,15 @@ public class Main {
       System.exit(EXIT_CODE);
     }
 
+    if (EXIT_CODE != 0) {
+      System.exit(EXIT_CODE);
+    }
+
     // Semantic analyzer
     Visitor semanticVisitor = new Visitor();
     ASTNode prog = semanticVisitor.visit(tree);
 
+    System.exit(EXIT_CODE);
   }
 
 }
@@ -106,6 +111,6 @@ class CustomErrorHandler extends BaseErrorListener {
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
       int charPositionInLine, String msg, RecognitionException e) {
     Main.EXIT_CODE = 100;
-    System.err.println("SYNTAX ERROR:" + line + ": " + charPositionInLine);
+ //   System.err.println("SYNTAX ERROR:" + line + ": " + charPositionInLine);
   }
 }

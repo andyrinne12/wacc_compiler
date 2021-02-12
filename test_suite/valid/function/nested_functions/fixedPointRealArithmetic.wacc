@@ -94,7 +94,7 @@ begin
 		return x / n
 	end
 
-	# Main function
+	# front_end.MainComp function
 	int n1 = 10 ;
 	int n2 = 3 ;
 	

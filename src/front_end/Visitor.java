@@ -5,6 +5,7 @@ import antlr.WACCParser.ArrayElemContext;
 import antlr.WACCParser.ArrayElemEXPContext;
 import antlr.WACCParser.ArrayElemLHSContext;
 import antlr.WACCParser.ArrayLtrRHSContext;
+import antlr.WACCParser.ArrayTypePETContext;
 import antlr.WACCParser.ArrayTypeTPContext;
 import antlr.WACCParser.AssignSTContext;
 import antlr.WACCParser.BeginSTContext;
@@ -23,13 +24,18 @@ import antlr.WACCParser.IdentLHSContext;
 import antlr.WACCParser.IfSTContext;
 import antlr.WACCParser.InitSTContext;
 import antlr.WACCParser.NewPairRHSContext;
+import antlr.WACCParser.PairArrayATContext;
 import antlr.WACCParser.PairElemContext;
 import antlr.WACCParser.PairElemLHSContext;
 import antlr.WACCParser.PairElemRHSContext;
 import antlr.WACCParser.PairLtrEXPContext;
+import antlr.WACCParser.PairTypeContext;
+import antlr.WACCParser.PairTypePETContext;
 import antlr.WACCParser.PairTypeTPContext;
 import antlr.WACCParser.ParamContext;
 import antlr.WACCParser.ParamListContext;
+import antlr.WACCParser.PrimArrayATContext;
+import antlr.WACCParser.PrimTypePETContext;
 import antlr.WACCParser.PrimTypeTPContext;
 import antlr.WACCParser.PrintSTContext;
 import antlr.WACCParser.PrintlnSTContext;
@@ -58,6 +64,8 @@ import front_end.AST.assignment.IdentLeftAST;
 import front_end.AST.assignment.InitializationAST;
 import front_end.AST.assignment.NewPairRightAST;
 import front_end.AST.assignment.PairElemAST;
+import front_end.AST.assignment.PairElemLeftAST;
+import front_end.AST.assignment.PairElemRightAST;
 import front_end.AST.expression.ArrayElemExprAST;
 import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
@@ -113,7 +121,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     //  System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
     //      + " " + ctx.start.getText() + " " + message);
     System.out.println(message);
-    System.exit(200);
+    Main.EXIT_CODE = 200;
   }
 
   @Override
@@ -161,8 +169,17 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitAssignST(AssignSTContext ctx) {
-    AssignmentAST assignment = new AssignmentAST(ctx, (AssignmentLeftAST) visit(ctx.lhs()),
-        (AssignmentRightAST) visit(ctx.rhs()));
+    ASTNode lhsNode = visit(ctx.lhs());
+    ASTNode rhsNode = visit(ctx.rhs());
+    if (rhsNode instanceof PairElemAST) {
+      rhsNode = new PairElemRightAST(ctx, (PairElemAST) rhsNode);
+    }
+    if (lhsNode instanceof PairElemAST) {
+      lhsNode = new PairElemLeftAST(ctx, (PairElemAST) lhsNode);
+    }
+    AssignmentLeftAST lhs = (AssignmentLeftAST) lhsNode;
+    AssignmentRightAST rhs = (AssignmentRightAST) rhsNode;
+    AssignmentAST assignment = new AssignmentAST(ctx, lhs, rhs);
     assignment.check();
     return assignment;
   }
@@ -194,8 +211,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public Read visitReadST(ReadSTContext ctx) {
-    AssignmentLeftAST lhs = (AssignmentLeftAST) visit(ctx.lhs());
-
+    ASTNode lhsNode = visit(ctx.lhs());
+    if (lhsNode instanceof PairElemAST) {
+      lhsNode = new PairElemLeftAST(ctx, (PairElemAST) lhsNode);
+    }
+    AssignmentLeftAST lhs = (AssignmentLeftAST) lhsNode;
     Read read = new Read(ctx, lhs);
     read.check();
 
@@ -249,7 +269,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   public ASTNode visitInitST(InitSTContext ctx) {
     TypeAST type = (TypeAST) visit(ctx.type());
     IdentLeftAST ident = new IdentLeftAST(ctx, ctx.IDENT().getText());
-    AssignmentRightAST rhs = (AssignmentRightAST) visit(ctx.rhs());
+    ASTNode rhsNode = visit(ctx.rhs());
+    if (rhsNode instanceof PairElemAST) {
+      rhsNode = new PairElemRightAST(ctx, (PairElemAST) rhsNode);
+    }
+    AssignmentRightAST rhs = (AssignmentRightAST) rhsNode;
     InitializationAST initialization = new InitializationAST(ctx, type, ident, rhs);
     initialization.check();
     return initialization;
@@ -314,16 +338,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ArrayElemExprAST visitArrayElemEXP(ArrayElemEXPContext ctx) {
-    List<ExprContext> exprContexts = ctx.arrayElem().expr();
-    List<ExpressionAST> exprASTs = new ArrayList<>();
-
-    for (ExprContext e : exprContexts) {
-      exprASTs.add(visitExpr(e));
-    }
-
-    ArrayElemExprAST arrElemExprAST = new ArrayElemExprAST(ctx, ctx.getText(), exprASTs);
-    arrElemExprAST.check();
-    return arrElemExprAST;
+    ArrayElemAST arrayElemAST = (ArrayElemAST) visitArrayElem(ctx.arrayElem());
+    return new ArrayElemExprAST(ctx, arrayElemAST);
   }
 
   @Override
@@ -351,7 +367,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ExpressionAST visitBracketEXP(BracketEXPContext ctx) {
-    return visitExpr(ctx);
+    return visitExpr(ctx.expr());
   }
 
   @Override
@@ -460,17 +476,27 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public PrimTypeAST visitPrimTypeTP(PrimTypeTPContext ctx) {
-    PrimTypeAST primType = new PrimTypeAST(ctx, ctx.getText());
+  public ASTNode visitPrimTypeTP(PrimTypeTPContext ctx) {
+    PrimTypeAST primType = new PrimTypeAST(ctx, ctx.TYPE().getText());
     primType.check();
     return primType;
   }
 
   @Override
   public ASTNode visitArrayTypeTP(ArrayTypeTPContext ctx) {
-    TypeAST elemType = (TypeAST) visit(ctx.type());
+    return visit(ctx.arrayType());
+  }
+
+  @Override
+  public ASTNode visitPairTypeTP(PairTypeTPContext ctx) {
+    return visit(ctx.pairType());
+  }
+
+  @Override
+  public ASTNode visitPrimArrayAT(PrimArrayATContext ctx) {
+    TypeAST elemType = (TypeAST) new PrimTypeAST(ctx, ctx.TYPE().getText());
     TypeAST arrayType = elemType;
-    for (int i = 0; i < ctx.LBR().size(); i++) {
+    for (int i = 0; i < ctx.LSBR().size(); i++) {
       arrayType = new ArrayTypeAST(ctx, elemType);
       elemType = arrayType;
     }
@@ -479,11 +505,42 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public ASTNode visitPairTypeTP(PairTypeTPContext ctx) {
-    TypeAST type1 = (TypeAST) visit(ctx.type(0));
-    TypeAST type2 = (TypeAST) visit(ctx.type(1));
+  public ASTNode visitPairArrayAT(PairArrayATContext ctx) {
+    TypeAST elemType = (TypeAST) visitPairType(ctx.pairType());
+    TypeAST arrayType = elemType;
+    for (int i = 0; i < ctx.LSBR().size(); i++) {
+      arrayType = new ArrayTypeAST(ctx, elemType);
+      elemType = arrayType;
+    }
+    arrayType.check();
+    return arrayType;
+  }
+
+  @Override
+  public ASTNode visitPairType(PairTypeContext ctx) {
+    TypeAST type1 = (TypeAST) visit(ctx.pairElemType(0));
+    TypeAST type2 = (TypeAST) visit(ctx.pairElemType(1));
     TypeAST pairType = new PairTypeAST(ctx, type1, type2);
     pairType.check();
     return pairType;
   }
+
+  @Override
+  public ASTNode visitPrimTypePET(PrimTypePETContext ctx) {
+    PrimTypeAST primType = new PrimTypeAST(ctx, ctx.TYPE().getText());
+    primType.check();
+    return primType;
+  }
+
+  @Override
+  public ASTNode visitPairTypePET(PairTypePETContext ctx) {
+    return new PairTypeAST(ctx, null, null);
+  }
+
+  @Override
+  public ASTNode visitArrayTypePET(ArrayTypePETContext ctx) {
+    return new ArrayTypeAST(ctx, (ArrayTypeAST) visit(ctx.arrayType()));
+  }
+
+
 }

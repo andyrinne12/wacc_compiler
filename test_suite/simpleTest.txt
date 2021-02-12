@@ -1,3 +1,11 @@
 begin
-  exit 1
+  int x = 5;
+  int y = 6;
+  int a = 2;
+  int b= 3;
+  pair(int, int) p1 = newpair (a,b);
+  pair(pair, pair) p = newpair (p1, null);
+  pair(int, int) c = fst p;
+  int d = fst c;
+  print d
 end

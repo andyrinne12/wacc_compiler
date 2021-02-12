@@ -1051,7 +1051,7 @@ begin
 		return true
 	end
 	
-	############################## Main Function ############################
+	############################## front_end.MainComp Function ############################
 	
 	char playerSymbol = call chooseSymbol() ;
 	char aiSymbol = call oppositeSymbol(playerSymbol) ;

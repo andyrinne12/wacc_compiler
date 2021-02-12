@@ -3,9 +3,11 @@ package front_end.AST.statement;
 import front_end.AST.assignment.AssignmentLeftAST;
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Read extends Statement{
+public class Read extends Statement {
+
   private AssignmentLeftAST expr;
 
   public Read(ParserRuleContext ctx, AssignmentLeftAST expr) {
@@ -16,14 +18,19 @@ public class Read extends Statement{
   @Override
   public void check() {
     expr.check();
-    IDENTIFIER type = expr.getIdentObj();
+    TYPE evalType = expr.getEvalType();
 
-    IDENTIFIER intType = Visitor.ST.lookupAll("int").getType();
+    if (evalType == null) {
+      error("cannot read on null reference");
+    } else {
 
-    IDENTIFIER charType = Visitor.ST.lookupAll("char").getType();
+      IDENTIFIER intType = Visitor.ST.lookupAll("int");
 
-    if (!type.equals(intType) && !type.equals(charType)) {
-      error("read statement can take only int or char types");
+      IDENTIFIER charType = Visitor.ST.lookupAll("char");
+
+      if (!evalType.equalsType(intType.getType()) && !evalType.equalsType(charType.getType())) {
+        error("read statement can take only int or char types");
+      }
     }
   }
 }
