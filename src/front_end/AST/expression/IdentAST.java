@@ -16,7 +16,7 @@ public class IdentAST extends ExpressionAST {
   public void check() {
     identObj = Visitor.ST.lookupAll(identName);
     if (identObj == null) {
-      error("has not been previously defined.");
+      error(identName + " has not been previously defined.");
     }
   }
 

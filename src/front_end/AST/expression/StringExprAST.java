@@ -1,9 +1,7 @@
 package front_end.AST.expression;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import front_end.Visitor;
-import front_end.types.IDENTIFIER;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class StringExprAST extends ExpressionAST {
     
@@ -16,7 +14,7 @@ public class StringExprAST extends ExpressionAST {
 
     @Override
     public void check() {
-        IDENTIFIER identObj = Visitor.ST.lookupAll("string");
+        identObj = Visitor.ST.lookupAll("string");
         if (identObj == null) {
             error("Undefined type: string");
         }

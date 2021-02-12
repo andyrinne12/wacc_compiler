@@ -70,13 +70,13 @@ NOT_EQUAL: '!=';
 AND: '&&';
 OR: '||';
 
+BOOL_LTR: 'true' | 'false';
+PAIR_LTR: 'null';
+
 // UN_OP: '!' | 'len' | 'ord' | 'chr';
 // BIN_OP:  '*' | '/' | '%' | '>' | '<' | '>=' | '<=' | '==' | '!=' | '&&' | '||' | PLUS | MINUS;
 
 IDENT: (ALPHA | USCORE) (ALPHA | USCORE | DIGIT)*;
-
-BOOL_LTR: 'true' | 'false';
-PAIR_LTR: 'null';
 
 CHAR_LTR: SQ CHAR SQ;
 STR_LTR: DQ CHAR* DQ;

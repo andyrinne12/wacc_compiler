@@ -16,6 +16,6 @@ public class STRING extends TYPE {
 
   @Override
   public boolean equalsType(TYPE type) {
-    return type instanceof STRING;
+    return type == this;
   }
 }

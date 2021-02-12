@@ -1,29 +1,23 @@
 package front_end.AST.expression;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import front_end.Visitor;
-import front_end.types.IDENTIFIER;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class BoolExprAST extends ExpressionAST {
     // syntactic attr:
-    private boolean boolVal;
+    private final boolean boolVal;
 
     public BoolExprAST(ParserRuleContext ctx, String boolString) {
         super(ctx);
-        if (boolString.equals("true")) {
-            boolVal = true;
-        }
-        else {
-            boolVal = false;
-        }
+        boolVal = boolString.equals("true");
     }
 
     @Override
     public void check() {
-        IDENTIFIER identObj = Visitor.ST.lookupAll("bool");
+        identObj = Visitor.ST.lookupAll("bool");
         if (identObj == null) {
             error("Undefined type: bool");
         }
+
     }
 }

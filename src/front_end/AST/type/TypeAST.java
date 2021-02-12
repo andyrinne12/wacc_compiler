@@ -11,4 +11,8 @@ public abstract class TypeAST extends ASTNode {
   public TypeAST(ParserRuleContext ctx) {
     super(ctx);
   }
+
+  public TYPE getTypeObj() {
+    return typeObj;
+  }
 }

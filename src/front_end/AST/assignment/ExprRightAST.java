@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ExprRightAST extends AssignmentRightAST {
 
-  private final ExpressionAST expr;
+  public final ExpressionAST expr;
 
   public ExprRightAST(ParserRuleContext ctx, ExpressionAST expr) {
     super(ctx);

@@ -1,11 +1,11 @@
 package front_end.AST.assignment;
 
-import front_end.AST.ASTNode;
+import front_end.AST.statement.Statement;
 import front_end.types.ARRAY;
 import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class AssignmentAST extends ASTNode {
+public class AssignmentAST extends Statement {
 
   private final AssignmentLeftAST lhs;
   private final AssignmentRightAST rhs;

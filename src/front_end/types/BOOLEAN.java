@@ -16,6 +16,6 @@ public class BOOLEAN extends TYPE {
 
   @Override
   public boolean equalsType(TYPE type) {
-    return (type instanceof BOOLEAN);
+    return type == this;
   }
 }

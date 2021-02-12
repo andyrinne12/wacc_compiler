@@ -55,6 +55,7 @@ import front_end.AST.assignment.AssignmentRightAST;
 import front_end.AST.assignment.ExprRightAST;
 import front_end.AST.assignment.FunctionCallRightAST;
 import front_end.AST.assignment.IdentLeftAST;
+import front_end.AST.assignment.InitializationAST;
 import front_end.AST.assignment.NewPairRightAST;
 import front_end.AST.assignment.PairElemAST;
 import front_end.AST.expression.ArrayElemExprAST;
@@ -109,8 +110,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   // for semantic errors
   public static void error(ParserRuleContext ctx, String message) {
-    System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
-        + " " + ctx.start.getText() + " " + message);
+    //  System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
+    //      + " " + ctx.start.getText() + " " + message);
+    System.out.println(message);
     System.exit(200);
   }
 
@@ -192,13 +194,12 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public Read visitReadST(ReadSTContext ctx) {
-//    AssignmentLeftAST lhs = visitAssignST(ctx.lhs());
-//
-//    Read read = new Read(ctx, lhs);
-//    read.check();
-//
-//    return read;
-    return null;
+    AssignmentLeftAST lhs = (AssignmentLeftAST) visit(ctx.lhs());
+
+    Read read = new Read(ctx, lhs);
+    read.check();
+
+    return read;
   }
 
   @Override
@@ -246,7 +247,12 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitInitST(InitSTContext ctx) {
-    return null;
+    TypeAST type = (TypeAST) visit(ctx.type());
+    IdentLeftAST ident = new IdentLeftAST(ctx, ctx.IDENT().getText());
+    AssignmentRightAST rhs = (AssignmentRightAST) visit(ctx.rhs());
+    InitializationAST initialization = new InitializationAST(ctx, type, ident, rhs);
+    initialization.check();
+    return initialization;
   }
 
   @Override
@@ -371,7 +377,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public IdentLeftAST visitIdentLHS(IdentLHSContext ctx) {
-    return new IdentLeftAST(ctx);
+    return new IdentLeftAST(ctx, ctx.IDENT().getText());
   }
 
   @Override

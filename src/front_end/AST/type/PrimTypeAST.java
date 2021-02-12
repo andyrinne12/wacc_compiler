@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PrimTypeAST extends TypeAST {
 
-  private String typeName;
+  private final String typeName;
 
   public PrimTypeAST(ParserRuleContext ctx, String typeName) {
     super(ctx);
