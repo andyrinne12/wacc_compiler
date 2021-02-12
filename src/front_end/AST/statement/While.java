@@ -1,6 +1,7 @@
 package front_end.AST.statement;
 
 import front_end.AST.expression.ExpressionAST;
+import front_end.types.IDENTIFIER;
 import front_end.SymbolTable;
 import front_end.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -19,10 +20,11 @@ public class While extends Statement {
 
   @Override
   public void check() {
-    //check the validity of th expression
+    //check the validity of the expression
     expression.wasChecked();
 
-    if(expression.getIdentObj().equals(Visitor.ST.lookupAll("bool"))) {
+    IDENTIFIER tempIdentifier = expression.getIdentObj();
+    if((tempIdentifier != null) && tempIdentifier.equals(Visitor.ST.lookupAll("bool"))) {
       //check the validity of the statement
       stat.wasChecked();
     } else {
