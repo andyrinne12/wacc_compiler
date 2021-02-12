@@ -30,6 +30,7 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       List<PARAM> params = func.getParams();
       if (argList.size() != params.size()) {
         error("Invalid number of arguments on function call");
+        return;
       }
       for (int i = 0; i < argList.size(); i++) {
         ExpressionAST arg = argList.get(i);
