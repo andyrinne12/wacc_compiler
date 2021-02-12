@@ -99,6 +99,7 @@ public class Main {
     // Semantic analyzer
     Visitor semanticVisitor = new Visitor();
     ASTNode prog = semanticVisitor.visit(tree);
+    prog.check(); // Perform the actual checking after building it
 
     System.exit(EXIT_CODE);
   }

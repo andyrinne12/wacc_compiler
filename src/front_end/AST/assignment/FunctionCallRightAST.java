@@ -35,7 +35,8 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       for (int i = 0; i < argList.size(); i++) {
         ExpressionAST arg = argList.get(i);
         arg.check();
-        if (!(arg.getIdentObj().getType().equalsType(params.get(i).getType()))) {
+        //System.out.println(arg.getClass().getName() + " " + params.get(i));
+        if (!(arg.getEvalType().equalsType(params.get(i).getType()))) {
           error("Invalid argument type for arg " + i);
         }
       }

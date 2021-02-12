@@ -3,7 +3,6 @@ package front_end.AST.statement;
 import front_end.AST.expression.ExpressionAST;
 import front_end.AST.type.TypeAST;
 import front_end.types.TYPE;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class Return extends Statement {
@@ -19,14 +18,15 @@ public class Return extends Statement {
 
   @Override
   public void check() {
-    exprAST.wasChecked();
+    exprAST.check();
+    expectedReturnTypeAST.check();
 
     // check if the expected return type is the same as the expression's type
     TYPE exprType = exprAST.getEvalType();
     TYPE expectedType = expectedReturnTypeAST.getTypeObj();
-    if (!exprType.equals(expectedType)) {
-      error("Return type expected by the function: " + expectedType +
-            "\nActual type: " + exprType);
+    if (!exprType.equalsType(expectedType)) {
+      error(" return type expected by the function: " + expectedType +
+          "\nActual type: " + exprType);
     }
   }
 }

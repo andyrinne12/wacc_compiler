@@ -27,6 +27,9 @@ public class IdentAST extends ExpressionAST {
 
   @Override
   public TYPE getEvalType() {
+    if (identObj == null) {
+      return null;
+    }
     return identObj.getType();
   }
 }

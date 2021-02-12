@@ -20,6 +20,6 @@ public class ExprRightAST extends AssignmentRightAST {
 
   @Override
   public TYPE getEvalType() {
-    return expr.getIdentObj().getType();
+    return expr.getEvalType();
   }
 }

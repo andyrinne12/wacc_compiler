@@ -23,22 +23,33 @@ public class InitializationAST extends Statement {
 
   @Override
   public void check() {
+    boolean success = true;
+
+    type.check();
     TYPE actType = type.getTypeObj();
+
     if (Visitor.ST.lookup(ident.toString()) != null) {
       error("Variable " + ident.toString() + " already defined");
+      success = false;
     }
-    Visitor.ST.add(ident.toString(), actType);
+
     rhs.check();
     TYPE rhsType = rhs.getEvalType();
     if (rhsType == null) {
       if (!(type.getTypeObj() instanceof ARRAY)) {
         error("Cannot assign the empty array to non-array variable");
+        success = false;
       } else {
         rhsType = actType;
       }
     }
     if (!actType.equalsType(rhsType)) {
       error("Invalid type at initialization. Expected: " + actType + " actual: " + rhsType);
+      success = false;
+    }
+
+    if (success) {
+      Visitor.ST.add(ident.toString(), actType);
     }
   }
 }

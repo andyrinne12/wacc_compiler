@@ -1,34 +1,29 @@
 package front_end.AST.statement;
 
 import front_end.AST.expression.ExpressionAST;
-import front_end.types.IDENTIFIER;
-import front_end.SymbolTable;
 import front_end.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class While extends Statement {
-  ExpressionAST expression;
-  Statement stat;
-  SymbolTable ST;
 
-  public While(ParserRuleContext ctx, ExpressionAST expression, Statement stat, SymbolTable ST) {
+  private final ExpressionAST expression;
+  private final StatementSequenceAST statSeq;
+
+  public While(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST statSeq) {
     super(ctx);
     this.expression = expression;
-    this.stat = stat;
-    this.ST = ST;
+    this.statSeq = statSeq;
   }
 
   @Override
   public void check() {
     //check the validity of the expression
-    expression.wasChecked();
-
-    IDENTIFIER tempIdentifier = expression.getIdentObj();
-    if((tempIdentifier != null) && tempIdentifier.equals(Visitor.ST.lookupAll("bool"))) {
-      //check the validity of the statement
-      stat.wasChecked();
-    } else {
+    expression.check();
+    if (expression.getEvalType() == null || !expression.getEvalType()
+        .equals(Visitor.ST.lookupAll("bool"))) {
       error("while condition is not boolean");
     }
+
+    statSeq.check();
   }
 }

@@ -22,9 +22,11 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
       return;
     }
     ExpressionAST first = array.get(0);
+    first.check();
     TYPE firstType = first.getIdentObj().getType();
     for (int i = 1; i < array.size(); i++) {
       ExpressionAST exp = array.get(i);
+      exp.check();
       TYPE expType = exp.getIdentObj().getType();
       if (!firstType.equalsType(expType)) {
         error(

@@ -26,6 +26,10 @@ public class UnaryOpExprAST extends ExpressionAST {
   @Override
   public void check() {
     identObj = Visitor.ST.lookupAll(returnType);
+    expression.check();
+    if (expression.getIdentObj() == null) {
+      return;
+    }
 
     // check if the unary operator is compatible with the expression.
     Class expressionClass = expression.getIdentObj().getClass();

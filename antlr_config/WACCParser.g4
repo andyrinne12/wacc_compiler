@@ -22,22 +22,23 @@ options {
   tokenVocab=WACCLexer;
 }
 
-prog: BEGIN (func)* stat END EOF ;
+prog: BEGIN (func)* statSeq END EOF ;
 
-stat: SKP                             #skipST
-   | type IDENT ASGN rhs              #initST
-   | lhs ASGN rhs                     #assignST
-   | READ lhs                         #readST
-   | FREE expr                        #freeST
-   | RETURN expr                      #returnST
-   | EXIT expr                        #exitST
-   | PRINT expr                       #printST
-   | PRINTLN expr                     #printlnST
-   | IF expr THEN stat ELSE stat FI   #ifST
-   | WHILE expr DO stat DONE          #whileST
-   | BEGIN stat END                   #beginST
-   | stat SEMI stat                   #statSeqST
+stat: SKP                                 #skipST
+   | type IDENT ASGN rhs                  #initST
+   | lhs ASGN rhs                         #assignST
+   | READ lhs                             #readST
+   | FREE expr                            #freeST
+   | RETURN expr                          #returnST
+   | EXIT expr                            #exitST
+   | PRINT expr                           #printST
+   | PRINTLN expr                         #printlnST
+   | IF expr THEN thenBody=statSeq ELSE elBody=statSeq FI #ifST
+   | WHILE expr DO statSeq DONE           #whileST
+   | BEGIN statSeq END                    #beginST
 ;
+
+statSeq: stat (SEMI stat)*;
 
 expr: BOOL_LTR                                                        #boolEXP
   | CHAR_LTR                                                          #charEXP
@@ -63,7 +64,7 @@ rhs: expr                                #expRHS
   | CALL IDENT LBR argList? RBR          #funcCallRHS
 ;
 
-func: type IDENT LBR paramList? RBR IS stat END;
+func: type IDENT LBR paramList? RBR IS statSeq END;
 
 param: type IDENT;
 

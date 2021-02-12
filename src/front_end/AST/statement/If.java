@@ -1,40 +1,35 @@
 package front_end.AST.statement;
 
 import front_end.AST.expression.ExpressionAST;
-import front_end.SymbolTable;
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class If extends Statement {
 
-  private ExpressionAST expression;
-  private Statement then;
-  private SymbolTable thenST;
-  private Statement elseSt;
-  private SymbolTable elseST;
+  private final ExpressionAST expression;
+  private final StatementSequenceAST thenSeq;
+  private final StatementSequenceAST elseSeq;
 
-  public If(ParserRuleContext ctx, ExpressionAST expression, Statement then, Statement elseSt,
-      SymbolTable thenST, SymbolTable elseST) {
+  public If(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST thenSeq,
+      StatementSequenceAST elseSeq) {
     super(ctx);
     this.expression = expression;
-    this.then = then;
-    this.elseSt = elseSt;
-    this.thenST = thenST;
-    this.elseST = elseST;
+    this.thenSeq = thenSeq;
+    this.elseSeq = elseSeq;
   }
 
   @Override
   public void check() {
     //assure the validity of the expression
-    expression.wasChecked();
+    expression.check();
     IDENTIFIER ident = Visitor.ST.lookupAll("bool");
     if (!expression.getIdentObj().equals(ident)) {
       error("If condition type is not boolean");
     }
 
     //check that the statements are valid
-    then.wasChecked();
-    then.wasChecked();
+    thenSeq.check();
+    elseSeq.check();
   }
 }

@@ -2,18 +2,14 @@ package front_end.types;
 
 import java.util.List;
 
-import front_end.SymbolTable;
-
-public class FUNCTION extends IDENTIFIER{
+public class FUNCTION extends IDENTIFIER {
 
   private final TYPE returnType;
   private final List<PARAM> params;
-  private final SymbolTable ST;
 
-  public FUNCTION(TYPE returnType, List<PARAM> params, SymbolTable ST) {
+  public FUNCTION(TYPE returnType, List<PARAM> params) {
     this.returnType = returnType;
     this.params = params;
-    this.ST = ST;
   }
 
   // as a function is not a type, we return null

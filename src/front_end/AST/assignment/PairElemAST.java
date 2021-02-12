@@ -21,6 +21,7 @@ public class PairElemAST extends ASTNode {
 
   @Override
   public void check() {
+    identExp.check();
     String className = identExp.getIdentObj().getClass().getName();
     if (!(identExp instanceof IdentAST)) {
       error("Invalid pair element access. Expression of type + " + className

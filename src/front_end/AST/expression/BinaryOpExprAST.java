@@ -2,11 +2,7 @@ package front_end.AST.expression;
 
 import front_end.Visitor;
 import front_end.types.ARRAY;
-import front_end.types.BOOLEAN;
-import front_end.types.CHAR;
-import front_end.types.INT;
 import front_end.types.PAIR;
-import front_end.types.STRING;
 import front_end.types.TYPE;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,30 +30,30 @@ public class BinaryOpExprAST extends ExpressionAST {
   @Override
   public void check() {
     identObj = Visitor.ST.lookupAll(returnType);
-    expr1.wasChecked();
-    expr2.wasChecked();
+    expr1.check();
+    expr2.check();
 
     // if either of the 2 identifiers hasn't been previously defined:
     if ((expr1.getIdentObj() == null) || (expr2.getIdentObj() == null)) {
       return;
     }
 
-    Class expr1Class = expr1.getIdentObj().getClass();
+    TYPE type1 = expr1.getEvalType();
     boolean expr1CorrectType = false;
 
     for (TYPE t : expectedElemTypes) {
-      if (expr1Class.equals(t.getClass())) {
+      if (type1.equalsType(t)) {
         expr1CorrectType = true;
         break;
       }
     }
 
     if (expr1CorrectType) {
-      Class expr2Class = expr2.getIdentObj().getClass();
-      if (!expr1Class.equals(expr2Class)) {
+      TYPE type2 = expr2.getEvalType();
+      if (!type1.equalsType(type2)) {
         error("Both LHS and RHS expressions have different types." +
-            "\nExpected: " + expr1Class.getName() +
-            "\nActual: " + expr2Class.getName());
+            "\nExpected: " + expr1.getEvalType() +
+            "\nActual: " + expr2.getEvalType());
       }
     } else {
       String expectedTypesInString = getTypesString();
@@ -66,7 +62,7 @@ public class BinaryOpExprAST extends ExpressionAST {
           "The binary operator " + binaryOp + " received an unexpected type for the LHS expression."
               +
               "\nExpected types: {" + expectedTypesInString + "}" +
-              "\nActual: " + expr1Class.getName());
+              "\nActual: " + type1);
     }
 
   }
@@ -82,29 +78,33 @@ public class BinaryOpExprAST extends ExpressionAST {
   }
 
   private void initialise_attr() {
+    TYPE intIdent = Visitor.ST.lookupAll("int").getType();
+    TYPE boolIdent = Visitor.ST.lookupAll("bool").getType();
+    TYPE charIdent = Visitor.ST.lookupAll("char").getType();
+    TYPE strIdent = Visitor.ST.lookupAll("string").getType();
     switch (binaryOp) {
       case "+":
       case "-":
       case "*":
       case "/":
       case "%":
-        expectedElemTypes.add(new INT());
+        expectedElemTypes.add(intIdent);
         returnType = "int";
         break;
       case ">":
       case ">=":
       case "<":
       case "<=":
-        expectedElemTypes.add(new INT());
-        expectedElemTypes.add(new CHAR());
+        expectedElemTypes.add(intIdent);
+        expectedElemTypes.add(charIdent);
         returnType = "bool";
         break;
       case "==":
       case "!=":
-        expectedElemTypes.add(new INT());
-        expectedElemTypes.add(new CHAR());
-        expectedElemTypes.add(new STRING());
-        expectedElemTypes.add(new BOOLEAN());
+        expectedElemTypes.add(intIdent);
+        expectedElemTypes.add(charIdent);
+        expectedElemTypes.add(strIdent);
+        expectedElemTypes.add(boolIdent);
         expectedElemTypes
             .add(new PAIR(null, null)); // constructor params are not important in this scenario.
         expectedElemTypes
@@ -113,8 +113,9 @@ public class BinaryOpExprAST extends ExpressionAST {
         break;
       case "||":
       case "&&":
-        expectedElemTypes.add(new BOOLEAN());
+        expectedElemTypes.add(boolIdent);
         returnType = "bool";
+        break;
     }
   }
 
