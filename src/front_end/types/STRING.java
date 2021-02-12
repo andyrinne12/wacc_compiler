@@ -11,7 +11,7 @@ public class STRING extends TYPE {
 
   @Override
   public String toString() {
-    return "String";
+    return "string";
   }
 
   @Override

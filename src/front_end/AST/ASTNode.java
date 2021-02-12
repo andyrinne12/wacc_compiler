@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
+import front_end.types.TYPE;
 
 public abstract class ASTNode { // to be inherited by other ASTNodes.
 
@@ -23,6 +24,10 @@ public abstract class ASTNode { // to be inherited by other ASTNodes.
 
     public IDENTIFIER getIdentObj() {
         return identObj;
+    }
+
+    public TYPE getType() {
+        return identObj.getType();
     }
 
     public void wasChecked(){

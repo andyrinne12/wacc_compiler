@@ -47,6 +47,7 @@ import antlr.WACCParser.SkipSTContext;
 import antlr.WACCParser.StatContext;
 import antlr.WACCParser.StatSeqSTContext;
 import antlr.WACCParser.StrEXPContext;
+import antlr.WACCParser.TypeContext;
 import antlr.WACCParser.UnOpEXPContext;
 import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
@@ -77,6 +78,8 @@ import front_end.AST.expression.SignedIntExprAST;
 import front_end.AST.expression.StringExprAST;
 import front_end.AST.expression.UnaryOpExprAST;
 import front_end.AST.function.FunctionDeclAST;
+import front_end.AST.function.ParamAST;
+import front_end.AST.function.ParamListAST;
 import front_end.AST.statement.Begin;
 import front_end.AST.statement.Exit;
 import front_end.AST.statement.Free;
@@ -84,6 +87,7 @@ import front_end.AST.statement.If;
 import front_end.AST.statement.Print;
 import front_end.AST.statement.Println;
 import front_end.AST.statement.Read;
+import front_end.AST.statement.Return;
 import front_end.AST.statement.Sequence;
 import front_end.AST.statement.Skip;
 import front_end.AST.statement.Statement;
@@ -139,8 +143,29 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public ASTNode visitReturnST(ReturnSTContext ctx) {
-    return null;
+  public Return visitReturnST(ReturnSTContext ctx) {
+    FuncContext funcContext = getEnclosingFunctionContext(ctx);
+    TypeAST returnType = visitType(funcContext.type());
+    ExpressionAST expression = visitExpr(ctx.expr());
+
+    Return returnAST = new Return(ctx, expression, returnType);
+    returnAST.check();
+
+    return returnAST;
+  }
+
+  private FuncContext getEnclosingFunctionContext(ParserRuleContext ctx) {
+    ParserRuleContext parentContext = ctx.getParent();
+
+    while (!(parentContext instanceof FuncContext)) {
+      parentContext = parentContext.getParent();
+
+      if (parentContext instanceof ProgContext) {
+        error(ctx, "must be in a function");
+      }
+    }
+
+    return (FuncContext) parentContext;
   }
 
   @Override
@@ -457,21 +482,48 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public FunctionDeclAST visitFunc(FuncContext ctx) {
+    Visitor.ST = new SymbolTable(Visitor.ST);
+
+    // visit params, statements inside the function.
+
+    Visitor.ST = Visitor.ST.getParentST();
+
     return null;
   }
 
   @Override
-  public ASTNode visitParam(ParamContext ctx) {
-    return null;
+  public ParamAST visitParam(ParamContext ctx) {
+    ParamAST param = new ParamAST(ctx, visitType(ctx.type()), ctx.IDENT().getText());
+    param.check();
+    return param;
   }
 
   @Override
   public ASTNode visitParamList(ParamListContext ctx) {
-    return null;
+    if (ctx.param().isEmpty()) {
+      return new ParamListAST(ctx, new ArrayList<ParamAST>());
+    }
+    else {
+      List<ParamContext> parameters = ctx.param();
+      List<ParamAST> paramASTs = new ArrayList<>();
+
+      for (ParamContext p: parameters) {
+        paramASTs.add(visitParam(p));
+      }
+
+      ParamListAST paramList = new ParamListAST(ctx, paramASTs);
+      paramList.check();
+      return paramList;
+    }
   }
 
   @Override
   public ASTNode visitArgList(ArgListContext ctx) {
+    return null;
+  }
+
+  public TypeAST visitType(TypeContext ctx) {
+    // TO-DO
     return null;
   }
 
