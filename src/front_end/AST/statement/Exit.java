@@ -15,10 +15,10 @@ public class Exit extends Statement{
 
   @Override
   public void check() {
-    IDENTIFIER ident = Visitor.ST.lookupAll("int");
     expression.wasChecked();
-    if(!expression.getIdentObj().equals(ident.getType())) {
-      error("Exit code must me an integer");
+    IDENTIFIER intIdent = Visitor.ST.lookupAll("int");
+    if(!expression.getEvalType().equalsType(intIdent.getType())) {
+      error("Exit code must be an integer");
     }
 
   }

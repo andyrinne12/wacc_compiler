@@ -1,5 +1,5 @@
 #!/bin/bash
-VALID_BASIC='test_suite/valid/basic'
+VALID_BASIC='test_suite/valid/variables'
 VALID_DIR='test_suite/valid'
 INVALID_SEMANTIC_BASIC='test_suite/invalid/semanticErr/variables'
 INVALID_SYNTAX_DIR='test_suite/invalid/syntaxErr'

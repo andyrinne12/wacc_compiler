@@ -2,8 +2,8 @@ package front_end.AST.expression;
 
 import front_end.Visitor;
 import front_end.types.ARRAY;
-import front_end.types.IDENTIFIER;
 import front_end.types.INT;
+import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -21,11 +21,11 @@ public class ArrayElemExprAST extends ExpressionAST {
 
   @Override
   public void check() {
-    IDENTIFIER arrIdentObj = Visitor.ST.lookupAll(arrayIdent);
-    if (arrIdentObj == null) {
+    identObj = Visitor.ST.lookupAll(arrayIdent);
+    if (identObj == null) {
       error("undeclared variable");
     } else {
-      if (!(arrIdentObj instanceof ARRAY)) {
+      if (!(identObj instanceof ARRAY)) {
         error("Invalid access on non-array variable");
       }
       for (ExpressionAST expr : exprList) {
@@ -36,10 +36,12 @@ public class ArrayElemExprAST extends ExpressionAST {
                   + expr.getIdentObj().getType());
         }
       }
-      identObj = ((ARRAY) arrIdentObj).getElemType();
-      // identObj will end up having the type of the array's elements.
-      // Eg: for an array int[], identObj will be int.
     }
   }
 
+  @Override
+  public TYPE getEvalType() {
+    ARRAY array = (ARRAY) identObj;
+    return array.getElemType();
+  }
 }

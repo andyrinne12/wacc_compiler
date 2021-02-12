@@ -1,6 +1,7 @@
 package front_end.AST.expression;
 
 import front_end.Visitor;
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class IdentAST extends ExpressionAST {
@@ -22,5 +23,10 @@ public class IdentAST extends ExpressionAST {
 
   public String getIdentName() {
     return identName;
+  }
+
+  @Override
+  public TYPE getEvalType() {
+    return identObj.getType();
   }
 }
