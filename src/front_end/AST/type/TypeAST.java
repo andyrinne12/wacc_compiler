@@ -1,11 +1,14 @@
 package front_end.AST.type;
 
+import front_end.AST.ASTNode;
+import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import front_end.AST.ASTNode;
-
 public abstract class TypeAST extends ASTNode {
-    public TypeAST(ParserRuleContext ctx) {
-        super(ctx);
-    }
+
+  protected TYPE typeObj;
+
+  public TypeAST(ParserRuleContext ctx) {
+    super(ctx);
+  }
 }

@@ -2,7 +2,6 @@ package front_end.AST.assignment;
 
 import antlr.WACCParser.IdentLHSContext;
 import front_end.Visitor;
-import front_end.types.ARRAY;
 import front_end.types.FUNCTION;
 import front_end.types.TYPE;
 
@@ -20,9 +19,6 @@ public class IdentLeftAST extends AssignmentLeftAST {
     identObj = Visitor.ST.lookupAll(identName);
     if (identObj == null) {
       error(identName + "has not been previously defined.");
-    }
-    if (identObj instanceof ARRAY) {
-      error("Array variables cannot be directly assigned to.");
     }
     if (identObj instanceof FUNCTION) {
       error("Function identifier on the left hand side of the assignment");

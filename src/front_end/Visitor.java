@@ -5,7 +5,6 @@ import antlr.WACCParser.ArrayElemContext;
 import antlr.WACCParser.ArrayElemEXPContext;
 import antlr.WACCParser.ArrayElemLHSContext;
 import antlr.WACCParser.ArrayLtrRHSContext;
-import antlr.WACCParser.ArrayTypeARTPContext;
 import antlr.WACCParser.ArrayTypeTPContext;
 import antlr.WACCParser.AssignSTContext;
 import antlr.WACCParser.BeginSTContext;
@@ -24,15 +23,13 @@ import antlr.WACCParser.IdentLHSContext;
 import antlr.WACCParser.IfSTContext;
 import antlr.WACCParser.InitSTContext;
 import antlr.WACCParser.NewPairRHSContext;
+import antlr.WACCParser.PairElemContext;
 import antlr.WACCParser.PairElemLHSContext;
 import antlr.WACCParser.PairElemRHSContext;
 import antlr.WACCParser.PairLtrEXPContext;
-import antlr.WACCParser.PairTypeARTPContext;
-import antlr.WACCParser.PairTypeContext;
 import antlr.WACCParser.PairTypeTPContext;
 import antlr.WACCParser.ParamContext;
 import antlr.WACCParser.ParamListContext;
-import antlr.WACCParser.PrimTypeARTPContext;
 import antlr.WACCParser.PrimTypeTPContext;
 import antlr.WACCParser.PrintSTContext;
 import antlr.WACCParser.PrintlnSTContext;
@@ -47,6 +44,7 @@ import antlr.WACCParser.StrEXPContext;
 import antlr.WACCParser.UnOpEXPContext;
 import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
+import antlr.WACCParserVisitor;
 import front_end.AST.ASTNode;
 import front_end.AST.ProgramAST;
 import front_end.AST.assignment.ArrayElemAST;
@@ -59,7 +57,6 @@ import front_end.AST.assignment.FunctionCallRightAST;
 import front_end.AST.assignment.IdentLeftAST;
 import front_end.AST.assignment.NewPairRightAST;
 import front_end.AST.assignment.PairElemAST;
-import front_end.AST.assignment.PairElemLeftAST;
 import front_end.AST.expression.ArrayElemExprAST;
 import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
@@ -82,7 +79,10 @@ import front_end.AST.statement.Sequence;
 import front_end.AST.statement.Skip;
 import front_end.AST.statement.Statement;
 import front_end.AST.statement.While;
+import front_end.AST.type.ArrayTypeAST;
+import front_end.AST.type.PairTypeAST;
 import front_end.AST.type.PrimTypeAST;
+import front_end.AST.type.TypeAST;
 import front_end.types.BOOLEAN;
 import front_end.types.CHAR;
 import front_end.types.INT;
@@ -91,7 +91,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Visitor extends WACCParserBaseVisitor<ASTNode> {
+public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParserVisitor<ASTNode> {
 
   public static SymbolTable Top_ST;
   public static SymbolTable ST;
@@ -104,8 +104,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
     ST.add("bool", new BOOLEAN());
     ST.add("string", new STRING());
 
-    SymbolTable nextST = new SymbolTable(Top_ST);
-    ST = nextST;
+    ST = new SymbolTable(Top_ST);
   }
 
   // for semantic errors
@@ -377,17 +376,12 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitArrayElemLHS(ArrayElemLHSContext ctx) {
-    List<ExpressionAST> indices = new ArrayList<>();
-    for (ExprContext expr : ctx.arrayElem().expr()) {
-      indices.add(visitExpr(expr));
-    }
-    return new ArrayElemAST(ctx, indices);
+    return visitArrayElem(ctx.arrayElem());
   }
 
   @Override
   public ASTNode visitPairElemLHS(PairElemLHSContext ctx) {
-    PairElemAST pairElem = new PairElemAST(ctx.pairElem(), visitExpr(ctx.pairElem().expr()));
-    return new PairElemLeftAST(ctx, pairElem);
+    return visitPairElem(ctx.pairElem());
   }
 
   @Override
@@ -413,8 +407,21 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitPairElemRHS(PairElemRHSContext ctx) {
-    PairElemAST pairElem = new PairElemAST(ctx.pairElem(), visitExpr(ctx.pairElem().expr()));
-    return new PairElemLeftAST(ctx, pairElem);
+    return visitPairElem(ctx.pairElem());
+  }
+
+  @Override
+  public ASTNode visitArrayElem(ArrayElemContext ctx) {
+    List<ExpressionAST> indices = new ArrayList<>();
+    for (ExprContext expr : ctx.expr()) {
+      indices.add(visitExpr(expr));
+    }
+    return new ArrayElemAST(ctx, indices);
+  }
+
+  @Override
+  public ASTNode visitPairElem(PairElemContext ctx) {
+    return new PairElemAST(ctx, visitExpr(ctx.expr()));
   }
 
   @Override
@@ -455,36 +462,22 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> {
 
   @Override
   public ASTNode visitArrayTypeTP(ArrayTypeTPContext ctx) {
-    return null;
+    TypeAST elemType = (TypeAST) visit(ctx.type());
+    TypeAST arrayType = elemType;
+    for (int i = 0; i < ctx.LBR().size(); i++) {
+      arrayType = new ArrayTypeAST(ctx, elemType);
+      elemType = arrayType;
+    }
+    arrayType.check();
+    return arrayType;
   }
 
   @Override
   public ASTNode visitPairTypeTP(PairTypeTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitArrayTypeARTP(ArrayTypeARTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitPrimTypeARTP(PrimTypeARTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitPairTypeARTP(PairTypeARTPContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitArrayElem(ArrayElemContext ctx) {
-    return null;
-  }
-
-  @Override
-  public ASTNode visitPairType(PairTypeContext ctx) {
-    return null;
+    TypeAST type1 = (TypeAST) visit(ctx.type(0));
+    TypeAST type2 = (TypeAST) visit(ctx.type(1));
+    TypeAST pairType = new PairTypeAST(ctx, type1, type2);
+    pairType.check();
+    return pairType;
   }
 }

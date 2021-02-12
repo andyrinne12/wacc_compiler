@@ -1,6 +1,6 @@
 package front_end.AST.assignment;
 
-import antlr.WACCParser.ArrayElemLHSContext;
+import antlr.WACCParser.ArrayElemContext;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
@@ -13,9 +13,9 @@ public class ArrayElemAST extends AssignmentLeftAST {
   private final String arrayIdent;
   private List<ExpressionAST> indices;
 
-  public ArrayElemAST(ArrayElemLHSContext ctx, List<ExpressionAST> indices) {
+  public ArrayElemAST(ArrayElemContext ctx, List<ExpressionAST> indices) {
     super(ctx);
-    arrayIdent = ctx.arrayElem().IDENT().getText();
+    arrayIdent = ctx.IDENT().getText();
     this.indices = indices;
   }
 

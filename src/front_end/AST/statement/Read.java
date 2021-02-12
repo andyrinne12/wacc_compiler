@@ -3,7 +3,6 @@ package front_end.AST.statement;
 import front_end.AST.assignment.AssignmentLeftAST;
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
-import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class Read extends Statement{
@@ -17,7 +16,7 @@ public class Read extends Statement{
   @Override
   public void check() {
     expr.check();
-    IDENTIFIER type = expr.getType();
+    IDENTIFIER type = expr.getIdentObj();
 
     IDENTIFIER intType = Visitor.ST.lookupAll("int").getType();
 
