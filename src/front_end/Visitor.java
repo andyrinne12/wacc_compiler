@@ -122,9 +122,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   // for semantic errors
   public static void error(ParserRuleContext ctx, String message) {
-    //  System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
-    //      + " " + ctx.start.getText() + " " + message);
-    System.out.println(message);
+     System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
+         + " " + ctx.start.getText() + " " + message);
+    // System.out.println(message);
     Main.EXIT_CODE = 200;
   }
 
@@ -485,7 +485,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
         argList.add(visitExpr(argExpr));
       }
     }
-        
+
     return new FunctionCallRightAST(ctx, ctx.IDENT().getText(), argList);
   }
 
