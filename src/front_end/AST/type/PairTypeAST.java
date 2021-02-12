@@ -20,8 +20,8 @@ public class PairTypeAST extends TypeAST {
       typeObj = new PAIR(null, null);
       return;
     }
-    type1.check();
-    type2.check();
+    type1.wasChecked();
+    type2.wasChecked();
     typeObj = new PAIR(type1.typeObj, type2.typeObj);
   }
 }

@@ -14,7 +14,7 @@ public class ArrayTypeAST extends TypeAST {
 
   @Override
   public void check() {
-    elemType.check();
+    elemType.wasChecked();
     typeObj = new ARRAY(elemType.typeObj, 0);
   }
 }
