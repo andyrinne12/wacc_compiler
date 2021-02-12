@@ -2,7 +2,7 @@ package front_end.types;
 
 import front_end.SymbolTable;
 
-public class FUNCTION extends TYPE {
+public class FUNCTION extends IDENTIFIER{
 
   private final TYPE returnType;
   private final PARAM[] params;
@@ -14,8 +14,9 @@ public class FUNCTION extends TYPE {
     this.ST = ST;
   }
 
+  // as a function is not a type, we return null
   public TYPE getType() {
-    return this;
+    return null;
   }
 
   public PARAM[] getParams() {
@@ -39,8 +40,8 @@ public class FUNCTION extends TYPE {
     return str.toString();
   }
 
-  @Override
-  public boolean equalsType(TYPE type) {
-    return false;
-  }
+  // @Override
+  // public boolean equalsType(TYPE type) {
+  //   return false;
+  // }
 }

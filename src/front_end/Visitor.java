@@ -70,6 +70,7 @@ import front_end.AST.expression.SignedIntExprAST;
 import front_end.AST.expression.StringExprAST;
 import front_end.AST.expression.UnaryOpExprAST;
 import front_end.AST.function.FunctionDeclAST;
+import front_end.AST.function.ParamAST;
 import front_end.AST.statement.Begin;
 import front_end.AST.statement.Exit;
 import front_end.AST.statement.Free;
@@ -464,12 +465,20 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public FunctionDeclAST visitFunc(FuncContext ctx) {
+    Visitor.ST = new SymbolTable(Visitor.ST);
+
+    // visit params, statements inside the function.
+
+    Visitor.ST = Visitor.ST.getParentST();
+
     return null;
   }
 
   @Override
   public ASTNode visitParam(ParamContext ctx) {
-    return null;
+    ParamAST param = new ParamAST(ctx, visitType(ctx.type()), ctx.IDENT().getText());
+    param.check();
+    return param;
   }
 
   @Override
