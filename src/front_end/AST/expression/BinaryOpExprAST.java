@@ -37,6 +37,11 @@ public class BinaryOpExprAST extends ExpressionAST {
     expr1.wasChecked();
     expr2.wasChecked();
 
+    // if either of the 2 identifiers hasn't been previously defined:
+    if ((expr1.getIdentObj() == null) || (expr2.getIdentObj() == null)) {
+      return;
+    }
+
     Class expr1Class = expr1.getIdentObj().getClass();
     boolean expr1CorrectType = false;
 
