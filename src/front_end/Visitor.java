@@ -1,105 +1,16 @@
 package front_end;
 
-import antlr.WACCParser.ArgListContext;
-import antlr.WACCParser.ArrayElemContext;
-import antlr.WACCParser.ArrayElemEXPContext;
-import antlr.WACCParser.ArrayElemLHSContext;
-import antlr.WACCParser.ArrayLtrRHSContext;
-import antlr.WACCParser.ArrayTypePETContext;
-import antlr.WACCParser.ArrayTypeTPContext;
-import antlr.WACCParser.AssignSTContext;
-import antlr.WACCParser.BeginSTContext;
-import antlr.WACCParser.BinOpEXPContext;
-import antlr.WACCParser.BoolEXPContext;
-import antlr.WACCParser.BracketEXPContext;
-import antlr.WACCParser.CharEXPContext;
-import antlr.WACCParser.ExitSTContext;
-import antlr.WACCParser.ExpRHSContext;
-import antlr.WACCParser.ExprContext;
-import antlr.WACCParser.FreeSTContext;
-import antlr.WACCParser.FuncCallRHSContext;
-import antlr.WACCParser.FuncContext;
-import antlr.WACCParser.IdentEXPContext;
-import antlr.WACCParser.IdentLHSContext;
-import antlr.WACCParser.IfSTContext;
-import antlr.WACCParser.InitSTContext;
-import antlr.WACCParser.NewPairRHSContext;
-import antlr.WACCParser.PairArrayATContext;
-import antlr.WACCParser.PairElemContext;
-import antlr.WACCParser.PairElemLHSContext;
-import antlr.WACCParser.PairElemRHSContext;
-import antlr.WACCParser.PairLtrEXPContext;
-import antlr.WACCParser.PairTypeContext;
-import antlr.WACCParser.PairTypePETContext;
-import antlr.WACCParser.PairTypeTPContext;
-import antlr.WACCParser.ParamContext;
-import antlr.WACCParser.ParamListContext;
-import antlr.WACCParser.PrimArrayATContext;
-import antlr.WACCParser.PrimTypePETContext;
-import antlr.WACCParser.PrimTypeTPContext;
-import antlr.WACCParser.PrintSTContext;
-import antlr.WACCParser.PrintlnSTContext;
-import antlr.WACCParser.ProgContext;
-import antlr.WACCParser.ReadSTContext;
-import antlr.WACCParser.ReturnSTContext;
-import antlr.WACCParser.SignedIntEXPContext;
-import antlr.WACCParser.SkipSTContext;
-import antlr.WACCParser.StatContext;
-import antlr.WACCParser.StatSeqSTContext;
-import antlr.WACCParser.StrEXPContext;
-import antlr.WACCParser.TypeContext;
-import antlr.WACCParser.UnOpEXPContext;
-import antlr.WACCParser.WhileSTContext;
+import antlr.WACCParser.*;
 import antlr.WACCParserBaseVisitor;
 import antlr.WACCParserVisitor;
 import front_end.AST.ASTNode;
 import front_end.AST.ProgramAST;
-import front_end.AST.assignment.ArrayElemAST;
-import front_end.AST.assignment.ArrayLtrRightAST;
-import front_end.AST.assignment.AssignmentAST;
-import front_end.AST.assignment.AssignmentLeftAST;
-import front_end.AST.assignment.AssignmentRightAST;
-import front_end.AST.assignment.ExprRightAST;
-import front_end.AST.assignment.FunctionCallRightAST;
-import front_end.AST.assignment.IdentLeftAST;
-import front_end.AST.assignment.InitializationAST;
-import front_end.AST.assignment.NewPairRightAST;
-import front_end.AST.assignment.PairElemAST;
-import front_end.AST.assignment.PairElemLeftAST;
-import front_end.AST.assignment.PairElemRightAST;
-import front_end.AST.expression.ArrayElemExprAST;
-import front_end.AST.expression.BinaryOpExprAST;
-import front_end.AST.expression.BoolExprAST;
-import front_end.AST.expression.CharExprAST;
-import front_end.AST.expression.ExpressionAST;
-import front_end.AST.expression.IdentAST;
-import front_end.AST.expression.PairLtrExprAST;
-import front_end.AST.expression.SignedIntExprAST;
-import front_end.AST.expression.StringExprAST;
-import front_end.AST.expression.UnaryOpExprAST;
-import front_end.AST.function.FunctionDeclAST;
-import front_end.AST.function.ParamAST;
-import front_end.AST.function.ParamListAST;
-import front_end.AST.statement.Begin;
-import front_end.AST.statement.Exit;
-import front_end.AST.statement.Free;
-import front_end.AST.statement.If;
-import front_end.AST.statement.Print;
-import front_end.AST.statement.Println;
-import front_end.AST.statement.Read;
-import front_end.AST.statement.Return;
-import front_end.AST.statement.Sequence;
-import front_end.AST.statement.Skip;
-import front_end.AST.statement.Statement;
-import front_end.AST.statement.While;
-import front_end.AST.type.ArrayTypeAST;
-import front_end.AST.type.PairTypeAST;
-import front_end.AST.type.PrimTypeAST;
-import front_end.AST.type.TypeAST;
-import front_end.types.BOOLEAN;
-import front_end.types.CHAR;
-import front_end.types.INT;
-import front_end.types.STRING;
+import front_end.AST.assignment.*;
+import front_end.AST.expression.*;
+import front_end.AST.function.*;
+import front_end.AST.statement.*;
+import front_end.AST.type.*;
+import front_end.types.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -539,11 +450,6 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     return null;
   }
 
-  // public TypeAST visitType(TypeContext ctx) {
-  //   // TO-DO
-  //   return null;
-  // }
-
   @Override
   public ASTNode visitPrimTypeTP(PrimTypeTPContext ctx) {
     PrimTypeAST primType = new PrimTypeAST(ctx, ctx.TYPE().getText());
@@ -608,7 +514,20 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitArrayTypePET(ArrayTypePETContext ctx) {
-    return new ArrayTypeAST(ctx, (ArrayTypeAST) visit(ctx.arrayType()));
+    System.out.println("in visitArrayTypePET");
+    return new ArrayTypeAST(ctx, visitArrayTypePETHelper((PrimArrayATContext) ctx.arrayType()));
+  }
+
+  private TypeAST visitArrayTypePETHelper(PrimArrayATContext ctx) {
+    TypeAST elemType = (TypeAST) new PrimTypeAST(ctx, ctx.TYPE().getText());
+    TypeAST arrayType = elemType;
+    for (int i = 1; i < ctx.LSBR().size(); i++) {
+      System.out.println(i);
+      arrayType = new ArrayTypeAST(ctx, elemType);
+      elemType = arrayType;
+    }
+    arrayType.check();
+    return arrayType;
   }
 
 
