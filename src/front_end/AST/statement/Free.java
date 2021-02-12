@@ -16,7 +16,7 @@ public class Free extends Statement{
   public void check() {
     expression.wasChecked();
     if(!(expression.getIdentObj() instanceof PAIR)) {
-      error("the only expression that can be freed is a pair type");
+      error("The variable you are trying to free is not a pair: " + expression.getEvalType());
     }
   }
 }

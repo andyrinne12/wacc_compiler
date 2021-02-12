@@ -18,7 +18,7 @@ public class Exit extends Statement{
     expression.wasChecked();
     IDENTIFIER intIdent = Visitor.ST.lookupAll("int");
     if(!expression.getEvalType().equalsType(intIdent.getType())) {
-      error("Exit code must be an integer");
+      error("Exit code must be an integer. Actual type:" + expression.getEvalType());
     }
 
   }

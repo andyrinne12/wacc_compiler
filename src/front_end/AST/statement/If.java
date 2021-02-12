@@ -30,7 +30,7 @@ public class If extends Statement {
     expression.wasChecked();
     IDENTIFIER ident = Visitor.ST.lookupAll("bool");
     if (!expression.getIdentObj().equals(ident)) {
-      error("If condition type is not boolean");
+      error("If condition type is not boolean. Actual type : " + expression.getEvalType());
     }
 
     //check that the statements are valid

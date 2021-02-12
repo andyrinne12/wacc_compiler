@@ -28,7 +28,7 @@ public class While extends Statement {
       //check the validity of the statement
       stat.wasChecked();
     } else {
-      error("while condition is not boolean");
+      error("While condition is not boolean");
     }
   }
 }

@@ -21,7 +21,7 @@ public class Read extends Statement {
     TYPE evalType = expr.getEvalType();
 
     if (evalType == null) {
-      error("cannot read on null reference");
+      error("Cannot read on null reference");
     } else {
 
       IDENTIFIER intType = Visitor.ST.lookupAll("int");
@@ -29,7 +29,7 @@ public class Read extends Statement {
       IDENTIFIER charType = Visitor.ST.lookupAll("char");
 
       if (!evalType.equalsType(intType.getType()) && !evalType.equalsType(charType.getType())) {
-        error("read statement can take only int or char types");
+        error("Read statement can take only int or char types. Actual type : " + evalType);
       }
     }
   }

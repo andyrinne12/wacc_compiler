@@ -27,7 +27,7 @@ public class ParamAST extends ASTNode {
         }
         else if (type.getTypeObj() instanceof PAIR) {
             TYPE firstType = ((PAIR) type.getIdentObj()).getFirstType();
-            TYPE secondType = ((PAIR) type.getIdentObj()).getFirstType();
+            TYPE secondType = ((PAIR) type.getIdentObj()).getSecondType();
             PAIR pairType = new PAIR(firstType, secondType);
             identObj = new PARAM(pairType);
         }
