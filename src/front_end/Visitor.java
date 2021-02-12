@@ -137,7 +137,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   @Override
   public Return visitReturnST(ReturnSTContext ctx) {
     FuncContext funcContext = getEnclosingFunctionContext(ctx);
-    TypeAST returnType = visitType(funcContext.type());
+    TypeAST returnType = (TypeAST) visit(funcContext.type());
     ExpressionAST expression = visitExpr(ctx.expr());
 
     Return returnAST = new Return(ctx, expression, returnType);
@@ -469,7 +469,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     Visitor.ST = new SymbolTable(Visitor.ST);
 
     // create FunctionDeclAST obj.
-    TypeAST returnType = visitType(ctx.type());
+    TypeAST returnType = (TypeAST) visit(ctx.type());
     ParamListAST paramList = visitParamList(ctx.paramList());
     FunctionDeclAST function = new FunctionDeclAST(ctx, ctx.IDENT().getText(), returnType, paramList);
     function.check();
@@ -485,7 +485,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ParamAST visitParam(ParamContext ctx) {
-    ParamAST param = new ParamAST(ctx, visitType(ctx.type()), ctx.IDENT().getText());
+    ParamAST param = new ParamAST(ctx, (TypeAST) visit(ctx.type()), ctx.IDENT().getText());
     param.check();
     return param;
   }
@@ -514,10 +514,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     return null;
   }
 
-  public TypeAST visitType(TypeContext ctx) {
-    // TO-DO
-    return null;
-  }
+  // public TypeAST visitType(TypeContext ctx) {
+  //   // TO-DO
+  //   return null;
+  // }
 
   @Override
   public PrimTypeAST visitPrimTypeTP(PrimTypeTPContext ctx) {
