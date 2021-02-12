@@ -479,9 +479,13 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   @Override
   public ASTNode visitFuncCallRHS(FuncCallRHSContext ctx) {
     List<ExpressionAST> argList = new ArrayList<>();
-    for (ExprContext argExpr : ctx.argList().expr()) {
-      argList.add(visitExpr(argExpr));
+
+    if (ctx.argList() != null) {
+      for (ExprContext argExpr : ctx.argList().expr()) {
+        argList.add(visitExpr(argExpr));
+      }
     }
+        
     return new FunctionCallRightAST(ctx, ctx.IDENT().getText(), argList);
   }
 
