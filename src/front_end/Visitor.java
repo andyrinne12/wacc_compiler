@@ -71,6 +71,7 @@ import front_end.AST.expression.StringExprAST;
 import front_end.AST.expression.UnaryOpExprAST;
 import front_end.AST.function.FunctionDeclAST;
 import front_end.AST.function.ParamAST;
+import front_end.AST.function.ParamListAST;
 import front_end.AST.statement.Begin;
 import front_end.AST.statement.Exit;
 import front_end.AST.statement.Free;
@@ -475,7 +476,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public ASTNode visitParam(ParamContext ctx) {
+  public ParamAST visitParam(ParamContext ctx) {
     ParamAST param = new ParamAST(ctx, visitType(ctx.type()), ctx.IDENT().getText());
     param.check();
     return param;
@@ -483,7 +484,21 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitParamList(ParamListContext ctx) {
-    return null;
+    if (ctx.param().isEmpty()) {
+      return new ParamListAST(ctx, new ArrayList<ParamAST>());
+    }
+    else {
+      List<ParamContext> parameters = ctx.param();
+      List<ParamAST> paramASTs = new ArrayList<>();
+
+      for (ParamContext p: parameters) {
+        paramASTs.add(visitParam(p));
+      }
+
+      ParamListAST paramList = new ParamListAST(ctx, paramASTs);
+      paramList.check();
+      return paramList;
+    }
   }
 
   @Override
