@@ -18,7 +18,7 @@ public class IdentLeftAST extends AssignmentLeftAST {
   public void check() {
     identObj = Visitor.ST.lookupAll(identName);
     if (identObj == null) {
-      error(identName + "lhs has not been previously defined.");
+      error("Variable " + identName + " on the lhs has not been previously defined.");
     }
     if (identObj instanceof FUNCTION) {
       error("Function identifier on the left hand side of the assignment");
@@ -32,6 +32,11 @@ public class IdentLeftAST extends AssignmentLeftAST {
 
   @Override
   public TYPE getEvalType() {
-    return identObj.getType();
+    if (identObj == null) {
+      return null;
+    }
+    else {
+      return identObj.getType();
+    }
   }
 }

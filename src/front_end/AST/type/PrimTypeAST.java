@@ -22,6 +22,7 @@ public class PrimTypeAST extends TypeAST {
       error("Undefined type.");
     }
     typeObj = (TYPE) type;
+    identObj = typeObj;
   }
 
 }

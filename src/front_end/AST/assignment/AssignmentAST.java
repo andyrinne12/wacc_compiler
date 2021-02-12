@@ -23,6 +23,10 @@ public class AssignmentAST extends Statement {
     lhs.check();
     rhs.check();
     TYPE lhsType = lhs.getEvalType();
+    if (lhsType == null) {
+      // if the lhs is an identifier that we havent encountered before, then we don't bother with checking assignment compatibility with the rhs.
+      return;
+    }
     TYPE rhsType = rhs.getEvalType();
     IDENTIFIER charIdent = Visitor.ST.lookupAll("char");
     if (lhsType instanceof ARRAY) {
