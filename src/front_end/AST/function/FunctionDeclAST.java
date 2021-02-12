@@ -1,5 +1,6 @@
 package front_end.AST.function;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -35,7 +36,13 @@ public class FunctionDeclAST extends ASTNode {
         }
         else {
             // Inside this class, Visitor.ST references the symbol table of the function.
-            identObj = new FUNCTION(returnType.getType(), paramList.getPARAMs(), Visitor.ST);
+            
+            if (paramList != null) {
+                identObj = new FUNCTION(returnType.getType(), paramList.getPARAMs(), Visitor.ST);
+            }
+            else {
+                identObj = new FUNCTION(returnType.getType(), new ArrayList<PARAM>(), Visitor.ST);
+            }
             Visitor.ST.getParentST().add(functionName, identObj); // add function name to enclosing symbol table.
         }
 

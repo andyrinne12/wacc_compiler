@@ -513,7 +513,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ParamListAST visitParamList(ParamListContext ctx) {
-    if (ctx.param().isEmpty()) {
+    if (ctx == null || ctx.param() == null || ctx.param().isEmpty()) {
       return null;
     }
     else {
