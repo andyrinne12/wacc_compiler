@@ -33,10 +33,10 @@ public class PAIR extends TYPE {
       return false;
     }
     PAIR pair2 = (PAIR) type;
-    if (firstType == null && secondType == null) {
+    if (firstType == null || secondType == null) {
       return true;
     }
-    if (pair2.firstType == null && pair2.secondType == null) {
+    if (pair2.firstType == null || pair2.secondType == null) {
       return true;
     }
     return pair2.firstType.equalsType(firstType) && pair2.secondType.equalsType(secondType);

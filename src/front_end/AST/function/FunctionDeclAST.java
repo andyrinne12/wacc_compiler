@@ -39,7 +39,7 @@ public class FunctionDeclAST extends ScopingStatementAST {
     // check function name
     IDENTIFIER funcNameTemp = Visitor.ST.lookupAll(functionName);
     if (funcNameTemp != null) {
-      error(funcNameTemp + "has already been declared");
+      error(functionName + " has already been declared");
     } else {
       if (paramList != null) {
         paramList.check();
@@ -55,6 +55,10 @@ public class FunctionDeclAST extends ScopingStatementAST {
           .add(functionName, identObj); // add function name to enclosing symbol table.
     }
     exitScope();
+  }
+
+  public boolean checkReturn() {
+    return statSeq.checkReturn();
   }
 
   public void checkBody() {

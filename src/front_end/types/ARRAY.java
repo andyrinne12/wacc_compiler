@@ -33,6 +33,9 @@ public class ARRAY extends TYPE {
       return false;
     }
     ARRAY array2 = (ARRAY) type2;
+    if (elemType == null || array2.getElemType() == null) {
+      return true;
+    }
     return array2.getElemType().equalsType(elemType);
   }
 }

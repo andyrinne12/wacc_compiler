@@ -2,9 +2,6 @@ package front_end.AST.expression;
 
 import front_end.Visitor;
 import front_end.types.ARRAY;
-import front_end.types.BOOLEAN;
-import front_end.types.CHAR;
-import front_end.types.INT;
 import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -32,22 +29,25 @@ public class UnaryOpExprAST extends ExpressionAST {
     }
 
     // check if the unary operator is compatible with the expression.
-    Class expressionClass = expression.getIdentObj().getClass();
-    if (!(expressionClass.equals(expectedElemType.getClass()))) {
+    TYPE type = expression.getEvalType();
+    if (!type.equalsType(expectedElemType)) {
       error("The unary operator " + unaryOp + " received an unexcpeted type." +
-          "\nExpected: " + expectedElemType.getClass().getName() +
-          "\nActual: " + expressionClass.getName());
+          "expected: " + expectedElemType +
+          "actual: " + type);
     }
   }
 
   private void initialise_attr() {
+    TYPE intIdent = Visitor.ST.lookupAll("int").getType();
+    TYPE boolIdent = Visitor.ST.lookupAll("bool").getType();
+    TYPE charIdent = Visitor.ST.lookupAll("char").getType();
     switch (unaryOp) {
       case "!":
-        expectedElemType = new BOOLEAN();
+        expectedElemType = boolIdent;
         returnType = "bool";
         break;
       case "-":
-        expectedElemType = new INT();
+        expectedElemType = intIdent;
         returnType = "int";
         break;
       case "len":
@@ -56,11 +56,11 @@ public class UnaryOpExprAST extends ExpressionAST {
         returnType = "int";
         break;
       case "ord":
-        expectedElemType = new CHAR();
+        expectedElemType = charIdent;
         returnType = "int";
         break;
       case "chr":
-        expectedElemType = new INT();
+        expectedElemType = intIdent;
         returnType = "char";
     }
   }

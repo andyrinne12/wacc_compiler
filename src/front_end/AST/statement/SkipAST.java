@@ -2,9 +2,9 @@ package front_end.AST.statement;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Skip extends Statement {
+public class SkipAST extends StatementAST {
 
-  public Skip(ParserRuleContext ctx) {
+  public SkipAST(ParserRuleContext ctx) {
     super(ctx);
   }
 

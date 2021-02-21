@@ -5,12 +5,12 @@ import front_end.AST.type.TypeAST;
 import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Return extends Statement {
+public class ReturnAST extends StatementAST {
 
   private ExpressionAST exprAST;
   private TypeAST expectedReturnTypeAST; // the return type as specified by the enclosing function.
 
-  public Return(ParserRuleContext ctx, ExpressionAST exprAST, TypeAST expectedReturnTypeAST) {
+  public ReturnAST(ParserRuleContext ctx, ExpressionAST exprAST, TypeAST expectedReturnTypeAST) {
     super(ctx);
     this.exprAST = exprAST;
     this.expectedReturnTypeAST = expectedReturnTypeAST;
@@ -26,7 +26,7 @@ public class Return extends Statement {
     TYPE expectedType = expectedReturnTypeAST.getTypeObj();
     if (!exprType.equalsType(expectedType)) {
       error(" return type expected by the function: " + expectedType +
-          "\nActual type: " + exprType);
+          "actual: " + exprType);
     }
   }
 }

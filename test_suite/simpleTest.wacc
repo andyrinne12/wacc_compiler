@@ -1,0 +1,22 @@
+begin
+  int f() is
+    int c = 0;
+    if true then
+      exit 0
+    else
+      exit 1
+    fi;
+    return 1;
+    skip
+  end
+  int f(int b) is
+    int a = 0;
+    int b = c + 1;
+    if(a == 0) then
+      return 0
+    else
+      return 1
+    fi
+  end
+  skip
+end

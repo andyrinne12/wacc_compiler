@@ -4,12 +4,12 @@ import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class While extends Statement {
+public class WhileAST extends StatementAST {
 
   private final ExpressionAST expression;
   private final StatementSequenceAST statSeq;
 
-  public While(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST statSeq) {
+  public WhileAST(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST statSeq) {
     super(ctx);
     this.expression = expression;
     this.statSeq = statSeq;

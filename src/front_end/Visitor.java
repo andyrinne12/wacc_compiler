@@ -11,6 +11,7 @@ import antlr.WACCParser.AssignSTContext;
 import antlr.WACCParser.BeginSTContext;
 import antlr.WACCParser.BinOpEXPContext;
 import antlr.WACCParser.BoolEXPContext;
+import antlr.WACCParser.BoolOpEXPContext;
 import antlr.WACCParser.BracketEXPContext;
 import antlr.WACCParser.CharEXPContext;
 import antlr.WACCParser.ExitSTContext;
@@ -79,18 +80,18 @@ import front_end.AST.expression.UnaryOpExprAST;
 import front_end.AST.function.FunctionDeclAST;
 import front_end.AST.function.ParamAST;
 import front_end.AST.function.ParamListAST;
-import front_end.AST.statement.Begin;
-import front_end.AST.statement.Exit;
-import front_end.AST.statement.Free;
-import front_end.AST.statement.If;
-import front_end.AST.statement.Print;
-import front_end.AST.statement.Println;
-import front_end.AST.statement.Read;
-import front_end.AST.statement.Return;
-import front_end.AST.statement.Skip;
-import front_end.AST.statement.Statement;
+import front_end.AST.statement.BeginAST;
+import front_end.AST.statement.ExitAST;
+import front_end.AST.statement.FreeAST;
+import front_end.AST.statement.IfAST;
+import front_end.AST.statement.PrintAST;
+import front_end.AST.statement.PrintlnAST;
+import front_end.AST.statement.ReadAST;
+import front_end.AST.statement.ReturnAST;
+import front_end.AST.statement.SkipAST;
+import front_end.AST.statement.StatementAST;
 import front_end.AST.statement.StatementSequenceAST;
-import front_end.AST.statement.While;
+import front_end.AST.statement.WhileAST;
 import front_end.AST.type.ArrayTypeAST;
 import front_end.AST.type.PairTypeAST;
 import front_end.AST.type.PrimTypeAST;
@@ -121,8 +122,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   // for semantic errors
   public static void error(ParserRuleContext ctx, String message) {
-    System.err.println("line: " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
-        + " " + ctx.start.getText() + " " + message);
+    System.err.println("Error at " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
+        + " -- " + message);
     Main.EXIT_CODE = 200;
   }
 
@@ -164,9 +165,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   @Override
   public ParamListAST visitParamList(ParamListContext ctx) {
     List<ParamAST> paramASTs = new ArrayList<>();
-    if(ctx != null && ctx.param() != null)
-    for (ParamContext p : ctx.param()) {
-      paramASTs.add(visitParam(p));
+    if (ctx != null && ctx.param() != null) {
+      for (ParamContext p : ctx.param()) {
+        paramASTs.add(visitParam(p));
+      }
     }
     return new ParamListAST(ctx, paramASTs);
   }
@@ -176,9 +178,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     SymbolTable symbolTable = new SymbolTable(Visitor.ST);
     Visitor.ST = symbolTable;
 
-    List<Statement> statSeq = new ArrayList<>();
+    List<StatementAST> statSeq = new ArrayList<>();
     for (StatContext statCtx : ctx.stat()) {
-      statSeq.add((Statement) visit(statCtx));
+      statSeq.add((StatementAST) visit(statCtx));
     }
 
     Visitor.ST = symbolTable.getParentST();
@@ -187,16 +189,17 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public Return visitReturnST(ReturnSTContext ctx) {
+  public ReturnAST visitReturnST(ReturnSTContext ctx) {
     ParserRuleContext tmpContext = getEnclosingFunctionContext(ctx);
     if (tmpContext instanceof ProgContext) {
       return null;
     }
+
     FuncContext funcContext = (FuncContext) tmpContext;
     TypeAST returnType = (TypeAST) visit(funcContext.type());
-    ExpressionAST expression = visitExpr(ctx.expr());
+    ExpressionAST expression = (ExpressionAST) visit(ctx.expr());
 
-    return new Return(ctx, expression, returnType);
+    return new ReturnAST(ctx, expression, returnType);
   }
 
   private ParserRuleContext getEnclosingFunctionContext(ParserRuleContext ctx) {
@@ -216,15 +219,15 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitWhileST(WhileSTContext ctx) {
-    ExpressionAST expr = visitExpr(ctx.expr());
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
     StatementSequenceAST statSeq = (StatementSequenceAST) visitStatSeq(ctx.statSeq());
-    return new While(ctx, expr, statSeq);
+    return new WhileAST(ctx, expr, statSeq);
   }
 
   @Override
-  public Free visitFreeST(FreeSTContext ctx) {
-    ExpressionAST expr = visitExpr(ctx.expr());
-    return new Free(ctx, expr);
+  public FreeAST visitFreeST(FreeSTContext ctx) {
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
+    return new FreeAST(ctx, expr);
   }
 
   @Override
@@ -243,44 +246,44 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public If visitIfST(IfSTContext ctx) {
-    ExpressionAST expr = visitExpr(ctx.expr());
+  public IfAST visitIfST(IfSTContext ctx) {
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
     StatementSequenceAST thenBody = (StatementSequenceAST) visit(ctx.thenBody);
     StatementSequenceAST elseBody = (StatementSequenceAST) visit(ctx.elBody);
-    return new If(ctx, expr, thenBody, elseBody);
+    return new IfAST(ctx, expr, thenBody, elseBody);
   }
 
   @Override
-  public Skip visitSkipST(SkipSTContext ctx) {
-    return new Skip(ctx);
+  public SkipAST visitSkipST(SkipSTContext ctx) {
+    return new SkipAST(ctx);
   }
 
   @Override
-  public Read visitReadST(ReadSTContext ctx) {
+  public ReadAST visitReadST(ReadSTContext ctx) {
     ASTNode lhsNode = visit(ctx.lhs());
     if (lhsNode instanceof PairElemAST) {
       lhsNode = new PairElemLeftAST(ctx, (PairElemAST) lhsNode);
     }
     AssignmentLeftAST lhs = (AssignmentLeftAST) lhsNode;
-    return new Read(ctx, lhs);
+    return new ReadAST(ctx, lhs);
   }
 
   @Override
-  public Begin visitBeginST(BeginSTContext ctx) {
+  public BeginAST visitBeginST(BeginSTContext ctx) {
     StatementSequenceAST statSeq = (StatementSequenceAST) visit(ctx.statSeq());
-    return new Begin(ctx, statSeq);
+    return new BeginAST(ctx, statSeq);
   }
 
   @Override
-  public Print visitPrintST(PrintSTContext ctx) {
-    ExpressionAST expr = visitExpr(ctx.expr());
-    return new Print(ctx, expr);
+  public PrintAST visitPrintST(PrintSTContext ctx) {
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
+    return new PrintAST(ctx, expr);
   }
 
   @Override
-  public Exit visitExitST(ExitSTContext ctx) {
-    ExpressionAST expr = visitExpr(ctx.expr());
-    return new Exit(ctx, expr);
+  public ExitAST visitExitST(ExitSTContext ctx) {
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
+    return new ExitAST(ctx, expr);
   }
 
   @Override
@@ -296,37 +299,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public Println visitPrintlnST(PrintlnSTContext ctx) {
-    ExpressionAST expr = visitExpr(ctx.expr());
-    return new Println(ctx, expr);
-  }
-
-  public ExpressionAST visitExpr(ExprContext ctx) {
-    ExpressionAST exprAST = null;
-
-    if (ctx instanceof SignedIntEXPContext) {
-      exprAST = visitSignedIntEXP((SignedIntEXPContext) ctx);
-    } else if (ctx instanceof PairLtrEXPContext) {
-      exprAST = visitPairLtrEXP((PairLtrEXPContext) ctx);
-    } else if (ctx instanceof ArrayElemEXPContext) {
-      exprAST = visitArrayElemEXP((ArrayElemEXPContext) ctx);
-    } else if (ctx instanceof BinOpEXPContext) {
-      exprAST = visitBinOpEXP((BinOpEXPContext) ctx);
-    } else if (ctx instanceof StrEXPContext) {
-      exprAST = visitStrEXP((StrEXPContext) ctx);
-    } else if (ctx instanceof UnOpEXPContext) {
-      exprAST = visitUnOpEXP((UnOpEXPContext) ctx);
-    } else if (ctx instanceof BracketEXPContext) {
-      exprAST = visitBracketEXP((BracketEXPContext) ctx);
-    } else if (ctx instanceof BoolEXPContext) {
-      exprAST = visitBoolEXP((BoolEXPContext) ctx);
-    } else if (ctx instanceof IdentEXPContext) {
-      exprAST = visitIdentEXP((IdentEXPContext) ctx);
-    } else if (ctx instanceof CharEXPContext) {
-      exprAST = visitCharEXP((CharEXPContext) ctx);
-    }
-
-    return exprAST;
+  public PrintlnAST visitPrintlnST(PrintlnSTContext ctx) {
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
+    return new PrintlnAST(ctx, expr);
   }
 
   @Override
@@ -354,8 +329,14 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public BinaryOpExprAST visitBinOpEXP(BinOpEXPContext ctx) {
-    return new BinaryOpExprAST(ctx, visitExpr(ctx.expr(0)),
-        visitExpr(ctx.expr(1)), ctx.binaryOp().getText());
+    return new BinaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr(0)),
+        (ExpressionAST) visit(ctx.expr(1)), ctx.binOp().getText());
+  }
+
+  @Override
+  public ASTNode visitBoolOpEXP(BoolOpEXPContext ctx) {
+    return new BinaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr(0)),
+        (ExpressionAST) visit(ctx.expr(1)), ctx.boolOp().getText());
   }
 
   @Override
@@ -365,13 +346,13 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public UnaryOpExprAST visitUnOpEXP(UnOpEXPContext ctx) {
-    return new UnaryOpExprAST(ctx, visitExpr(ctx.expr()),
+    return new UnaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr()),
         ctx.unaryOp().getText());
   }
 
   @Override
   public ExpressionAST visitBracketEXP(BracketEXPContext ctx) {
-    return visitExpr(ctx.expr());
+    return (ExpressionAST) visit(ctx.expr());
   }
 
   @Override
@@ -406,22 +387,22 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitExpRHS(ExpRHSContext ctx) {
-    return new ExprRightAST(ctx, visitExpr(ctx.expr()));
+    return new ExprRightAST(ctx, (ExpressionAST) visit(ctx.expr()));
   }
 
   @Override
   public ASTNode visitArrayLtrRHS(ArrayLtrRHSContext ctx) {
     List<ExpressionAST> array = new ArrayList<>();
     for (ExprContext expr : ctx.expr()) {
-      array.add(visitExpr(expr));
+      array.add((ExpressionAST) visit(expr));
     }
     return new ArrayLtrRightAST(ctx, array);
   }
 
   @Override
   public ASTNode visitNewPairRHS(NewPairRHSContext ctx) {
-    ExprRightAST expr1 = new ExprRightAST(ctx, visitExpr(ctx.expr(0)));
-    ExprRightAST expr2 = new ExprRightAST(ctx, visitExpr(ctx.expr(1)));
+    ExprRightAST expr1 = new ExprRightAST(ctx, (ExpressionAST) visit(ctx.expr(0)));
+    ExprRightAST expr2 = new ExprRightAST(ctx, (ExpressionAST) visit(ctx.expr(1)));
     return new NewPairRightAST(ctx, expr1, expr2);
   }
 
@@ -434,14 +415,14 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   public ASTNode visitArrayElem(ArrayElemContext ctx) {
     List<ExpressionAST> indices = new ArrayList<>();
     for (ExprContext expr : ctx.expr()) {
-      indices.add(visitExpr(expr));
+      indices.add((ExpressionAST) visit(expr));
     }
     return new ArrayElemAST(ctx, indices);
   }
 
   @Override
   public ASTNode visitPairElem(PairElemContext ctx) {
-    return new PairElemAST(ctx, visitExpr(ctx.expr()));
+    return new PairElemAST(ctx, (ExpressionAST) visit(ctx.expr()));
   }
 
   @Override
@@ -450,7 +431,7 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
     if (ctx.argList() != null) {
       for (ExprContext argExpr : ctx.argList().expr()) {
-        argList.add(visitExpr(argExpr));
+        argList.add((ExpressionAST) visit(argExpr));
       }
     }
     return new FunctionCallRightAST(ctx, ctx.IDENT().getText(), argList);

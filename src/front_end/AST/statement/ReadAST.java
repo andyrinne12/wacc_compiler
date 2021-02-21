@@ -6,11 +6,11 @@ import front_end.types.IDENTIFIER;
 import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Read extends Statement {
+public class ReadAST extends StatementAST {
 
   private AssignmentLeftAST expr;
 
-  public Read(ParserRuleContext ctx, AssignmentLeftAST expr) {
+  public ReadAST(ParserRuleContext ctx, AssignmentLeftAST expr) {
     super(ctx);
     this.expr = expr;
   }

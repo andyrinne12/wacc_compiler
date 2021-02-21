@@ -19,15 +19,16 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
   @Override
   public void check() {
     if (array.size() == 0) {
+      identObj = new ARRAY(null, 0);
       return;
     }
     ExpressionAST first = array.get(0);
     first.check();
-    TYPE firstType = first.getIdentObj().getType();
+    TYPE firstType = first.getEvalType();
     for (int i = 1; i < array.size(); i++) {
       ExpressionAST exp = array.get(i);
       exp.check();
-      TYPE expType = exp.getIdentObj().getType();
+      TYPE expType = exp.getEvalType();
       if (!firstType.equalsType(expType)) {
         error(
             "Array literal contains items of different types. Expected: " + firstType + " actual: "
@@ -39,10 +40,6 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
 
   @Override
   public TYPE getEvalType() {
-    if (identObj == null) {
-      return null;
-    } else {
-      return identObj.getType();
-    }
+    return identObj.getType();
   }
 }

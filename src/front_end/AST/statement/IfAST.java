@@ -5,13 +5,13 @@ import front_end.Visitor;
 import front_end.types.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class If extends Statement {
+public class IfAST extends StatementAST {
 
   private final ExpressionAST expression;
   private final StatementSequenceAST thenSeq;
   private final StatementSequenceAST elseSeq;
 
-  public If(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST thenSeq,
+  public IfAST(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST thenSeq,
       StatementSequenceAST elseSeq) {
     super(ctx);
     this.expression = expression;
@@ -31,5 +31,9 @@ public class If extends Statement {
     //check that the statements are valid
     thenSeq.check();
     elseSeq.check();
+  }
+
+  public boolean checkReturn() {
+    return thenSeq.checkReturn() && elseSeq.checkReturn();
   }
 }

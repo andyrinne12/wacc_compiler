@@ -1,13 +1,13 @@
 package front_end.AST.assignment;
 
-import front_end.AST.statement.Statement;
+import front_end.AST.statement.StatementAST;
 import front_end.AST.type.TypeAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class InitializationAST extends Statement {
+public class InitializationAST extends StatementAST {
 
   private final TypeAST type;
   private final IdentLeftAST ident;
@@ -35,11 +35,19 @@ public class InitializationAST extends Statement {
 
     rhs.check();
     TYPE rhsType = rhs.getEvalType();
-    if (rhsType == null) {
-      if (!(type.getTypeObj() instanceof ARRAY)) {
-        error("Cannot assign the empty array to non-array variable");
-        success = false;
-      } else {
+
+    //    if (rhsType == null) {
+//      if (!(type.getTypeObj() instanceof ARRAY)) {
+//        error("Cannot assign the empty array to non-array variable");
+//        success = false;
+//      } else {
+//        rhsType = actType;
+//      }
+//    }
+
+    if ((type.getTypeObj() instanceof ARRAY)) {
+      ARRAY array = (ARRAY) type.getTypeObj();
+      if (array.getElemType() == null) {
         rhsType = actType;
       }
     }
