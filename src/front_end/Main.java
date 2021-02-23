@@ -20,6 +20,7 @@ public class Main {
   public final static int TOKENIZE = 1;       // Convert the input file into a token stream
   public final static int PARSE = 2;          // Create the parse tree and perform syntactic check
   public final static int SEMANTIC_CHECK = 3; // Perform semantic check and build AST
+  public final static int ASSEMBLE = 4;       // Generate assembly code for the program
 
   public static int EXIT_CODE = 0;
 
@@ -45,6 +46,9 @@ public class Main {
           break;
         case "-s":
           option = SEMANTIC_CHECK;
+          break;
+        case "-a":
+          option = ASSEMBLE;
           break;
         default:
           throw new IllegalArgumentException(
@@ -112,6 +116,6 @@ class CustomErrorHandler extends BaseErrorListener {
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
       int charPositionInLine, String msg, RecognitionException e) {
     Main.EXIT_CODE = 100;
- //   System.err.println("SYNTAX ERROR:" + line + ": " + charPositionInLine);
+    //   System.err.println("SYNTAX ERROR:" + line + ": " + charPositionInLine);
   }
 }

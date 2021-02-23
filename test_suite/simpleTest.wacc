@@ -1,22 +1,13 @@
 begin
-  int f() is
-    int c = 0;
-    if true then
-      exit 0
-    else
-      exit 1
-    fi;
-    return 1;
-    skip
+  int f(int a, int b, int c) is
+    return (a + b + c)
   end
-  int f(int b) is
-    int a = 0;
-    int b = c + 1;
-    if(a == 0) then
-      return 0
-    else
-      return 1
-    fi
+  int g(int a, int b, int c) is
+    int a = call f(a,b,c);
+    return (a + b + c)
   end
-  skip
+  int a = call f(0,1,2);
+  int[] b = [];
+  string d = "cleopatra";
+  int x = b[5]
 end
