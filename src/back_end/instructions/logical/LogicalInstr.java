@@ -1,16 +1,16 @@
-package back_end.instructions.arithmetic;
+package back_end.instructions.logical;
 
 import back_end.instructions.ArmInstruction;
 import back_end.instructions.Condition;
 import back_end.operands.Operand;
 
-public abstract class ArithmeticInstr extends ArmInstruction {
+public abstract class LogicalInstr extends ArmInstruction {
 
   protected final Operand rd;
   protected final Operand rn;
   protected final String setMark;
 
-  public ArithmeticInstr(String name, Condition cond, boolean set, Operand rd, Operand rn) {
+  public LogicalInstr(String name, Condition cond, boolean set, Operand rd, Operand rn) {
     super(name, cond);
     this.setMark = set ? "S" : "";
     this.rd = rd;

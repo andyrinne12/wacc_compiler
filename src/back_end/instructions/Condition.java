@@ -7,5 +7,11 @@ public enum Condition {
   GT,
   GE,
   LE,
-  LT
+  LT,
+  NONE {
+    @Override
+    public String toString() {
+      return "";
+    }
+  }
 }
