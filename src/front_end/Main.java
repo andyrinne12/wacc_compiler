@@ -4,11 +4,15 @@ import antlr.WACCLexer;
 import antlr.WACCParser;
 import back_end.CodeGen;
 import back_end.FunctionBody;
+import back_end.Utils;
 import back_end.instructions.Condition;
-import back_end.instructions.arithmetic.ADD;
+import back_end.instructions.store.LDR;
+import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.RegisterManager;
 import front_end.AST.ASTNode;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -23,6 +27,7 @@ public class Main {
   public final static int PARSE = 2;          // Create the parse tree and perform syntactic check
   public final static int SEMANTIC_CHECK = 3; // Perform semantic check and build AST
   public final static int ASSEMBLE = 4;       // Generate assembly code for the program
+  public final static int RUN = 5;            // Run the generated program using qemu
 
   public static int EXIT_CODE = 0;
 
@@ -51,6 +56,9 @@ public class Main {
           break;
         case "-a":
           option = ASSEMBLE;
+          break;
+        case "-x":
+          option = RUN;
           break;
         default:
           throw new IllegalArgumentException(
@@ -116,13 +124,41 @@ public class Main {
     CodeGen.checkEmptyFormat();
 
     FunctionBody main = new FunctionBody("main");
-    main.addInstr(new ADD(Condition.NONE, true, RegisterManager.getLocalRegs().get(0),
-        RegisterManager.getLocalRegs().get(1), RegisterManager.getLocalRegs().get(2)));
+    main.addInstr(new LDR(Condition.NONE, RegisterManager.getResultReg(), new ImmInt('s')));
+    main.addInstr(Utils.PUTCHAR);
+    main.addInstr(new LDR(Condition.NONE, RegisterManager.getResultReg(), new ImmInt(0)));
     main.endBody();
 
     CodeGen.funcBodies.add(main);
 
     CodeGen.writeToFile("test.s");
+
+    if (option == ASSEMBLE) {
+      System.exit(EXIT_CODE);
+    }
+
+    ProcessBuilder pb = new ProcessBuilder();
+    pb.command("bash", "-c",
+        "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s test.s && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName");
+    try {
+      Process process = pb.start();
+
+      StringBuilder output = new StringBuilder();
+
+      BufferedReader reader = new BufferedReader(
+          new InputStreamReader(process.getInputStream()));
+
+      String line;
+      while ((line = reader.readLine()) != null) {
+        output.append(line).append("\n");
+      }
+
+      int exitVal = process.waitFor();
+      System.out.println(output.toString());
+      System.out.println("Exit: " + exitVal);
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
 
     System.exit(EXIT_CODE);
   }

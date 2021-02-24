@@ -12,3 +12,5 @@ antlr_config/*.tokens
 
 #ignore idea config
 .idea
+
+*.s

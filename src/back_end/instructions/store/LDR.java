@@ -8,7 +8,7 @@ public class LDR extends ArithmeticInstr {
 
   private final Operand address;
 
-  public LDR(String name, Condition cond, boolean set,
+  public LDR(Condition cond,
       Operand rd, Operand address) {
     super("LDR", cond, false, rd, null);
     this.address = address;

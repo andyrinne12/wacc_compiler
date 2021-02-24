@@ -7,23 +7,28 @@ import java.util.List;
 
 public class PUSH extends ArmInstruction {
 
-  private final String reglist;
+  private final String regList;
 
-  public PUSH(String name, Condition cond, List<Register> reglist) {
+  public PUSH(Register reg) {
+    super("PUSH", Condition.NONE);
+    regList = String.format("{%s}", reg);
+  }
+
+  public PUSH(List<Register> regList) {
     super("PUSH", Condition.NONE);
     StringBuilder str = new StringBuilder("{");
-    for (Register r : reglist) {
+    for (Register r : regList) {
       str.append(r.toString()).append(", ");
     }
-    if (!reglist.isEmpty()) {
+    if (!regList.isEmpty()) {
       str.delete(str.length() - 2, str.length() - 1);
     }
     str.append("}");
-    this.reglist = str.toString();
+    this.regList = str.toString();
   }
 
   @Override
   public String instrPrint() {
-    return String.format("%s %s", name, reglist);
+    return String.format("%s %s", name, regList);
   }
 }

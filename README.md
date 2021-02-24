@@ -21,6 +21,8 @@ Or you can specify what stage do you want your compiler to stop (only ***one*** 
 - ```-t``` : Print the program as a stream of tokens: [SYMBOL, TEXT].
 - ```-p``` : Print the parse tree and check for syntactic errors only.
 - ```-s``` : Check for semantic errors and build the AST.
+- ```-a``` : Generate code into an assembly file.
+- ```-x``` : Executes the generated program and prints to the console.
 
 ----------------------------
 Provided files/directories  

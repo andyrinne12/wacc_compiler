@@ -8,6 +8,14 @@ public class ImmInt extends ImmValue {
     this.value = value;
   }
 
+  public ImmInt(boolean value) {
+    this.value = value ? 1 : 0;
+  }
+
+  public ImmInt(char chr) {
+    this.value = chr;
+  }
+
   @Override
   public String instrPrint() {
     return "=" + value;

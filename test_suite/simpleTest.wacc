@@ -1,13 +1,5 @@
 begin
-  int f(int a, int b, int c) is
-    return (a + b + c)
-  end
-  int g(int a, int b, int c) is
-    int a = call f(a,b,c);
-    return (a + b + c)
-  end
-  int a = call f(0,1,2);
-  int[] b = [];
-  string d = "cleopatra";
-  int x = b[5]
+  print 'a';
+  int x = 5;
+  int a = x + 5
 end

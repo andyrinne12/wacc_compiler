@@ -8,7 +8,7 @@ public class STR extends ArithmeticInstr {
 
   private final Operand address;
 
-  public STR(String name, Condition cond, boolean set,
+  public STR(Condition cond,
       Operand rd, Operand address) {
     super("STR", cond, false, rd, null);
     this.address = address;
