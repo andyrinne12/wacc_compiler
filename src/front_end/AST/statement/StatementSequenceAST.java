@@ -2,6 +2,7 @@ package front_end.AST.statement;
 
 import back_end.FunctionBody;
 import back_end.instructions.Condition;
+import back_end.instructions.arithmetic.ADD;
 import back_end.instructions.arithmetic.SUB;
 import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.Register;
@@ -32,6 +33,10 @@ public class StatementSequenceAST extends ScopingStatementAST {
     }
     for (StatementAST stat : statementSeq) {
       stat.assemble(body, freeRegs);
+    }
+    if (size > 0) {
+      body.addInstr(
+          new ADD(Condition.NONE, false, RegisterManager.SP, RegisterManager.SP, new ImmInt(size)));
     }
   }
 
