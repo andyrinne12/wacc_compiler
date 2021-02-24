@@ -1,8 +1,8 @@
 package back_end.operands.registers;
 
-import back_end.operands.Operand;
+import back_end.operands.InstrOperand;
 
-public class Register implements Operand {
+public class Register extends InstrOperand {
 
   private final int index; // used to represent a register number.
 
@@ -15,7 +15,7 @@ public class Register implements Operand {
   }
 
   @Override
-  public String toString() {
+  public String instrPrint() {
     if (index == 15) {
       return "pc";
     } else if (index == 14) {

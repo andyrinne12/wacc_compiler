@@ -1,6 +1,6 @@
 package back_end.operands.immediate;
 
-public class ImmString {
+public class ImmString extends ImmValue{
 
   private final String text;
   private final String label;
@@ -11,7 +11,7 @@ public class ImmString {
   }
 
   @Override
-  public String toString() {
+  public String instrPrint() {
     return "=" + label;
   }
 

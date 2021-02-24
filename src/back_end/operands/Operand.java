@@ -4,7 +4,6 @@ package back_end.operands;
 
 public interface Operand {
 
-  @Override
-  String toString();
-    
+  String instrPrint();
+
 }

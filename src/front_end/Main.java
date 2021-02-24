@@ -100,14 +100,13 @@ public class Main {
       System.exit(EXIT_CODE);
     }
 
-    // Semantic analyzer
+    /* Semantic analyzer */
     Visitor semanticVisitor = new Visitor();
     ASTNode prog = semanticVisitor.visit(tree);
-    prog.check(); // Perform the actual checking after building it
+    prog.check(); /* Perform the actual checking after building it */
 
     System.exit(EXIT_CODE);
   }
-
 }
 
 class CustomErrorHandler extends BaseErrorListener {

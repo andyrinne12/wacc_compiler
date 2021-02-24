@@ -9,7 +9,7 @@ public class ImmChar extends ImmValue {
   }
 
   @Override
-  public String toString() {
+  public String instrPrint() {
     return "='" + value + "'";
   }
 }
