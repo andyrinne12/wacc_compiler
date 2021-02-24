@@ -6,9 +6,9 @@ public class ShiftedRegister extends InstrOperand {
 
   private final Register reg;
   private final Shift shift;
-  private final Shift offset;
+  private final int offset;
 
-  public ShiftedRegister(Register reg, Shift shift, Shift offset) {
+  public ShiftedRegister(Register reg, Shift shift, int offset) {
     this.reg = reg;
     this.shift = shift;
     this.offset = offset;
@@ -16,6 +16,10 @@ public class ShiftedRegister extends InstrOperand {
 
   @Override
   public String instrPrint() {
-    return reg + ", " + shift + " #" + offset;
+    if (offset == 0) {
+      return String.format("[%s]", reg);
+    } else {
+      return String.format("[%s, #%d]", reg, offset);
+    }
   }
 }

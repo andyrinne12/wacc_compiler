@@ -1,8 +1,8 @@
 package back_end.operands.registers;
 
-import back_end.operands.Operand;
+import back_end.operands.InstrOperand;
 
-public class OffsetRegister implements Operand {
+public class OffsetRegister extends InstrOperand {
 
   private final Register reg;
   private final int offset;
@@ -16,6 +16,10 @@ public class OffsetRegister implements Operand {
 
   @Override
   public String instrPrint() {
-    return String.format("[%s, %s]%s", reg, offset, rw);
+    if (offset == 0) {
+      return String.format("[%s]", reg);
+    } else {
+      return String.format("[%s, #%s]%s", reg, offset, rw);
+    }
   }
 }

@@ -1,0 +1,12 @@
+begin
+  int f(int a, int b, int c, int d) is
+    int x = a + b + c;
+    int y = x;
+    return x
+  end
+  int a = 2;
+  int[] b = [0,1,2];
+  int d = 3;
+  int c = call f(a,d,2,3);
+  print a
+end

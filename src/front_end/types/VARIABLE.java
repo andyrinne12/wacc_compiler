@@ -11,4 +11,5 @@ public class VARIABLE extends IDENTIFIER {
         return type;
     }
 
+
 }

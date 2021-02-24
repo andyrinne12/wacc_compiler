@@ -1,5 +1,0 @@
-begin
-  print 'a';
-  int x = 5;
-  int a = x + 5
-end

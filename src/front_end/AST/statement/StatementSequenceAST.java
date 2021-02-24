@@ -1,6 +1,13 @@
 package front_end.AST.statement;
 
+import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.arithmetic.SUB;
+import back_end.operands.immediate.ImmInt;
+import back_end.operands.registers.Register;
+import back_end.operands.registers.RegisterManager;
 import front_end.SymbolTable;
+import front_end.Visitor;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -13,6 +20,19 @@ public class StatementSequenceAST extends ScopingStatementAST {
     super(ctx, parentSt);
     this.statementSeq = statementSeq;
 
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    enterScope();
+    int size = Visitor.ST.setFrameSize();
+    if (size > 0) {
+      body.addInstr(
+          new SUB(Condition.NONE, false, RegisterManager.SP, RegisterManager.SP, new ImmInt(size)));
+    }
+    for (StatementAST stat : statementSeq) {
+      stat.assemble(body, freeRegs);
+    }
   }
 
   @Override

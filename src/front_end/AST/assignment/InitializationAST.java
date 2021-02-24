@@ -1,10 +1,17 @@
 package front_end.AST.assignment;
 
+import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.store.STR;
+import back_end.operands.registers.OffsetRegister;
+import back_end.operands.registers.Register;
+import back_end.operands.registers.RegisterManager;
 import front_end.AST.statement.StatementAST;
 import front_end.AST.type.TypeAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.TYPE;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class InitializationAST extends StatementAST {
@@ -34,16 +41,12 @@ public class InitializationAST extends StatementAST {
     }
 
     rhs.check();
-    TYPE rhsType = rhs.getEvalType();
 
-    //    if (rhsType == null) {
-//      if (!(type.getTypeObj() instanceof ARRAY)) {
-//        error("Cannot assign the empty array to non-array variable");
-//        success = false;
-//      } else {
-//        rhsType = actType;
-//      }
-//    }
+    if (rhs.getEvalType() == null) {
+      return;
+    }
+
+    TYPE rhsType = rhs.getEvalType();
 
     if ((type.getTypeObj() instanceof ARRAY)) {
       ARRAY array = (ARRAY) type.getTypeObj();
@@ -59,5 +62,14 @@ public class InitializationAST extends StatementAST {
     if (success) {
       Visitor.ST.add(ident.toString(), actType);
     }
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    rhs.assemble(body, freeRegs);
+    int offset = Visitor.ST.storeVariable(ident.toString());
+    STR init = new STR(Condition.NONE, freeRegs.get(0),
+        new OffsetRegister(RegisterManager.SP, offset, false));
+    body.addInstr(init);
   }
 }

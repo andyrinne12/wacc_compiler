@@ -3,15 +3,13 @@ package front_end;
 import antlr.WACCLexer;
 import antlr.WACCParser;
 import back_end.CodeGen;
-import back_end.FunctionBody;
-import back_end.Utils;
-import back_end.instructions.Condition;
-import back_end.instructions.store.LDR;
-import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.RegisterManager;
 import front_end.AST.ASTNode;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.CharStream;
@@ -115,25 +113,31 @@ public class Main {
     ASTNode prog = semanticVisitor.visit(tree);
     prog.check(); /* Perform the actual checking after building it */
 
-    if (option == SEMANTIC_CHECK) {
+    if (option == SEMANTIC_CHECK || EXIT_CODE != 0) {
       System.exit(EXIT_CODE);
     }
 
-    CodeGen.checkStrFormat();
-    CodeGen.checkIntFormat();
-    CodeGen.checkEmptyFormat();
+//    CodeGen.checkStrFormat();
+//    CodeGen.checkIntFormat();
+//    CodeGen.checkEmptyFormat();
 
-    FunctionBody main = new FunctionBody("main");
-    main.addInstr(new LDR(Condition.NONE, RegisterManager.getResultReg(), new ImmInt('s')));
-    main.addInstr(Utils.PUTCHAR);
-    main.addInstr(new LDR(Condition.NONE, RegisterManager.getResultReg(), new ImmInt(0)));
-    main.endBody();
-
-    CodeGen.funcBodies.add(main);
+    prog.assemble(null, RegisterManager.getLocalRegs());
 
     CodeGen.writeToFile("test.s");
 
     if (option == ASSEMBLE) {
+      InputStream input = null;
+      try {
+        input = new FileInputStream("test.s");
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        System.exit(EXIT_CODE);
+      }
+      try {
+        System.out.write(input.readAllBytes());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
       System.exit(EXIT_CODE);
     }
 

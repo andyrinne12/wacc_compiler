@@ -1,5 +1,15 @@
 package front_end.AST.assignment;
 
+import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.arithmetic.ADD;
+import back_end.instructions.branch.BL;
+import back_end.instructions.logical.MOV;
+import back_end.instructions.store.STR;
+import back_end.operands.immediate.ImmInt;
+import back_end.operands.registers.OffsetRegister;
+import back_end.operands.registers.Register;
+import back_end.operands.registers.RegisterManager;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.FUNCTION;
@@ -18,6 +28,22 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     super(ctx);
     this.ident = ident;
     this.argList = argList;
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    assert (identObj != null);
+    for (int i = argList.size() - 1; i >= 0; i--) {
+      ExpressionAST expr = argList.get(i);
+      expr.assemble(body, freeRegs);
+      body.addInstr(new STR(Condition.NONE, freeRegs.get(0),
+          new OffsetRegister(RegisterManager.SP, -4, true)));
+      Visitor.ST.pushOffset();
+    }
+    body.addInstr(new BL(Condition.NONE, ident));
+    body.addInstr(new ADD(Condition.NONE, false, RegisterManager.SP, RegisterManager.SP,
+        new ImmInt(argList.size() * 4)));
+    body.addInstr(new MOV(Condition.NONE, false, freeRegs.get(0), RegisterManager.getResultReg()));
   }
 
   @Override
@@ -46,6 +72,9 @@ public class FunctionCallRightAST extends AssignmentRightAST {
 
   @Override
   public TYPE getEvalType() {
+    if (identObj == null) {
+      return null;
+    }
     FUNCTION func = (FUNCTION) identObj;
     return func.getReturnType();
   }

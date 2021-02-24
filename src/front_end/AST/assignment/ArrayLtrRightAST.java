@@ -1,5 +1,15 @@
 package front_end.AST.assignment;
 
+import back_end.FunctionBody;
+import back_end.Utils;
+import back_end.instructions.Condition;
+import back_end.instructions.logical.MOV;
+import back_end.instructions.store.LDR;
+import back_end.instructions.store.STR;
+import back_end.operands.immediate.ImmInt;
+import back_end.operands.registers.OffsetRegister;
+import back_end.operands.registers.Register;
+import back_end.operands.registers.RegisterManager;
 import front_end.AST.expression.ExpressionAST;
 import front_end.types.ARRAY;
 import front_end.types.TYPE;
@@ -36,6 +46,27 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
       }
     }
     identObj = new ARRAY(firstType, array.size());
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    int size = (((ARRAY) identObj).getSize() + 1) * 4;
+    body.addInstr(
+        new LDR(Condition.NONE, RegisterManager.getResultReg(), new ImmInt(size)));
+    body.addInstr(Utils.MALLOC);
+    body.addInstr(new MOV(Condition.NONE, false, freeRegs.get(0), RegisterManager.getResultReg()));
+    List<Register> freeRegs2 = freeRegs.subList(1, freeRegs.size());
+    for (int i = 0; i < array.size(); i++) {
+      ExpressionAST expr = array.get(i);
+      expr.assemble(body, freeRegs2);
+      body.addInstr(
+          new STR(Condition.NONE, freeRegs2.get(0),
+              new OffsetRegister(freeRegs.get(0), (i + 1) * 4, false)));
+    }
+    body.addInstr(new LDR(Condition.NONE, freeRegs2.get(0), new ImmInt(size)));
+    body.addInstr(
+        new STR(Condition.NONE, freeRegs2.get(0),
+            new OffsetRegister(freeRegs.get(0), 0, false)));
   }
 
   @Override
