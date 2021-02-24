@@ -12,7 +12,7 @@ public abstract class ArmInstruction implements Instruction {
 
   @Override
   public String toString() {
-    return instrPrint();
+    return "\t" + instrPrint();
   }
 
   @Override

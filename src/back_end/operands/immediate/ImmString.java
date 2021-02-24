@@ -16,6 +16,6 @@ public class ImmString extends ImmValue{
   }
 
   public String getHeader() {
-    return label + ":\n\t.word " + text.length() + "\n\t.ascii \"" + text + '"';
+    return "\t" + label + ":\n\t\t.word " + text.length() + "\n\t\t.ascii \"" + text + '"';
   }
 }
