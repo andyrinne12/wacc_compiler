@@ -1,6 +1,7 @@
 package front_end.AST.assignment;
 
 import back_end.FunctionBody;
+import back_end.instructions.Directive;
 import back_end.operands.registers.Register;
 import front_end.Visitor;
 import front_end.types.FUNCTION;
@@ -19,7 +20,8 @@ public class IdentLeftAST extends AssignmentLeftAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    //TODO:?
+    /* Empty */
+    body.addInstr(new Directive("SHOULD BE EMPTY"));
   }
 
   @Override
@@ -45,5 +47,9 @@ public class IdentLeftAST extends AssignmentLeftAST {
     } else {
       return identObj.getType();
     }
+  }
+
+  public String getIdent() {
+    return identName;
   }
 }
