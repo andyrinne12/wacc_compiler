@@ -8,9 +8,13 @@ public class TST extends ArithmeticInstr {
 
   private final Operand operand2;
 
-  public TST(Condition cond, boolean set, Operand rn, Operand operand2) {
-    super("TST", cond, set, null, rn);
+  public TST(Condition cond, Operand rn, Operand operand2) {
+    super("TST", cond, false, null, rn);
     this.operand2 = operand2;
+  }
+
+  public TST(Operand rn, Operand operand2) {
+    this(Condition.NONE, rn, operand2);
   }
 
   @Override

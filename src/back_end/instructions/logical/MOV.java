@@ -13,6 +13,10 @@ public class MOV extends ArithmeticInstr {
     this.operand2 = operand2;
   }
 
+  public MOV(Operand rd, Operand operand2) {
+    this(Condition.NONE, false, rd, operand2);
+  }
+
   @Override
   public String instrPrint() {
     return String.format("%s%s%s %s, %s", name, cond, setMark, rd, operand2);

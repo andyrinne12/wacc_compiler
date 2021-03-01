@@ -14,6 +14,9 @@ public class STR extends ArithmeticInstr {
     this.address = address;
   }
 
+  public STR(Operand rd, Operand address) {
+    this(Condition.NONE, rd, address);
+  }
 
   @Override
   public String instrPrint() {

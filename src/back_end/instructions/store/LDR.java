@@ -14,6 +14,10 @@ public class LDR extends ArithmeticInstr {
     this.address = address;
   }
 
+  public LDR(Operand rd, Operand address) {
+    this(Condition.NONE, rd, address);
+  }
+
 
   @Override
   public String instrPrint() {

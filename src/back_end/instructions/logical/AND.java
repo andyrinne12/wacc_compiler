@@ -13,6 +13,10 @@ public class AND extends ArithmeticInstr {
     this.operand2 = operand2;
   }
 
+  public AND(Operand rd, Operand rn, Operand operand2) {
+    this(Condition.NONE, false, rd, rn, operand2);
+  }
+
   @Override
   public String instrPrint() {
     return String.format("%s%s%s %s, %s, %s", name, cond, setMark, rd, rn, operand2);

@@ -10,6 +10,11 @@ public abstract class ArmInstruction implements Instruction {
     this.cond = cond;
   }
 
+  public ArmInstruction(String name) {
+    this.name = name;
+    this.cond = Condition.NONE;
+  }
+
   @Override
   public String toString() {
     return "\t" + instrPrint();

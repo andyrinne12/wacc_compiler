@@ -16,4 +16,8 @@ public abstract class ArithmeticInstr extends ArmInstruction {
     this.rd = rd;
     this.rn = rn;
   }
+
+  public ArithmeticInstr(String name, boolean set, Operand rd, Operand rn) {
+    this(name, Condition.NONE, set, rd, rn);
+  }
 }

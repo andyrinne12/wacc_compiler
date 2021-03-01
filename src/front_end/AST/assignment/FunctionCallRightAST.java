@@ -36,14 +36,14 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     for (int i = argList.size() - 1; i >= 0; i--) {
       ExpressionAST expr = argList.get(i);
       expr.assemble(body, freeRegs);
-      body.addInstr(new STR(Condition.NONE, freeRegs.get(0),
+      body.addInstr(new STR(freeRegs.get(0),
           new OffsetRegister(RegisterManager.SP, -4, true)));
       Visitor.ST.pushOffset();
     }
     body.addInstr(new BL(Condition.NONE, ident));
-    body.addInstr(new ADD(Condition.NONE, false, RegisterManager.SP, RegisterManager.SP,
+    body.addInstr(new ADD(false, RegisterManager.SP, RegisterManager.SP,
         new ImmInt(argList.size() * 4)));
-    body.addInstr(new MOV(Condition.NONE, false, freeRegs.get(0), RegisterManager.getResultReg()));
+    body.addInstr(new MOV(freeRegs.get(0), RegisterManager.getResultReg()));
   }
 
   @Override
