@@ -14,6 +14,14 @@ public class OffsetRegister extends InstrOperand {
     this.rw = rewrite ? "!" : "";
   }
 
+  public OffsetRegister(Register reg, int offset) {
+    this(reg, offset, false);
+  }
+
+  public OffsetRegister(Register reg) {
+    this(reg, 0);
+  }
+
   @Override
   public String instrPrint() {
     if (offset == 0) {

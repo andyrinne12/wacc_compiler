@@ -23,7 +23,7 @@ public class ProgramAST extends ASTNode {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    FunctionBody main = new FunctionBody("main");
+    FunctionBody main = new FunctionBody("main", true);
     this.body.assemble(main, freeRegs);
     main.endBody();
     CodeGen.funcBodies.add(main);

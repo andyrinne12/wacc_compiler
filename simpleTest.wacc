@@ -2,6 +2,13 @@ begin
   int a = 0;
   int b = 1 + 5;
   pair(int, int) p1 = newpair(1,1);
-  pair(int, int)[] p = [null,p1,null];
-  int x = fst p[1]
+  pair(int, int)[] p = [null,null,p1];
+  int[] ar = [1,2,3,4,5];
+  int[] ar1 = [1,2,3,4,5];
+  int[] ar2 = [1,2,3,4,5];
+  int[] ar3 = [1,2,3,4,5];
+  int[] ar4 = [1,2,3,4,5];
+  int[] ar5 = [1,2,3,4,5];
+  int[][] ar0 = [ar,ar1,ar2,ar3,ar4,ar5];
+  int x = ar0[1][2]
 end

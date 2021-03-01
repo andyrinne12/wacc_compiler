@@ -1,6 +1,17 @@
 package front_end.AST.assignment;
 
 import antlr.WACCParser.ArrayElemContext;
+import back_end.FunctionBody;
+import back_end.Utils;
+import back_end.instructions.arithmetic.ADD;
+import back_end.instructions.logical.MOV;
+import back_end.instructions.store.LDR;
+import back_end.operands.immediate.ImmInt;
+import back_end.operands.registers.OffsetRegister;
+import back_end.operands.registers.Register;
+import back_end.operands.registers.RegisterManager;
+import back_end.operands.registers.Shift;
+import back_end.operands.registers.ShiftedRegister;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
@@ -11,12 +22,31 @@ import java.util.List;
 public class ArrayElemAST extends AssignmentLeftAST {
 
   private final String arrayIdent;
-  private List<ExpressionAST> indices;
+  private final List<ExpressionAST> indices;
 
   public ArrayElemAST(ArrayElemContext ctx, List<ExpressionAST> indices) {
     super(ctx);
     arrayIdent = ctx.IDENT().getText();
     this.indices = indices;
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    /* May need to push registers if all are used (quite improbable) */
+    body.addInstr(new ADD(false, freeRegs.get(0), RegisterManager.SP,
+        new ImmInt(Visitor.ST.getIdentOffset(arrayIdent) + Visitor.ST
+            .getJumpOffset())));
+    List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
+    for (ExpressionAST expr : indices) {
+      expr.assemble(body, freeRegs1);
+      body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0))));
+      body.addInstr(new MOV(RegisterManager.getParamRegs().get(0), freeRegs1.get(0)));
+      body.addInstr(new MOV(RegisterManager.getParamRegs().get(1), freeRegs.get(0)));
+      body.addInstr(Utils.CHECK_ARRAY_BOUNDS);
+      body.addInstr(new ADD(false, freeRegs.get(0), freeRegs.get(0), new ImmInt(4)));
+      body.addInstr(new ADD(false, freeRegs.get(0), freeRegs.get(0),
+          new ShiftedRegister(freeRegs1.get(0), Shift.LSL, new ImmInt(2))));
+    }
   }
 
   @Override
@@ -41,10 +71,14 @@ public class ArrayElemAST extends AssignmentLeftAST {
 
   @Override
   public TYPE getEvalType() {
-    if (!(identObj instanceof ARRAY)) {
-      return null;
+    TYPE type = (TYPE) identObj;
+    for (int i = 0; i < indices.size(); i++) {
+      if (!(type instanceof ARRAY)) {
+        return null;
+      }
+      ARRAY array = (ARRAY) type;
+      type = array.getElemType();
     }
-    ARRAY array = (ARRAY) identObj;
-    return array.getElemType();
+    return type;
   }
 }

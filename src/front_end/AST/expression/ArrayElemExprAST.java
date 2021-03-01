@@ -1,7 +1,12 @@
 package front_end.AST.expression;
 
+import back_end.FunctionBody;
+import back_end.instructions.store.LDR;
+import back_end.operands.registers.OffsetRegister;
+import back_end.operands.registers.Register;
 import front_end.AST.assignment.ArrayElemAST;
 import front_end.types.TYPE;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 // the AST for accessing elements in an array, exp: arr[1], or arr[1][0].
@@ -12,6 +17,12 @@ public class ArrayElemExprAST extends ExpressionAST {
   public ArrayElemExprAST(ParserRuleContext ctx, ArrayElemAST arrayElemAST) {
     super(ctx);
     this.arrayElemAST = arrayElemAST;
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    arrayElemAST.assemble(body, freeRegs);
+    body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0), 0, false)));
   }
 
   @Override
