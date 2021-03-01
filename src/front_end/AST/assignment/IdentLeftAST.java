@@ -1,11 +1,7 @@
 package front_end.AST.assignment;
 
 import back_end.FunctionBody;
-import back_end.instructions.Condition;
-import back_end.instructions.store.LDR;
-import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
-import back_end.operands.registers.RegisterManager;
 import front_end.Visitor;
 import front_end.types.FUNCTION;
 import front_end.types.TYPE;
@@ -23,9 +19,7 @@ public class IdentLeftAST extends AssignmentLeftAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    int offset = Visitor.ST.getIdentOffset(identName) + Visitor.ST.getJumpOffset();
-    body.addInstr(new LDR(Condition.NONE, freeRegs.get(0),
-        new OffsetRegister(RegisterManager.SP, offset, false)));
+    //TODO:?
   }
 
   @Override

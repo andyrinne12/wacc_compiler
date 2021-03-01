@@ -20,4 +20,8 @@ public class ImmInt extends ImmValue {
   public String instrPrint() {
     return "=" + value;
   }
+
+  public int getValue() {
+    return value;
+  }
 }
