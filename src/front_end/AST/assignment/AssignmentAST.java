@@ -1,6 +1,7 @@
 package front_end.AST.assignment;
 
 import back_end.FunctionBody;
+import back_end.instructions.Condition;
 import back_end.instructions.store.STR;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
@@ -8,6 +9,7 @@ import back_end.operands.registers.RegisterManager;
 import front_end.AST.statement.StatementAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
+import front_end.types.BOOLEAN;
 import front_end.types.IDENTIFIER;
 import front_end.types.TYPE;
 import java.util.List;
@@ -27,14 +29,20 @@ public class AssignmentAST extends StatementAST {
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     rhs.assemble(body, freeRegs);
+
+    Condition cond = Condition.NONE;
+    if (rhs.getEvalType() instanceof BOOLEAN) {
+      cond = Condition.B;
+    }
+
     if (lhs instanceof IdentLeftAST) {
       IdentLeftAST ident = (IdentLeftAST) lhs;
       int offset = Visitor.ST.getIdentOffset(ident.getIdent()) + Visitor.ST.getJumpOffset();
-      body.addInstr(new STR(freeRegs.get(0), new OffsetRegister(RegisterManager.SP, offset)));
+      body.addInstr(new STR(cond, freeRegs.get(0), new OffsetRegister(RegisterManager.SP, offset)));
     } else {
       List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
       lhs.assemble(body, freeRegs1);
-      body.addInstr(new STR(freeRegs.get(0), new OffsetRegister(freeRegs1.get(0))));
+      body.addInstr(new STR(cond, freeRegs.get(0), new OffsetRegister(freeRegs1.get(0))));
     }
   }
 

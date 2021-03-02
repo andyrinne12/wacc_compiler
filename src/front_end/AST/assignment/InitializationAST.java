@@ -6,10 +6,12 @@ import back_end.instructions.store.STR;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
+import front_end.AST.expression.BoolExprAST;
 import front_end.AST.statement.StatementAST;
 import front_end.AST.type.TypeAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
+import front_end.types.BOOLEAN;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -68,7 +70,11 @@ public class InitializationAST extends StatementAST {
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     rhs.assemble(body, freeRegs);
     int offset = Visitor.ST.storeVariable(ident.toString());
-    STR init = new STR(Condition.NONE, freeRegs.get(0),
+    Condition cond = Condition.NONE;
+    if (rhs.getEvalType() instanceof BOOLEAN) {
+      cond = Condition.B;
+    }
+    STR init = new STR(cond, freeRegs.get(0),
         new OffsetRegister(RegisterManager.SP, offset, false));
     body.addInstr(init);
   }

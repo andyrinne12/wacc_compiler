@@ -8,6 +8,7 @@ public enum Condition {
   GE,
   LE,
   LT,
+  B,
   NONE {
     @Override
     public String toString() {
