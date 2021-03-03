@@ -45,4 +45,8 @@ public class BoolExprAST extends ExpressionAST {
   public TYPE getEvalType() {
     return identObj.getType();
   }
+
+  public boolean getBoolVal() {
+    return boolVal;
+  }
 }

@@ -41,4 +41,8 @@ public class SignedIntExprAST extends ExpressionAST {
   public TYPE getEvalType() {
     return identObj.getType();
   }
+
+  public int getValue() {
+    return value;
+  }
 }

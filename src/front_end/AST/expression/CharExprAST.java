@@ -38,4 +38,8 @@ public class CharExprAST extends ExpressionAST {
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     body.addInstr(new MOV(freeRegs.get(0), new ImmInt(charVal.charAt(0))));
   }
+
+  public int getCharInt() {
+    return charVal.replace("\'", "").codePointAt(0);
+  }
 }

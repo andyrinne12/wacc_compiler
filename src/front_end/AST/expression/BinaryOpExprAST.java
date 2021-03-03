@@ -1,5 +1,7 @@
 package front_end.AST.expression;
 
+import static java.util.Objects.isNull;
+
 import front_end.Visitor;
 import front_end.types.*;
 import java.util.ArrayList;
@@ -141,10 +143,11 @@ public class BinaryOpExprAST extends ExpressionAST {
     expr2.assemble(body, freeRegs1);
     Register rhsReg = freeRegs1.get(0);
 
-    switch(binaryOp) {
+    switch (binaryOp) {
       case "+":
         body.addInstr(new ADD(false, lhsReg, lhsReg, rhsReg));
-        body.addInstr(new BL(Condition.VS, "p_throw_overflow_error")); // TO-DO: implement the p_throw_overflow_error function.
+        body.addInstr(new BL(Condition.VS,
+            "p_throw_overflow_error")); // TO-DO: implement the p_throw_overflow_error function.
         break;
       case "-":
         body.addInstr(new SUB(false, lhsReg, lhsReg, rhsReg));
@@ -152,7 +155,8 @@ public class BinaryOpExprAST extends ExpressionAST {
         break;
       case "*":
         body.addInstr(new SMULL(lhsReg, rhsReg, lhsReg, rhsReg));
-        body.addInstr(new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
+        body.addInstr(
+            new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
         body.addInstr(new BL(Condition.NE, "p_throw_overflow_error"));
         break;
       case "/":
@@ -162,9 +166,11 @@ public class BinaryOpExprAST extends ExpressionAST {
         Register R1 = RegisterManager.getParamRegs().get(1);
         body.addInstr(new MOV(R0, lhsReg));
         body.addInstr(new MOV(R1, rhsReg));
-        body.addInstr(new BL(Condition.NONE, "p_divide_by_zero")); // TO-DO: implement the p_divide_by_zero function.
+        body.addInstr(new BL(Condition.NONE,
+            "p_divide_by_zero")); // TO-DO: implement the p_divide_by_zero function.
         body.addInstr(new BL(Condition.NONE, "__aeabi_idiv"));
-        body.addInstr(new MOV(lhsReg, R0)); // obtain the result of the division from R0, and put it into lhsReg.
+        body.addInstr(new MOV(lhsReg,
+            R0)); // obtain the result of the division from R0, and put it into lhsReg.
         break;
       case "%":
         // for mod, we make use of an external ARM API function called __aeabi_idivmod. 
@@ -174,7 +180,8 @@ public class BinaryOpExprAST extends ExpressionAST {
         body.addInstr(new MOV(R1, rhsReg));
         body.addInstr(new BL(Condition.NONE, "p_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idivmod"));
-        body.addInstr(new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
+        body.addInstr(
+            new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
         break;
       case ">":
         body.addInstr(new CMP(lhsReg, rhsReg));
@@ -213,5 +220,115 @@ public class BinaryOpExprAST extends ExpressionAST {
         body.addInstr(new OR(lhsReg, lhsReg, rhsReg));
         break;
     }
+  }
+
+  public Boolean booleanTranslation() {
+    Boolean result = null;
+    Integer rhs = null;
+    Integer lhs = null;
+    if (expr1 instanceof BinaryOpExprAST) {
+      if (((BinaryOpExprAST) expr1).returnType.equals("bool")) {
+        if (!isNull(expr1)) {
+          lhs = ((BinaryOpExprAST) expr1).booleanTranslation() ? 1 : 0;
+        }
+      } else { // return type is int
+        lhs = ((BinaryOpExprAST) expr1).integerTranslation();
+      }
+    } else if (expr1 instanceof SignedIntExprAST) {
+      lhs = ((SignedIntExprAST) expr1).getValue();
+    } else if (expr1 instanceof BoolExprAST) {
+      lhs = ((BoolExprAST) expr1).getBoolVal() ? 1 : 0;
+    } else if (expr1 instanceof CharExprAST) {
+      lhs = ((CharExprAST) expr1).getCharInt();
+    }
+
+    if (expr2 instanceof BinaryOpExprAST) {
+      if (((BinaryOpExprAST) expr2).returnType.equals("bool")) {
+        if (!isNull(lhs)) {
+          rhs = ((BinaryOpExprAST) expr2).booleanTranslation() ? 1 : 0;
+        }
+      } else {
+        rhs = ((BinaryOpExprAST) expr2).integerTranslation();
+      }
+    } else if (expr2 instanceof SignedIntExprAST) {
+      rhs = ((SignedIntExprAST) expr2).getValue();
+    } else if (expr2 instanceof BoolExprAST) {
+      rhs = ((BoolExprAST) expr2).getBoolVal() ? 1 : 0;
+    } else if (expr2 instanceof CharExprAST) {
+      rhs = ((CharExprAST) expr2).getCharInt();
+    }
+
+    if (lhs != null && rhs != null) {
+      switch (binaryOp) {
+        case ">":
+          result = lhs > rhs;
+          break;
+        case ">=":
+          result = lhs >= rhs;
+          break;
+        case "<":
+          result = lhs < rhs;
+          break;
+        case "<=":
+          result = lhs <= rhs;
+          break;
+        case "==":
+          result = lhs.equals(rhs);
+          break;
+        case "!=":
+          result = !lhs.equals(rhs);
+          break;
+        case "&&":
+          result = (lhs == 1) && (rhs == 1);
+          break;
+        case "||":
+          result = (lhs == 1) || (rhs == 1);
+          break;
+      }
+    }
+    return result;
+  }
+
+  private Integer integerTranslation() {
+    Integer result = null;
+    Integer rhs = null;
+    Integer lhs = null;
+    if(expr1 instanceof BinaryOpExprAST) {
+      lhs = ((BinaryOpExprAST) expr1).integerTranslation();
+    } else if(expr1 instanceof SignedIntExprAST) {
+      lhs = ((SignedIntExprAST) expr1).getValue();
+    }
+
+    if(expr2 instanceof BinaryOpExprAST) {
+      rhs = ((BinaryOpExprAST) expr2).integerTranslation();
+    } else if(expr2 instanceof SignedIntExprAST) {
+      rhs = ((SignedIntExprAST) expr2).getValue();
+    }
+
+    if(lhs != null && rhs != null) {
+      switch(binaryOp) {
+        case "+":
+          result = lhs + rhs;
+          break;
+        case "-":
+          result = lhs - rhs;
+          break;
+        case "*":
+          result = lhs * rhs;
+          break;
+        case "/":
+          if(rhs != 0) {
+            result = lhs / rhs;
+          }
+          break;
+        case "%":
+          if(rhs != 0) {
+            result = lhs % rhs;
+          }
+          break;
+      }
+
+    }
+    return result;
   }
 }
