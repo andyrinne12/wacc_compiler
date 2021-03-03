@@ -1,5 +1,7 @@
 package front_end.AST.function;
 
+import back_end.FunctionBody;
+import back_end.operands.registers.Register;
 import front_end.AST.ASTNode;
 import front_end.types.PARAM;
 import front_end.types.TYPE;
@@ -45,4 +47,10 @@ public class ParamListAST extends ASTNode {
     return paramTypes;
   }
 
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    for(ParamAST p : parameters) {
+      p.assemble(body, freeRegs);
+    }
+  }
 }

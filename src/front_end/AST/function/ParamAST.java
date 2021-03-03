@@ -1,8 +1,11 @@
 package front_end.AST.function;
 
+import back_end.FunctionBody;
+import back_end.operands.registers.Register;
 import front_end.AST.ASTNode;
 import front_end.AST.type.TypeAST;
 import front_end.types.PARAM;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ParamAST extends ASTNode {
@@ -44,5 +47,10 @@ public class ParamAST extends ASTNode {
 
   public String getIdent() {
     return ident;
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+
   }
 }
