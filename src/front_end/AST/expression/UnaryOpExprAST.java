@@ -3,7 +3,19 @@ package front_end.AST.expression;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.TYPE;
+
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
+
+import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.arithmetic.RSBS;
+import back_end.instructions.logical.EOR;
+import back_end.instructions.store.LDR;
+import back_end.operands.immediate.ImmInt;
+import back_end.operands.registers.OffsetRegister;
+import back_end.operands.registers.Register;
 
 public class UnaryOpExprAST extends ExpressionAST {
 
@@ -69,5 +81,35 @@ public class UnaryOpExprAST extends ExpressionAST {
   @Override
   public TYPE getEvalType() {
     return identObj.getType();
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    expression.assemble(body, freeRegs);
+
+    // get the register that is holding the result of expression.
+    Register reg = freeRegs.get(0);
+
+    switch(unaryOp) {
+      case "!":
+        // to obtain the effect of NOT, we use Exclusive OR along with boolean true.
+        body.addInstr(new EOR(reg, reg, new ImmInt(true)));
+        break;
+      case "-":
+        body.addInstr(new RSBS(false, reg, reg));
+
+        // TO-DO: need to check for integer overflow during runtime.
+
+        break;
+      case "len":
+        body.addInstr(new LDR(Condition.NONE, reg, new OffsetRegister(reg)));
+        break;
+      case "ord": 
+        // Do nothing
+        break;
+      case "chr":
+        // Do nothing
+        break;
+    }
   }
 }

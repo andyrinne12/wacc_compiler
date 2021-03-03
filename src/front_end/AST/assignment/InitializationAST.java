@@ -12,6 +12,7 @@ import front_end.AST.type.TypeAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -71,9 +72,11 @@ public class InitializationAST extends StatementAST {
     rhs.assemble(body, freeRegs);
     int offset = Visitor.ST.storeVariable(ident.toString());
     Condition cond = Condition.NONE;
-    if (rhs.getEvalType() instanceof BOOLEAN) {
+    
+    if ((rhs.getEvalType() instanceof BOOLEAN) || (rhs.getEvalType() instanceof CHAR)) {
       cond = Condition.B;
     }
+
     STR init = new STR(cond, freeRegs.get(0),
         new OffsetRegister(RegisterManager.SP, offset, false));
     body.addInstr(init);

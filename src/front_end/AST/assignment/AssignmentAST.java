@@ -10,6 +10,7 @@ import front_end.AST.statement.StatementAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.IDENTIFIER;
 import front_end.types.TYPE;
 import java.util.List;
@@ -31,7 +32,7 @@ public class AssignmentAST extends StatementAST {
     rhs.assemble(body, freeRegs);
 
     Condition cond = Condition.NONE;
-    if (rhs.getEvalType() instanceof BOOLEAN) {
+    if ((rhs.getEvalType() instanceof BOOLEAN) || (rhs.getEvalType() instanceof CHAR)) {
       cond = Condition.B;
     }
 
