@@ -1,8 +1,14 @@
 package front_end.AST.statement;
 
+import back_end.FunctionBody;
+import back_end.instructions.arithmetic.CMP;
+import back_end.operands.registers.Register;
+import front_end.AST.expression.BinaryOpExprAST;
+import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class IfAST extends StatementAST {
@@ -31,6 +37,28 @@ public class IfAST extends StatementAST {
     //check that the statements are valid
     thenSeq.check();
     elseSeq.check();
+  }
+
+  private boolean isTrue() {
+    if (expression instanceof BoolExprAST) {
+      return ((BoolExprAST) expression).getBoolVal() == true;
+    } else if (expression instanceof BinaryOpExprAST) {
+      if (((BinaryOpExprAST) expression).booleanTranslation() != null) {
+        return ((BinaryOpExprAST) expression).booleanTranslation();
+      }
+    }
+    return false;
+  }
+
+  private boolean isFalse() {
+    if (expression instanceof BoolExprAST) {
+      return ((BoolExprAST) expression).getBoolVal() == false;
+    } else if (expression instanceof BinaryOpExprAST) {
+      if (((BinaryOpExprAST) expression).booleanTranslation() != null) {
+        return !((BinaryOpExprAST) expression).booleanTranslation();
+      }
+    }
+    return false;
   }
 
   public boolean checkReturn() {
