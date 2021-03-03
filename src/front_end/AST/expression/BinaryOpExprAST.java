@@ -1,12 +1,18 @@
 package front_end.AST.expression;
 
 import front_end.Visitor;
-import front_end.types.ARRAY;
-import front_end.types.PAIR;
-import front_end.types.TYPE;
+import front_end.types.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
+
+import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.arithmetic.*;
+import back_end.instructions.branch.BL;
+import back_end.instructions.logical.*;
+import back_end.operands.immediate.ImmInt;
+import back_end.operands.registers.*;
 
 public class BinaryOpExprAST extends ExpressionAST {
 
@@ -15,6 +21,8 @@ public class BinaryOpExprAST extends ExpressionAST {
   private ExpressionAST expr2;
   private List<TYPE> expectedElemTypes;
   private String returnType;
+
+  private final int SHIFT_VALUE = 31;
 
   public BinaryOpExprAST(ParserRuleContext ctx, ExpressionAST expr1, ExpressionAST expr2,
       String binaryOp) {
@@ -122,5 +130,88 @@ public class BinaryOpExprAST extends ExpressionAST {
   @Override
   public TYPE getEvalType() {
     return identObj.getType();
+  }
+
+  @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    expr1.assemble(body, freeRegs);
+    Register lhsReg = freeRegs.get(0);
+
+    List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
+    expr2.assemble(body, freeRegs1);
+    Register rhsReg = freeRegs1.get(0);
+
+    switch(binaryOp) {
+      case "+":
+        body.addInstr(new ADD(false, lhsReg, lhsReg, rhsReg));
+        body.addInstr(new BL(Condition.VS, "p_throw_overflow_error")); // TO-DO: implement the p_throw_overflow_error function.
+        break;
+      case "-":
+        body.addInstr(new SUB(false, lhsReg, lhsReg, rhsReg));
+        body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
+        break;
+      case "*":
+        body.addInstr(new SMULL(lhsReg, rhsReg, lhsReg, rhsReg));
+        body.addInstr(new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
+        body.addInstr(new BL(Condition.NE, "p_throw_overflow_error"));
+        break;
+      case "/":
+        // for divide, we make use of an external ARM API function called __aeabi_idiv. 
+        // It divides the value stored in R0 by the value stored in R1.
+        Register R0 = RegisterManager.getParamRegs().get(0);
+        Register R1 = RegisterManager.getParamRegs().get(1);
+        body.addInstr(new MOV(R0, lhsReg));
+        body.addInstr(new MOV(R1, rhsReg));
+        body.addInstr(new BL(Condition.NONE, "p_divide_by_zero")); // TO-DO: implement the p_divide_by_zero function.
+        body.addInstr(new BL(Condition.NONE, "__aeabi_idiv"));
+        body.addInstr(new MOV(lhsReg, R0)); // obtain the result of the division from R0, and put it into lhsReg.
+        break;
+      case "%":
+        // for mod, we make use of an external ARM API function called __aeabi_idivmod. 
+        R0 = RegisterManager.getParamRegs().get(0);
+        R1 = RegisterManager.getParamRegs().get(1);
+        body.addInstr(new MOV(R0, lhsReg));
+        body.addInstr(new MOV(R1, rhsReg));
+        body.addInstr(new BL(Condition.NONE, "p_divide_by_zero"));
+        body.addInstr(new BL(Condition.NONE, "__aeabi_idivmod"));
+        body.addInstr(new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
+        break;
+      case ">":
+        body.addInstr(new CMP(lhsReg, rhsReg));
+        body.addInstr(new MOV(Condition.GT, false, lhsReg, new ImmInt(1)));
+        body.addInstr(new MOV(Condition.LE, false, lhsReg, new ImmInt(0)));
+        break;
+      case ">=":
+        body.addInstr(new CMP(lhsReg, rhsReg));
+        body.addInstr(new MOV(Condition.GE, false, lhsReg, new ImmInt(1)));
+        body.addInstr(new MOV(Condition.LT, false, lhsReg, new ImmInt(0)));
+        break;
+      case "<":
+        body.addInstr(new CMP(lhsReg, rhsReg));
+        body.addInstr(new MOV(Condition.LT, false, lhsReg, new ImmInt(1)));
+        body.addInstr(new MOV(Condition.GE, false, lhsReg, new ImmInt(0)));
+        break;
+      case "<=":
+        body.addInstr(new CMP(lhsReg, rhsReg));
+        body.addInstr(new MOV(Condition.LE, false, lhsReg, new ImmInt(1)));
+        body.addInstr(new MOV(Condition.GT, false, lhsReg, new ImmInt(0)));
+        break;
+      case "==":
+        body.addInstr(new CMP(lhsReg, rhsReg));
+        body.addInstr(new MOV(Condition.EQ, false, lhsReg, new ImmInt(1)));
+        body.addInstr(new MOV(Condition.NE, false, lhsReg, new ImmInt(0)));
+        break;
+      case "!=":
+        body.addInstr(new CMP(lhsReg, rhsReg));
+        body.addInstr(new MOV(Condition.NE, false, lhsReg, new ImmInt(1)));
+        body.addInstr(new MOV(Condition.EQ, false, lhsReg, new ImmInt(0)));
+        break;
+      case "&&":
+        body.addInstr(new AND(lhsReg, lhsReg, rhsReg));
+        break;
+      case "||":
+        body.addInstr(new OR(lhsReg, lhsReg, rhsReg));
+        break;
+    }
   }
 }

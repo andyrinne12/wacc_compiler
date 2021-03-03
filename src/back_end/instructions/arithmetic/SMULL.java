@@ -8,9 +8,8 @@ public class SMULL extends ArithmeticInstr {
   private final Operand rdHi;
   private final Operand rm;
 
-  public SMULL(String name,
-      Operand rdLo, Operand rdHi, Operand rn, Operand rm) {
-    super(name, false, null, rn);
+  public SMULL(Operand rdLo, Operand rdHi, Operand rn, Operand rm) {
+    super("SMULL", false, null, rn);
     this.rdLo = rdLo;
     this.rdHi = rdHi;
     this.rm = rm;
