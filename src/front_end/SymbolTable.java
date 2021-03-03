@@ -1,5 +1,7 @@
 package front_end;
 
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.FUNCTION;
 import front_end.types.IDENTIFIER;
 import java.util.HashMap;
@@ -54,11 +56,17 @@ public class SymbolTable {
     int size = 0;
     for (IDENTIFIER ident : dictionary.values()) {
       if (!(ident instanceof FUNCTION || ident == null)) {
-        size += 4;
+        if (ident instanceof BOOLEAN || ident instanceof CHAR) {
+          size += 1;
+        }
+        else {
+          size += 4;
+        }
       }
     }
     frameSize = size;
-    nextOffset = frameSize - 4;
+    // nextOffset = frameSize - 4;
+    nextOffset = frameSize;
     return frameSize;
   }
 
@@ -68,12 +76,25 @@ public class SymbolTable {
 
   public int storeVariable(String name) {
     assert (nextOffset >= 0);
-    stackOffsets.put(name, nextOffset);
-    int ret = nextOffset;
-    if (nextOffset > 0) {
+    // stackOffsets.put(name, nextOffset);
+    // int ret = nextOffset;
+    // if (nextOffset > 0) {
+    //   nextOffset -= 4;
+    // }
+    // return ret;
+
+    // need to take into account what kind of data the variable is storing.
+    // if storing a bool or a char, we just need to use 1 byte.
+    IDENTIFIER ident = dictionary.get(name);
+    if ((ident instanceof BOOLEAN) || (ident instanceof CHAR)) {
+      nextOffset -= 1;
+    }
+    else {
       nextOffset -= 4;
     }
-    return ret;
+    stackOffsets.put(name, nextOffset);
+
+    return nextOffset;
   }
 
   public void pushOffset() {
