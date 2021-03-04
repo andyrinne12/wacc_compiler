@@ -46,11 +46,13 @@ expr: BOOL_LTR                                                        #boolEXP
   | PAIR_LTR                                                          #pairLtrEXP
   | IDENT                                                             #identEXP
   | arrayElem                                                         #arrayElemEXP
-  | expr binOp expr                                                   #binOpEXP
-  | expr boolOp expr                                                  #boolOpEXP
   | (sign=(PLUS | MINUS)?) UINT_LTR {inBounds($sign, $UINT_LTR)}?     #signedIntEXP
-  | unaryOp expr                                                      #unOpEXP
   | LBR expr RBR                                                      #bracketEXP
+  | unaryOp expr                                                      #unOpEXP
+  | expr p1op expr                                                    #p1EXP
+  | expr p2op expr                                                    #p2EXP
+  | expr p3op expr                                                    #p3EXP
+  | expr p4op expr                                                    #p4EXP
 ;
 
 lhs: IDENT                           #identLHS
@@ -95,5 +97,7 @@ pairElemType: TYPE                  #primTypePET
 
 unaryOp: op=(NOT | MINUS | LEN | ORD | CHR);
 
-boolOp: op=(AND | OR );
-binOp: op=(STAR | DIV | MOD | GREATER | GREATER_EQUAL | LESSER | LESSER_EQUAL | EQUAL | NOT_EQUAL | PLUS | MINUS);
+p4op: op=(AND | OR );
+p3op: op=(GREATER | GREATER_EQUAL | LESSER | LESSER_EQUAL | EQUAL | NOT_EQUAL);
+p2op: op=(PLUS | MINUS);
+p1op: op=(STAR | DIV | MOD);
