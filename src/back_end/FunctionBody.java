@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FunctionBody {
 
-  private final List<Instruction> instrList = new ArrayList<>();
+  private final static List<Instruction> instrList = new ArrayList<>();
   private final String name;
   private boolean main = false;
 
@@ -37,7 +37,7 @@ public class FunctionBody {
     return name;
   }
 
-  public void addInstr(Instruction instr) {
+  public static void addInstr(Instruction instr) {
     instrList.add(instr);
   }
 
