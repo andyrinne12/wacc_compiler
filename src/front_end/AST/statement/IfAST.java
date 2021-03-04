@@ -1,6 +1,11 @@
 package front_end.AST.statement;
 
 import back_end.FunctionBody;
+<<<<<<< HEAD
+=======
+import back_end.instructions.arithmetic.CMP;
+import back_end.operands.immediate.ImmInt;
+>>>>>>> 082c6359956b142b65a07fa575f1d1bec9f32912
 import back_end.operands.registers.Register;
 import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.ExpressionAST;
