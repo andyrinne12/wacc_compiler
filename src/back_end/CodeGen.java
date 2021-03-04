@@ -13,13 +13,16 @@ public class CodeGen {
   public static List<FunctionBody> funcBodies = new ArrayList<>();
 
   private static int dataCounter = 0;
+  private static int labelCounter = 0;
   private static ImmString intFormat;
   private static ImmString strFormat;
   private static ImmString emptyFormat;
 
-  public static void addData(String text) {
-    textData.add(new ImmString(text, dataCounter));
+  public static ImmString addData(String text) {
+    ImmString data = new ImmString(text, dataCounter);
+    textData.add(data);
     dataCounter++;
+    return data;
   }
 
   public static void checkIntFormat() {
@@ -46,6 +49,12 @@ public class CodeGen {
     }
   }
 
+  public static String getLabel() {
+    String newLabel = "L" + labelCounter;
+    labelCounter++;
+    return "L" + newLabel;
+  }
+
   public static void writeToFile(String fileName) {
     PrintWriter out;
     try {
@@ -66,11 +75,10 @@ public class CodeGen {
 
     out.println();
 
-    for(FunctionBody func : funcBodies){
+    for (FunctionBody func : funcBodies) {
       out.println(func);
     }
 
-    out.flush();
     out.close();
   }
 }

@@ -13,21 +13,32 @@ import java.util.List;
 
 public class FunctionBody {
 
-  private final static List<Instruction> instrList = new ArrayList<>();
+  private final List<Instruction> instrList = new ArrayList<>();
   private final String name;
   private boolean main = false;
+  private boolean util = false;
+  private boolean pushPop = true;
 
-  public FunctionBody(String name, boolean main) {
-    this(name);
+  public FunctionBody(String name, boolean main, boolean util, boolean pushPop) {
     this.main = main;
+    this.util = util;
+    if (!main && util) {
+      this.name = "p_" + name;
+    } else {
+      this.name = name;
+    }
+    this.pushPop = pushPop;
+    Label title = new Label(this.name);
+    PUSH pushLink = new PUSH(RegisterManager.LR);
+    instrList.add(title);
+    if (pushPop) {
+      instrList.add(pushLink);
+    }
   }
 
   public FunctionBody(String name) {
-    this.name = name;
-    if (main) {
-      name = "f_" + name;
-    }
-    Label title = new Label(name);
+    this.name = "f_" + name;
+    Label title = new Label(this.name);
     PUSH pushLink = new PUSH(RegisterManager.LR);
     instrList.add(title);
     instrList.add(pushLink);
@@ -37,11 +48,14 @@ public class FunctionBody {
     return name;
   }
 
-  public static void addInstr(Instruction instr) {
+  public void addInstr(Instruction instr) {
     instrList.add(instr);
   }
 
   public void endBody() {
+    if (!pushPop) {
+      return;
+    }
     if (main) {
       instrList.add(new LDR(RegisterManager.getResultReg(), new ImmInt(0)));
     }
@@ -59,7 +73,6 @@ public class FunctionBody {
     for (Instruction instr : instrList) {
       str.append('\t').append(instr).append('\n');
     }
-    str.append('\n');
     return str.toString();
   }
 }

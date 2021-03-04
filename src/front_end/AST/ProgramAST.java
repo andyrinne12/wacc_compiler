@@ -2,6 +2,7 @@ package front_end.AST;
 
 import back_end.CodeGen;
 import back_end.FunctionBody;
+import back_end.Utils;
 import back_end.operands.registers.Register;
 import front_end.AST.function.FunctionDeclAST;
 import front_end.AST.statement.StatementSequenceAST;
@@ -23,10 +24,13 @@ public class ProgramAST extends ASTNode {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    FunctionBody main = new FunctionBody("main", true);
+    FunctionBody main = new FunctionBody("main", true, false, true);
     this.body.assemble(main, freeRegs);
     main.endBody();
     CodeGen.funcBodies.add(main);
+
+    CodeGen.funcBodies.add(Utils.printBool());
+    CodeGen.funcBodies.add(Utils.printInt());
   }
 
   @Override
