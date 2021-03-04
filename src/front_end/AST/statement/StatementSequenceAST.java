@@ -37,6 +37,7 @@ public class StatementSequenceAST extends ScopingStatementAST {
       body.addInstr(
           new ADD(false, RegisterManager.SP, RegisterManager.SP, new ImmInt(size)));
     }
+    exitScope();
   }
 
   @Override
