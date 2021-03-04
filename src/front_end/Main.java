@@ -122,13 +122,16 @@ public class Main {
 //    CodeGen.checkEmptyFormat();
 
     prog.assemble(null, RegisterManager.getLocalRegs());
-
-    CodeGen.writeToFile("test.s");
+    
+    String[] parts = filename.split("/");
+    String tempFilename = parts[parts.length - 1].split("\\.")[0];
+    String assemblyFileName = tempFilename + ".s";
+    CodeGen.writeToFile(assemblyFileName);
 
     if (option == ASSEMBLE) {
       InputStream input = null;
       try {
-        input = new FileInputStream("test.s");
+        input = new FileInputStream(assemblyFileName);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
         System.exit(EXIT_CODE);
@@ -143,7 +146,9 @@ public class Main {
 
     ProcessBuilder pb = new ProcessBuilder();
     pb.command("bash", "-c",
-        "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s test.s && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName");
+        "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s" +
+         assemblyFileName + 
+         " && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName");
     try {
       Process process = pb.start();
 
