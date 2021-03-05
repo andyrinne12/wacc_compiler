@@ -1,7 +1,14 @@
 package front_end.AST.statement;
 
+import back_end.CodeGen;
 import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.Label;
+import back_end.instructions.arithmetic.CMP;
+import back_end.instructions.branch.B;
+import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.Register;
+import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import java.util.List;
@@ -20,7 +27,21 @@ public class WhileAST extends StatementAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
+    if(isFalse()){
+      return;
+    }
+    /* Always true case not optimized yet */
+    String condLabel = CodeGen.getLabel();
+    String bodyLabel = CodeGen.getLabel();
+
+    body.addInstr(new B(Condition.NONE, condLabel));
+    body.addInstr(new Label(bodyLabel));
     statSeq.assemble(body, freeRegs);
+
+    body.addInstr(new Label(condLabel));
+    expression.assemble(body, freeRegs);
+    body.addInstr(new CMP(freeRegs.get(0), new ImmInt(true)));
+    body.addInstr(new B(Condition.EQ, bodyLabel));
   }
 
   @Override
@@ -33,5 +54,19 @@ public class WhileAST extends StatementAST {
     }
 
     statSeq.check();
+  }
+
+  private boolean isTrue() {
+    if (expression instanceof BoolExprAST) {
+      return ((BoolExprAST) expression).getBoolVal();
+    }
+    return false;
+  }
+
+  private boolean isFalse() {
+    if (expression instanceof BoolExprAST) {
+      return !((BoolExprAST) expression).getBoolVal();
+    }
+    return false;
   }
 }
