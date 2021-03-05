@@ -69,7 +69,7 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
           new STR(freeRegs2.get(0),
               new OffsetRegister(freeRegs.get(0), i * elemSize + 4, false)));
     }
-    body.addInstr(new LDR(freeRegs2.get(0), new ImmInt(size)));
+    body.addInstr(new LDR(freeRegs2.get(0), new ImmInt(array.size())));
     body.addInstr(
         new STR(freeRegs2.get(0),
             new OffsetRegister(freeRegs.get(0), 0, false)));

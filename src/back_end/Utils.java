@@ -207,6 +207,7 @@ public class Utils {
     checkBound.addInstr(new LDR(Condition.CS, RegisterManager.getResultReg(),
         CodeGen.addData("ArrayIndexOutOfBoundsError: index too large\\n\\0")));
     checkBound.addInstr(new BL(Condition.CS, "p_throw_runtime_error"));
+    checkBound.endBody();
     return checkBound;
   }
 
