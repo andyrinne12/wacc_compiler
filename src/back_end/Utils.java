@@ -4,6 +4,7 @@ import back_end.instructions.Condition;
 import back_end.instructions.Instruction;
 import back_end.instructions.arithmetic.ADD;
 import back_end.instructions.arithmetic.CMP;
+import back_end.instructions.branch.B;
 import back_end.instructions.branch.BL;
 import back_end.instructions.logical.MOV;
 import back_end.instructions.store.LDR;
@@ -234,7 +235,7 @@ public class Utils {
     f.addInstr(new CMP(RegisterManager.getResultReg(), new ImmInt(0)));
     f.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
         CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0")));
-    f.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));
+    f.addInstr(new B(Condition.EQ, "p_throw_runtime_error"));
   }
 
 
