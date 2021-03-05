@@ -45,7 +45,7 @@ public class SymbolTable {
     int offset = currJumpOffset;
     SymbolTable S = this;
     while (!S.stackOffsets.containsKey(name)) {
-      offset += S.frameSize - 4;
+      offset += S.frameSize;
       S = S.parentST;
     }
     offset += S.stackOffsets.get(name);
@@ -58,8 +58,7 @@ public class SymbolTable {
       if (!(ident instanceof FUNCTION || ident == null)) {
         if (ident instanceof BOOLEAN || ident instanceof CHAR) {
           size += 1;
-        }
-        else {
+        } else {
           size += 4;
         }
       }
@@ -88,8 +87,7 @@ public class SymbolTable {
     IDENTIFIER ident = dictionary.get(name);
     if ((ident instanceof BOOLEAN) || (ident instanceof CHAR)) {
       nextOffset -= 1;
-    }
-    else {
+    } else {
       nextOffset -= 4;
     }
     stackOffsets.put(name, nextOffset);
@@ -97,12 +95,12 @@ public class SymbolTable {
     return nextOffset;
   }
 
-  public void pushOffset() {
-    currJumpOffset += 4;
+  public void pushOffset(int size) {
+    currJumpOffset += size;
   }
 
-  public void popOffset() {
-    currJumpOffset -= 4;
+  public void popOffset(int size) {
+    currJumpOffset -= size;
   }
 
   public void resetOffset() {

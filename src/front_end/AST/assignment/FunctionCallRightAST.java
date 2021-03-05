@@ -12,6 +12,8 @@ import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.FUNCTION;
 import front_end.types.PARAM;
 import front_end.types.TYPE;
@@ -38,7 +40,11 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       expr.assemble(body, freeRegs);
       body.addInstr(new STR(freeRegs.get(0),
           new OffsetRegister(RegisterManager.SP, -4, true)));
-      Visitor.ST.pushOffset();
+      if ((expr.getEvalType() instanceof BOOLEAN) || (expr.getEvalType() instanceof CHAR)) {
+        Visitor.ST.pushOffset(1);
+      } else {
+        Visitor.ST.pushOffset(4);
+      }
     }
     body.addInstr(new BL(Condition.NONE, ident));
     body.addInstr(new ADD(false, RegisterManager.SP, RegisterManager.SP,

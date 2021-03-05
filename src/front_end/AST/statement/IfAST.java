@@ -38,6 +38,7 @@ public class IfAST extends StatementAST {
     } else if (isTrue()) {
       thenSeq.assemble(body, freeRegs);
     } else {
+      condition.assemble(body, freeRegs);
       body.addInstr(new CMP(freeRegs.get(0), new ImmInt(false)));
       String labelFalse = CodeGen.getLabel();
       String labelContinue = CodeGen.getLabel();
@@ -47,7 +48,7 @@ public class IfAST extends StatementAST {
       body.addInstr(new BL(Condition.NONE, labelContinue));
 
       body.addInstr(new Label(labelFalse));
-      elseSeq.assemble(body,freeRegs);
+      elseSeq.assemble(body, freeRegs);
 
       body.addInstr(new Label(labelContinue));
     }
