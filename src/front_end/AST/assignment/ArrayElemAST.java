@@ -1,6 +1,7 @@
 package front_end.AST.assignment;
 
 import antlr.WACCParser.ArrayElemContext;
+import back_end.CodeGen;
 import back_end.FunctionBody;
 import back_end.Utils;
 import back_end.instructions.arithmetic.ADD;
@@ -24,10 +25,13 @@ public class ArrayElemAST extends AssignmentLeftAST {
   private final String arrayIdent;
   private final List<ExpressionAST> indices;
 
+  private static boolean error;
+
   public ArrayElemAST(ArrayElemContext ctx, List<ExpressionAST> indices) {
     super(ctx);
     arrayIdent = ctx.IDENT().getText();
     this.indices = indices;
+    error = false;
   }
 
   @Override
@@ -39,6 +43,15 @@ public class ArrayElemAST extends AssignmentLeftAST {
     List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
     for (ExpressionAST expr : indices) {
       expr.assemble(body, freeRegs1);
+
+      if(!error) {
+        CodeGen.addData("ArrayIndexOutOfBoundsError: negative index\\n\\0");
+        CodeGen.addData("ArrayIndexOutOfBoundsError: index too large\\n\\0");
+
+        Utils.addFunc("p_check_array_bounds", freeRegs1.get(0));
+        error = true;
+      }
+
       body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0))));
       body.addInstr(new MOV(RegisterManager.getParamRegs().get(0), freeRegs1.get(0)));
       body.addInstr(new MOV(RegisterManager.getParamRegs().get(1), freeRegs.get(0)));
