@@ -1,22 +1,22 @@
 package front_end.AST.function;
 
-import back_end.instructions.Directive;
-import back_end.instructions.store.PUSH;
-import front_end.AST.statement.ScopingStatementAST;
-import front_end.AST.statement.StatementSequenceAST;
-import front_end.AST.type.TypeAST;
-import front_end.SymbolTable;
-import front_end.Visitor;
-import front_end.types.*;
-import java.util.ArrayList;
-import java.util.List;
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import back_end.FunctionBody;
 import back_end.instructions.arithmetic.SUB;
 import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
+import front_end.AST.statement.ScopingStatementAST;
+import front_end.AST.statement.StatementSequenceAST;
+import front_end.AST.type.TypeAST;
+import front_end.SymbolTable;
+import front_end.Visitor;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
+import front_end.types.FUNCTION;
+import front_end.types.IDENTIFIER;
+import java.util.ArrayList;
+import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FunctionDeclAST extends ScopingStatementAST {
 
@@ -75,7 +75,7 @@ public class FunctionDeclAST extends ScopingStatementAST {
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     enterScope();
-    
+
     //size of a symbol table is equal to all the parameters and variables inside it
     int frameSize = Visitor.ST.setFrameSize();
 
@@ -96,13 +96,12 @@ public class FunctionDeclAST extends ScopingStatementAST {
         sizeOfParams += paramSize;
       }
     }
-    
-    FunctionBody func = new FunctionBody(functionName);
-    func.addInstr(new PUSH(RegisterManager.LR));
 
+    FunctionBody func = new FunctionBody(functionName);
     int sizeOfLocalVariables = frameSize - sizeOfParams;
     if (sizeOfLocalVariables != 0) {
-      func.addInstr(new SUB(false, RegisterManager.SP, RegisterManager.SP,  new ImmInt(sizeOfLocalVariables)));
+      func.addInstr(
+          new SUB(false, RegisterManager.SP, RegisterManager.SP, new ImmInt(sizeOfLocalVariables)));
     }
 
     //shift the Stack Pointer to make space for all the new variables
@@ -112,9 +111,7 @@ public class FunctionDeclAST extends ScopingStatementAST {
 
     //shift the Stack pointer back before jumping out of the function;
     Visitor.ST.popOffset(sizeOfLocalVariables);
-
-    func.addInstr(new Directive("ltorg"));
-
+    func.endBody();
     exitScope();
   }
 }

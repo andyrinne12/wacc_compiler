@@ -145,9 +145,9 @@ public class Main {
     }
 
     ProcessBuilder pb = new ProcessBuilder();
-    String command = "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s" +
+    String command = "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s " +
         assemblyFileName +
-        " && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName && rm EXEName";
+        " && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName";
     pb.command("bash", "-c", command);
     try {
       Process process = pb.start();

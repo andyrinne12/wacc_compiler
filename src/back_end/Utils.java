@@ -216,6 +216,7 @@ public class Utils {
     checkDivide.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
         CodeGen.addData("DivideByZeroError: divide or modulo by zero\\n\\0")));
     checkDivide.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));
+    checkDivide.endBody();
     return checkDivide;
   }
 
