@@ -21,6 +21,9 @@ public class CodeGen {
   private static ImmString intFormat;
   private static ImmString strFormat;
   private static ImmString emptyFormat;
+  private static ImmString trueFormat;
+  private static ImmString falseFormat;
+  private static ImmString referenceFormat;
 
   public static ImmString addData(String text) {
     ImmString data = new ImmString(text, dataCounter);
@@ -29,28 +32,58 @@ public class CodeGen {
     return data;
   }
 
-  public static void checkIntFormat() {
+  public static ImmString checkTrueFormat() {
+    if (trueFormat == null) {
+      trueFormat = new ImmString("true\\0", dataCounter);
+      textData.add(trueFormat);
+      dataCounter++;
+    }
+    return trueFormat;
+  }
+
+  public static ImmString checkFalseFormat() {
+    if (falseFormat == null) {
+      falseFormat = new ImmString("false\\0", dataCounter);
+      textData.add(falseFormat);
+      dataCounter++;
+    }
+    return falseFormat;
+  }
+
+  public static ImmString checkIntFormat() {
     if (intFormat == null) {
       intFormat = new ImmString("%d\\0", dataCounter);
       textData.add(intFormat);
       dataCounter++;
     }
+    return intFormat;
   }
 
-  public static void checkStrFormat() {
+  public static ImmString checkStrFormat() {
     if (strFormat == null) {
       strFormat = new ImmString("%.*s\\0", dataCounter);
       textData.add(strFormat);
       dataCounter++;
     }
+    return strFormat;
   }
 
-  public static void checkEmptyFormat() {
+  public static ImmString checkRefFormat() {
+    if (referenceFormat == null) {
+      referenceFormat = new ImmString("%p\\0", dataCounter);
+      textData.add(referenceFormat);
+      dataCounter++;
+    }
+    return referenceFormat;
+  }
+
+  public static ImmString checkEmptyFormat() {
     if (emptyFormat == null) {
       emptyFormat = new ImmString("\\0", dataCounter);
       textData.add(emptyFormat);
       dataCounter++;
     }
+    return emptyFormat;
   }
 
   public static String getLabel() {
