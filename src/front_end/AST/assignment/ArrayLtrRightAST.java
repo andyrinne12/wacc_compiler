@@ -11,6 +11,8 @@ import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
 import front_end.AST.expression.ExpressionAST;
 import front_end.types.ARRAY;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -49,7 +51,12 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    int size = (((ARRAY) identObj).getSize() + 1) * 4;
+    int elemSize = 4;
+    if (array.get(0).getEvalType() instanceof BOOLEAN || array.get(0)
+        .getEvalType() instanceof CHAR) {
+      elemSize = 1;
+    }
+    int size = ((ARRAY) identObj).getSize() * elemSize + 4;
     body.addInstr(
         new LDR(RegisterManager.getResultReg(), new ImmInt(size)));
     body.addInstr(Utils.MALLOC);
@@ -60,7 +67,7 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
       expr.assemble(body, freeRegs2);
       body.addInstr(
           new STR(freeRegs2.get(0),
-              new OffsetRegister(freeRegs.get(0), (i + 1) * 4, false)));
+              new OffsetRegister(freeRegs.get(0), i * elemSize + 4, false)));
     }
     body.addInstr(new LDR(freeRegs2.get(0), new ImmInt(size)));
     body.addInstr(
