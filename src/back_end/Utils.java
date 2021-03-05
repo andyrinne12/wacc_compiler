@@ -223,7 +223,7 @@ public class Utils {
     FunctionBody overflow = new FunctionBody("throw_overflow_error", false, true, true);
     overflow.addInstr(new LDR(RegisterManager.getResultReg(),
         CodeGen.addData("OverflowError: the result is too small/large to store in a " +
-            "4-byte signed-integer.\\\\n")));
+            "4-byte signed-integer.\\n")));
     overflow.addInstr(new BL(Condition.NONE, "p_throw_runtime_error"));
     return overflow;
   }

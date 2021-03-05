@@ -40,10 +40,10 @@ public class FreeAST extends StatementAST {
 
     if (expression.getEvalType() instanceof PAIR) {
       body.addInstr(Utils.FREE_PAIR);
-      Utils.addFunc("p_free_pair", freeRegs.get(1));
+      Utils.addFunc("p_free_pair", freeRegs.get(0));
     } else if (expression.getEvalType() instanceof ARRAY) {
       body.addInstr(Utils.FREE_ARRAY);
-      Utils.addFunc("p_free_array", freeRegs.get(1));
+      Utils.addFunc("p_free_array", freeRegs.get(0));
     }
   }
 }
