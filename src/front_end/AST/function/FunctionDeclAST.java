@@ -1,5 +1,6 @@
 package front_end.AST.function;
 
+import back_end.CodeGen;
 import back_end.FunctionBody;
 import back_end.instructions.arithmetic.SUB;
 import back_end.operands.immediate.ImmInt;
@@ -107,11 +108,12 @@ public class FunctionDeclAST extends ScopingStatementAST {
     //shift the Stack Pointer to make space for all the new variables
     Visitor.ST.pushOffset(sizeOfLocalVariables);
 
-    statSeq.assemble(body, freeRegs);
+    statSeq.assemble(func, freeRegs);
 
     //shift the Stack pointer back before jumping out of the function;
     Visitor.ST.popOffset(sizeOfLocalVariables);
     func.endBody();
     exitScope();
+    CodeGen.funcBodies.add(func);
   }
 }

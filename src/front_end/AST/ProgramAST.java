@@ -24,6 +24,10 @@ public class ProgramAST extends ASTNode {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
+    for (FunctionDeclAST function : functions) {
+      function.assemble(null, freeRegs);
+    }
+
     FunctionBody main = new FunctionBody("main", true, false, true);
     this.body.assemble(main, freeRegs);
     main.endBody();

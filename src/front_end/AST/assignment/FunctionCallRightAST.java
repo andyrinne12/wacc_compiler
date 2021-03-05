@@ -12,7 +12,11 @@ import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
-import front_end.types.*;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
+import front_end.types.FUNCTION;
+import front_end.types.PARAM;
+import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -48,7 +52,7 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       totalOffset += Math.abs(offset);
     }
 
-    body.addInstr(new BL(Condition.NONE, ident));
+    body.addInstr(new BL(Condition.NONE, "f_" + ident));
     body.addInstr(new ADD(false, RegisterManager.SP, RegisterManager.SP, new ImmInt(totalOffset)));
     body.addInstr(new MOV(freeRegs.get(0), RegisterManager.getResultReg()));
   }
