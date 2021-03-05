@@ -69,7 +69,7 @@ public class CodeGen {
 
   public static ImmString checkCharFormat() {
     if (charFormat == null) {
-      charFormat = new ImmString("%c\\0", dataCounter);
+      charFormat = new ImmString(" %c\\0", dataCounter, 4);
       textData.add(charFormat);
       dataCounter++;
     }
