@@ -27,7 +27,11 @@ public class CodeGen {
 
   public static ImmString addData(String text) {
     //discard the leading and trailing double-quotes or single quotes in the string.
-    String cleanedText = text.substring(1, text.length() - 1);
+    char firstChar = text.charAt(0);
+    String cleanedText = text;
+    if (firstChar == '\"' || firstChar == '\'') {
+      cleanedText = text.substring(1, text.length() - 1);
+    }
 
     ImmString data = new ImmString(cleanedText, dataCounter);
     textData.add(data);

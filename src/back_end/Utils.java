@@ -32,6 +32,14 @@ public class Utils {
   public static Instruction FREE_ARRAY = new BL(Condition.NONE, "p_free_array");
 
   public static void printFunctions() {
+
+    if (CodeGen.lastFuncs.containsKey("p_check_array_bounds") || CodeGen.lastFuncs.containsKey("p_check_null_pointer") ||
+        CodeGen.lastFuncs.containsKey("p_divide_by_zero") || CodeGen.lastFuncs.containsKey("p_integer_overflow") || 
+        CodeGen.lastFuncs.containsKey("p_free_pair") || CodeGen.lastFuncs.containsKey("p_free_array")) {
+          addFunc("p_throw_runtime_error", null);
+          addFunc("p_print_string", null);
+    }
+
     for (Map.Entry<String, Register> entry : CodeGen.lastFuncs.entrySet()) {
       switch (entry.getKey()) {
         case "p_print_bool":

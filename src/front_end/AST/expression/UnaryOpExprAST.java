@@ -9,8 +9,10 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import back_end.FunctionBody;
+import back_end.Utils;
 import back_end.instructions.Condition;
 import back_end.instructions.arithmetic.RSBS;
+import back_end.instructions.branch.BL;
 import back_end.instructions.logical.EOR;
 import back_end.instructions.store.LDR;
 import back_end.operands.immediate.ImmInt;
@@ -97,9 +99,8 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
       case "-":
         body.addInstr(new RSBS(false, reg, reg));
-
-        // TO-DO: need to check for integer overflow during runtime.
-
+        body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
+        Utils.addFunc("p_integer_overflow", null);
         break;
       case "len":
         body.addInstr(new LDR(Condition.NONE, reg, new OffsetRegister(reg)));

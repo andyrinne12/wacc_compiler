@@ -9,6 +9,7 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import back_end.FunctionBody;
+import back_end.Utils;
 import back_end.instructions.Condition;
 import back_end.instructions.arithmetic.*;
 import back_end.instructions.branch.BL;
@@ -146,18 +147,19 @@ public class BinaryOpExprAST extends ExpressionAST {
     switch (binaryOp) {
       case "+":
         body.addInstr(new ADD(false, lhsReg, lhsReg, rhsReg));
-        body.addInstr(new BL(Condition.VS,
-            "p_throw_overflow_error")); // TO-DO: implement the p_throw_overflow_error function.
+        body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
+        Utils.addFunc("p_integer_overflow", null); // p_throw_overflow_error doesn't need a register.
         break;
       case "-":
         body.addInstr(new SUB(false, lhsReg, lhsReg, rhsReg));
         body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
+        Utils.addFunc("p_integer_overflow", null);
         break;
       case "*":
         body.addInstr(new SMULL(lhsReg, rhsReg, lhsReg, rhsReg));
-        body.addInstr(
-            new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
+        body.addInstr(new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
         body.addInstr(new BL(Condition.NE, "p_throw_overflow_error"));
+        Utils.addFunc("p_integer_overflow", null);
         break;
       case "/":
         // for divide, we make use of an external ARM API function called __aeabi_idiv. 
@@ -166,11 +168,10 @@ public class BinaryOpExprAST extends ExpressionAST {
         Register R1 = RegisterManager.getParamRegs().get(1);
         body.addInstr(new MOV(R0, lhsReg));
         body.addInstr(new MOV(R1, rhsReg));
-        body.addInstr(new BL(Condition.NONE,
-            "p_divide_by_zero")); // TO-DO: implement the p_divide_by_zero function.
+        body.addInstr(new BL(Condition.NONE, "p_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idiv"));
-        body.addInstr(new MOV(lhsReg,
-            R0)); // obtain the result of the division from R0, and put it into lhsReg.
+        body.addInstr(new MOV(lhsReg, R0)); // obtain the result of the division from R0, and put it into lhsReg.
+        Utils.addFunc("p_divide_by_zero", null);
         break;
       case "%":
         // for mod, we make use of an external ARM API function called __aeabi_idivmod. 
@@ -180,8 +181,8 @@ public class BinaryOpExprAST extends ExpressionAST {
         body.addInstr(new MOV(R1, rhsReg));
         body.addInstr(new BL(Condition.NONE, "p_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idivmod"));
-        body.addInstr(
-            new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
+        body.addInstr(new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
+        Utils.addFunc("p_divide_by_zero", null);
         break;
       case ">":
         body.addInstr(new CMP(lhsReg, rhsReg));
