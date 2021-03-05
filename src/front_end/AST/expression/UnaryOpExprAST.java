@@ -1,5 +1,6 @@
 package front_end.AST.expression;
 
+import back_end.CodeGen;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.TYPE;
@@ -100,7 +101,13 @@ public class UnaryOpExprAST extends ExpressionAST {
       case "-":
         body.addInstr(new RSBS(false, reg, reg));
         body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
-        Utils.addFunc("p_integer_overflow", null);
+        if(!BinaryOpExprAST.overflow) {
+          CodeGen.addData("\"OverflowError: the result is too small/large to store in a" +
+               "4-byte signed-integer.\\n");
+          Utils.addFunc("p_integer_overflow", null);
+          BinaryOpExprAST.overflow =true;
+        }
+
         break;
       case "len":
         body.addInstr(new LDR(Condition.NONE, reg, new OffsetRegister(reg)));
