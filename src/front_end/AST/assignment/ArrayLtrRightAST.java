@@ -52,9 +52,11 @@ public class ArrayLtrRightAST extends AssignmentRightAST {
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     int elemSize = 4;
-    if (array.get(0).getEvalType() instanceof BOOLEAN || array.get(0)
-        .getEvalType() instanceof CHAR) {
-      elemSize = 1;
+    if (array.size() > 0) {
+      if (array.get(0).getEvalType() instanceof BOOLEAN || array.get(0)
+          .getEvalType() instanceof CHAR) {
+        elemSize = 1;
+      }
     }
     int size = ((ARRAY) identObj).getSize() * elemSize + 4;
     body.addInstr(
