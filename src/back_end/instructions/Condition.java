@@ -9,6 +9,7 @@ public enum Condition {
   LE,
   LT,
   B,
+  SB,
   CS,
   NONE {
     @Override
