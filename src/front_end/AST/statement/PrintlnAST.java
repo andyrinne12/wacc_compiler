@@ -38,7 +38,7 @@ public class PrintlnAST extends StatementAST {
     Utils.addFunc(nameOfPrintFunction, freeRegs.get(0));
 
     // the print_ln section
-    body.addInstr(new BL(Condition.LT, "p_print_ln"));
+    body.addInstr(new BL(Condition.NONE, "p_print_ln"));
     Utils.addFunc("p_print_ln", freeRegs.get(0));
   }
 }
