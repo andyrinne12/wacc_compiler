@@ -102,7 +102,7 @@ public class UnaryOpExprAST extends ExpressionAST {
         body.addInstr(new RSBS(false, reg, reg));
         body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
         if(!BinaryOpExprAST.overflow) {
-          CodeGen.addData("\"OverflowError: the result is too small/large to store in a" +
+          CodeGen.addData("OverflowError: the result is too small/large to store in a " +
                "4-byte signed-integer.\\n");
           Utils.addFunc("p_integer_overflow", null);
           BinaryOpExprAST.overflow =true;
