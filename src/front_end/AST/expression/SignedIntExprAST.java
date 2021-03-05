@@ -17,11 +17,7 @@ public class SignedIntExprAST extends ExpressionAST {
 
   public SignedIntExprAST(ParserRuleContext ctx, String intSign, String value) {
     super(ctx);
-    this.value = Integer.parseInt(value);
-    this.intSign = intSign;
-    if (intSign.equals("-")) {
-      this.value *= -1;
-    }
+    this.value = Integer.parseInt(intSign + value);
   }
 
   @Override
