@@ -158,12 +158,12 @@ public class BinaryOpExprAST extends ExpressionAST {
 
     switch (binaryOp) {
       case "+":
-        body.addInstr(new ADD(false, lhsReg, lhsReg, rhsReg));
+        body.addInstr(new ADD(true, lhsReg, lhsReg, rhsReg));
         body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
         Utils.addFunc("p_integer_overflow", null); // p_throw_overflow_error doesn't need a register.
         break;
       case "-":
-        body.addInstr(new SUB(false, lhsReg, lhsReg, rhsReg));
+        body.addInstr(new SUB(true, lhsReg, lhsReg, rhsReg));
         body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
         Utils.addFunc("p_integer_overflow", null);
         break;
