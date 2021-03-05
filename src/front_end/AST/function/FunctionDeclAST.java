@@ -1,5 +1,7 @@
 package front_end.AST.function;
 
+import back_end.instructions.Directive;
+import back_end.instructions.store.PUSH;
 import front_end.AST.statement.ScopingStatementAST;
 import front_end.AST.statement.StatementSequenceAST;
 import front_end.AST.type.TypeAST;
@@ -96,9 +98,10 @@ public class FunctionDeclAST extends ScopingStatementAST {
     }
     
     FunctionBody func = new FunctionBody(functionName);
+    func.addInstr(new PUSH(RegisterManager.LR));
 
     int sizeOfLocalVariables = frameSize - sizeOfParams;
-    if (sizeOfLocalVariables > 0) {
+    if (sizeOfLocalVariables != 0) {
       func.addInstr(new SUB(false, RegisterManager.SP, RegisterManager.SP,  new ImmInt(sizeOfLocalVariables)));
     }
 
@@ -110,6 +113,8 @@ public class FunctionDeclAST extends ScopingStatementAST {
     //shift the Stack pointer back before jumping out of the function;
     Visitor.ST.popOffset(sizeOfLocalVariables);
 
-    func.endBody();
+    func.addInstr(new Directive("ltorg"));
+
+    exitScope();
   }
 }
