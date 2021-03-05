@@ -32,7 +32,7 @@ public class FreeAST extends StatementAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0), 0, false)));
+    body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(RegisterManager.SP)));
     body.addInstr(new MOV(RegisterManager.getResultReg(), freeRegs.get(0)));
 
     body.addInstr(Utils.RUNTIME_ERROR);
@@ -40,8 +40,10 @@ public class FreeAST extends StatementAST {
 
     if (expression.getEvalType() instanceof PAIR) {
       body.addInstr(Utils.FREE_PAIR);
+      Utils.addFunc("p_free_pair", freeRegs.get(1));
     } else if (expression.getEvalType() instanceof ARRAY) {
       body.addInstr(Utils.FREE_ARRAY);
+      Utils.addFunc("p_free_array", freeRegs.get(1));
     }
   }
 }

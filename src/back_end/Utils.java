@@ -218,4 +218,10 @@ public class Utils {
     freeArray.addInstr(new BL(Condition.NONE, "free"));
     return freeArray;
   }
+
+  public static void addFunc(String s, Register r) {
+    if (!CodeGen.lastFuncs.containsKey(s)) {
+      CodeGen.lastFuncs.put(s, r);
+    }
+  }
 }
