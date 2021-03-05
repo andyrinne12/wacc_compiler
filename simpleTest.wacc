@@ -1,6 +1,5 @@
 begin
   char c = 'c';
-  int[] a = [0,1,2,3,4];
-  read a[3];
-  read c
+  read c;
+  print c
 end

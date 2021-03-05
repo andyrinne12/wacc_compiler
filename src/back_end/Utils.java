@@ -139,8 +139,11 @@ public class Utils {
     FunctionBody printRead = new FunctionBody("read_" + type, false, true, true);
     printRead
         .addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
-    printRead.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.checkIntFormat()));
-
+    if (type.equals("int")) {
+      printRead.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.checkIntFormat()));
+    } else if (type.equals("char")) {
+      printRead.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.checkCharFormat()));
+    }
     printRead.addInstr(
         new ADD(false, RegisterManager.getResultReg(), RegisterManager.getResultReg(),
             new ImmInt(4)));

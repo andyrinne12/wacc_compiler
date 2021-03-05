@@ -19,6 +19,7 @@ public class CodeGen {
   private static int dataCounter = 0;
   private static int labelCounter = 0;
   private static ImmString intFormat;
+  private static ImmString charFormat;
   private static ImmString strFormat;
   private static ImmString emptyFormat;
   private static ImmString trueFormat;
@@ -64,6 +65,15 @@ public class CodeGen {
       dataCounter++;
     }
     return intFormat;
+  }
+
+  public static ImmString checkCharFormat() {
+    if (charFormat == null) {
+      charFormat = new ImmString("%c\\0", dataCounter);
+      textData.add(charFormat);
+      dataCounter++;
+    }
+    return charFormat;
   }
 
   public static ImmString checkStrFormat() {
