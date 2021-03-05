@@ -2,6 +2,7 @@ package front_end.AST.expression;
 
 import static java.util.Objects.isNull;
 
+import back_end.CodeGen;
 import front_end.Visitor;
 import front_end.types.*;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class BinaryOpExprAST extends ExpressionAST {
   private String returnType;
 
   private final int SHIFT_VALUE = 31;
+  protected static boolean overflow;
 
   public BinaryOpExprAST(ParserRuleContext ctx, ExpressionAST expr1, ExpressionAST expr2,
       String binaryOp) {
@@ -36,6 +38,7 @@ public class BinaryOpExprAST extends ExpressionAST {
 
     expectedElemTypes = new ArrayList<>();
     initialise_attr();
+    overflow = false;
   }
 
   @Override
@@ -159,7 +162,13 @@ public class BinaryOpExprAST extends ExpressionAST {
         body.addInstr(new SMULL(lhsReg, rhsReg, lhsReg, rhsReg));
         body.addInstr(new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
         body.addInstr(new BL(Condition.NE, "p_throw_overflow_error"));
-        Utils.addFunc("p_integer_overflow", null);
+
+        if(!overflow) {
+          CodeGen.addData("OverflowError: the result is too small/large to store in a" +
+              "4-byte signed-integer.\\n");
+          Utils.addFunc("p_integer_overflow", lhsReg);
+          overflow = true;
+        }
         break;
       case "/":
         // for divide, we make use of an external ARM API function called __aeabi_idiv. 

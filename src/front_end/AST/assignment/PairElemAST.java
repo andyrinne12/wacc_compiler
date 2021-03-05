@@ -1,8 +1,11 @@
 package front_end.AST.assignment;
 
 import antlr.WACCParser.PairElemContext;
+import back_end.CodeGen;
 import back_end.FunctionBody;
 import back_end.Utils;
+import back_end.instructions.Condition;
+import back_end.instructions.branch.BL;
 import back_end.instructions.logical.MOV;
 import back_end.instructions.store.LDR;
 import back_end.operands.registers.OffsetRegister;
@@ -19,10 +22,13 @@ public class PairElemAST extends ASTNode {
   private final PairElemEnum elem;
   private final ExpressionAST identExp;
 
+  private static boolean error;
+
   public PairElemAST(PairElemContext ctx, ExpressionAST identExp) {
     super(ctx);
     this.identExp = identExp;
     this.elem = ctx.elem.getText().equals("fst") ? PairElemEnum.FST : PairElemEnum.SND;
+    error = false;
   }
 
   @Override
@@ -31,7 +37,14 @@ public class PairElemAST extends ASTNode {
     body.addInstr(new MOV(RegisterManager.getResultReg(), freeRegs.get(0)));
     body.addInstr(Utils.CHECK_NULL_POINTER);
     int elemOfs = (elem == PairElemEnum.FST) ? 0 : 4;
+    body.addInstr(new BL(Condition.NONE, "p_check_null_pointer"));
     body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0), elemOfs)));
+
+    if(!error) {
+      CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0");
+      Utils.addFunc("p_check_null_pointer", freeRegs.get(0));
+      error = true;
+    }
   }
 
   @Override
