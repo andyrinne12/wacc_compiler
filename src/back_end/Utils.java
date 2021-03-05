@@ -245,6 +245,10 @@ public class Utils {
       typeName = type.toString();
     }
 
+    if (typeName == "char") {
+      return "putchar";
+    }
+
     return "p_print_" + typeName; 
   }
 

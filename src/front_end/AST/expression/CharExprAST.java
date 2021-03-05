@@ -36,7 +36,8 @@ public class CharExprAST extends ExpressionAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    body.addInstr(new MOV(freeRegs.get(0), new ImmInt(charVal.charAt(0))));
+    // charVal has a format of 'c', so we use charVal.charAt(1) to get c.
+    body.addInstr(new MOV(freeRegs.get(0), new ImmInt(charVal.charAt(1))));
   }
 
   public int getCharInt() {
