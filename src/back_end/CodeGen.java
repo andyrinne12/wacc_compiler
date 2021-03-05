@@ -60,7 +60,7 @@ public class CodeGen {
 
   public static ImmString checkIntFormat() {
     if (intFormat == null) {
-      intFormat = new ImmString("%d\\0", dataCounter);
+      intFormat = new ImmString("%d\\0", dataCounter, 3);
       textData.add(intFormat);
       dataCounter++;
     }
@@ -78,7 +78,7 @@ public class CodeGen {
 
   public static ImmString checkStrFormat() {
     if (strFormat == null) {
-      strFormat = new ImmString("%.*s\\0", dataCounter);
+      strFormat = new ImmString("%.*s\\0", dataCounter, 5);
       textData.add(strFormat);
       dataCounter++;
     }
@@ -87,7 +87,7 @@ public class CodeGen {
 
   public static ImmString checkRefFormat() {
     if (referenceFormat == null) {
-      referenceFormat = new ImmString("%p\\0", dataCounter);
+      referenceFormat = new ImmString("%p\\0", dataCounter, 3);
       textData.add(referenceFormat);
       dataCounter++;
     }
@@ -96,7 +96,7 @@ public class CodeGen {
 
   public static ImmString checkEmptyFormat() {
     if (emptyFormat == null) {
-      emptyFormat = new ImmString("\\0", dataCounter);
+      emptyFormat = new ImmString("\\0", dataCounter, 1);
       textData.add(emptyFormat);
       dataCounter++;
     }
