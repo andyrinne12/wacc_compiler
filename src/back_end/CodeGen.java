@@ -2,15 +2,19 @@ package back_end;
 
 import back_end.instructions.Directive;
 import back_end.operands.immediate.ImmString;
+import back_end.operands.registers.Register;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CodeGen {
 
   public static List<ImmString> textData = new ArrayList<>();
   public static List<FunctionBody> funcBodies = new ArrayList<>();
+  public static Map<String, Register> lastFuncs = new HashMap<>();
 
   private static int dataCounter = 0;
   private static int labelCounter = 0;

@@ -14,6 +14,7 @@ import back_end.operands.immediate.ImmString;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
+import java.util.Map;
 
 public class Utils {
 
@@ -28,7 +29,52 @@ public class Utils {
   public static Instruction FREE_ARRAY = new BL(Condition.NONE, "p_free_array");
 
   public static void printFunctions() {
-
+    for (Map.Entry<String, Register> entry : CodeGen.lastFuncs.entrySet()) {
+      switch (entry.getKey()) {
+        case "p_print_bool":
+          CodeGen.funcBodies.add(printBool());
+          break;
+        case "p_print_string":
+          CodeGen.funcBodies.add(printString());
+          break;
+        case "p_print_int":
+          CodeGen.funcBodies.add(printInt());
+          break;
+        case "p_print_reference":
+          CodeGen.funcBodies.add(printReference());
+          break;
+        case "p_print_ln":
+          CodeGen.funcBodies.add(printlnInstr());
+          break;
+        case "p_read_int":
+          CodeGen.funcBodies.add(printRead("int", entry.getValue()));
+          break;
+        case "p_read_char":
+          CodeGen.funcBodies.add(printRead("char", entry.getValue()));
+          break;
+        case "p_check_array_bounds":
+          CodeGen.funcBodies.add(p_check_array_bounds());
+          break;
+        case "p_check_null_pointer":
+          CodeGen.funcBodies.add(p_check_null_pointer());
+          break;
+        case "p_divide_by_zero":
+          CodeGen.funcBodies.add(p_divide_by_zero(entry.getValue()));
+          break;
+        case "p_integer_overflow":
+          CodeGen.funcBodies.add(p_integer_overflow());
+          break;
+        case "p_throw_runtime_error":
+          CodeGen.funcBodies.add(p_throw_runtime_error());
+          break;
+        case "p_free_pair":
+          CodeGen.funcBodies.add(p_free_pair());
+          break;
+        case "p_free_array":
+          CodeGen.funcBodies.add(p_free_array());
+          break;
+      }
+    }
   }
 
   private static void printLast(FunctionBody body) {
@@ -72,7 +118,7 @@ public class Utils {
     return printInt;
   }
 
-  public static FunctionBody printRead(String type, String placeholder, Register register) {
+  public static FunctionBody printRead(String type, Register register) {
     FunctionBody printRead = new FunctionBody("read" + type, false, true, true);
     printRead.addInstr(new MOV(RegisterManager.getResultReg(), register));
     printRead.addInstr(new LDR(RegisterManager.getResultReg(), MESSAGE));
