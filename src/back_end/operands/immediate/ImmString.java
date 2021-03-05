@@ -9,12 +9,7 @@ public class ImmString extends ImmValue {
   public ImmString(String text, int no) {
     this.text = text;
     this.label = "msg_" + no;
-    this.length = text.length();
-  }
-
-  public ImmString(String text, int no, int length) {
-    this(text, no);
-    this.length = length;
+    this.length = getLength(text);
   }
 
   @Override
@@ -24,5 +19,16 @@ public class ImmString extends ImmValue {
 
   public String getHeader() {
     return "\t" + label + ":\n\t\t.word " + length + "\n\t\t.ascii \"" + text + '"';
+  }
+
+  private int getLength(String text) {
+    int len = 0;
+    for (int i = 0; i < text.length(); i++) {
+      if (text.charAt(i) == '\\') {
+        continue;
+      }
+      len++;
+    }
+    return len;
   }
 }

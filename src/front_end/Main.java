@@ -122,7 +122,7 @@ public class Main {
 //    CodeGen.checkEmptyFormat();
 
     prog.assemble(null, RegisterManager.getLocalRegs());
-    
+
     String[] parts = filename.split("/");
     String tempFilename = parts[parts.length - 1].split("\\.")[0];
     String assemblyFileName = tempFilename + ".s";
@@ -145,10 +145,10 @@ public class Main {
     }
 
     ProcessBuilder pb = new ProcessBuilder();
-    pb.command("bash", "-c",
-        "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s" +
-         assemblyFileName + 
-         " && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName");
+    String command = "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s " +
+        assemblyFileName +
+        " && qemu-arm -L /usr/arm-linux-gnueabi/ EXEName && rm EXEName && rm " + assemblyFileName;
+    pb.command("bash", "-c", command);
     try {
       Process process = pb.start();
 

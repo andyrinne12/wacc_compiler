@@ -3,20 +3,29 @@ package front_end.AST.expression;
 import static java.util.Objects.isNull;
 
 import back_end.CodeGen;
-import front_end.Visitor;
-import front_end.types.*;
-import java.util.ArrayList;
-import java.util.List;
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import back_end.FunctionBody;
 import back_end.Utils;
 import back_end.instructions.Condition;
-import back_end.instructions.arithmetic.*;
+import back_end.instructions.arithmetic.ADD;
+import back_end.instructions.arithmetic.CMP;
+import back_end.instructions.arithmetic.SMULL;
+import back_end.instructions.arithmetic.SUB;
 import back_end.instructions.branch.BL;
-import back_end.instructions.logical.*;
+import back_end.instructions.logical.AND;
+import back_end.instructions.logical.MOV;
+import back_end.instructions.logical.OR;
 import back_end.operands.immediate.ImmInt;
-import back_end.operands.registers.*;
+import back_end.operands.registers.Register;
+import back_end.operands.registers.RegisterManager;
+import back_end.operands.registers.Shift;
+import back_end.operands.registers.ShiftedRegister;
+import front_end.Visitor;
+import front_end.types.ARRAY;
+import front_end.types.PAIR;
+import front_end.types.TYPE;
+import java.util.ArrayList;
+import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class BinaryOpExprAST extends ExpressionAST {
 
@@ -177,7 +186,7 @@ public class BinaryOpExprAST extends ExpressionAST {
         Register R1 = RegisterManager.getParamRegs().get(1);
         body.addInstr(new MOV(R0, lhsReg));
         body.addInstr(new MOV(R1, rhsReg));
-        body.addInstr(new BL(Condition.NONE, "p_divide_by_zero"));
+        body.addInstr(new BL(Condition.NONE, "p_check_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idiv"));
         body.addInstr(new MOV(lhsReg, R0)); // obtain the result of the division from R0, and put it into lhsReg.
         Utils.addFunc("p_divide_by_zero", null);
@@ -188,7 +197,7 @@ public class BinaryOpExprAST extends ExpressionAST {
         R1 = RegisterManager.getParamRegs().get(1);
         body.addInstr(new MOV(R0, lhsReg));
         body.addInstr(new MOV(R1, rhsReg));
-        body.addInstr(new BL(Condition.NONE, "p_divide_by_zero"));
+        body.addInstr(new BL(Condition.NONE, "p_check_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idivmod"));
         body.addInstr(new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
         Utils.addFunc("p_divide_by_zero", null);

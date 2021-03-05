@@ -62,10 +62,10 @@ public class Utils {
           CodeGen.funcBodies.add(printlnInstr());
           break;
         case "p_read_int":
-          CodeGen.funcBodies.add(printRead("int", entry.getValue()));
+          CodeGen.funcBodies.add(printRead("int"));
           break;
         case "p_read_char":
-          CodeGen.funcBodies.add(printRead("char", entry.getValue()));
+          CodeGen.funcBodies.add(printRead("char"));
           break;
         case "p_check_array_bounds":
           CodeGen.funcBodies.add(p_check_array_bounds());
@@ -74,7 +74,7 @@ public class Utils {
           CodeGen.funcBodies.add(p_check_null_pointer());
           break;
         case "p_divide_by_zero":
-          CodeGen.funcBodies.add(p_divide_by_zero(entry.getValue()));
+          CodeGen.funcBodies.add(p_divide_by_zero());
           break;
         case "p_integer_overflow":
           CodeGen.funcBodies.add(p_integer_overflow());
@@ -135,7 +135,7 @@ public class Utils {
     return printInt;
   }
 
-  public static FunctionBody printRead(String type, Register register) {
+  public static FunctionBody printRead(String type) {
     FunctionBody printRead = new FunctionBody("read_" + type, false, true, true);
     printRead
         .addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
@@ -210,9 +210,9 @@ public class Utils {
     return checkBound;
   }
 
-  public static FunctionBody p_divide_by_zero(Register register) {
+  public static FunctionBody p_divide_by_zero() {
     FunctionBody checkDivide = new FunctionBody("check_divide_by_zero", false, true, true);
-    checkDivide.addInstr(new CMP(register, new ImmInt(0)));
+    checkDivide.addInstr(new CMP(RegisterManager.getParamRegs().get(1), new ImmInt(0)));
     checkDivide.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
         CodeGen.addData("DivideByZeroError: divide or modulo by zero\\n\\0")));
     checkDivide.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));

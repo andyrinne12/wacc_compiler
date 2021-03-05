@@ -8,6 +8,7 @@ import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
 import front_end.Visitor;
 import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -23,8 +24,8 @@ public class IdentAST extends ExpressionAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-
-    if (Visitor.ST.lookupAll(identName).getType() instanceof BOOLEAN) {
+    TYPE type = Visitor.ST.lookupAll(identName).getType();
+    if (type instanceof BOOLEAN || type instanceof CHAR) {
       body.addInstr(
           new LDR(Condition.SB, freeRegs.get(0), new OffsetRegister(RegisterManager.SP, Visitor.ST
               .getIdentOffset(identName), false)));
