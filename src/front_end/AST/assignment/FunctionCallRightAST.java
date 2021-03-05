@@ -55,6 +55,7 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     body.addInstr(new BL(Condition.NONE, "f_" + ident));
     body.addInstr(new ADD(false, RegisterManager.SP, RegisterManager.SP, new ImmInt(totalOffset)));
     body.addInstr(new MOV(freeRegs.get(0), RegisterManager.getResultReg()));
+    Visitor.ST.resetOffset();
   }
 
   @Override
