@@ -9,7 +9,7 @@ public class OR extends ArithmeticInstr {
   private final Operand operand2;
 
   public OR(Condition cond, boolean set, Operand rd, Operand rn, Operand operand2) {
-    super("OR", cond, set, rd, rn);
+    super("ORR", cond, set, rd, rn);
     this.operand2 = operand2;
   }
 
