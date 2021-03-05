@@ -36,7 +36,7 @@ public class FreeAST extends StatementAST {
     body.addInstr(new MOV(RegisterManager.getResultReg(), freeRegs.get(0)));
 
     body.addInstr(Utils.RUNTIME_ERROR);
-    CodeGen.addData("\"NullReferenceError: dereference a null reference\\n\\0\"");
+    // CodeGen.addData("\"NullReferenceError: dereference a null reference\\n\\0\"");
 
     if (expression.getEvalType() instanceof PAIR) {
       body.addInstr(Utils.FREE_PAIR);

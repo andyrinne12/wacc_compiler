@@ -14,6 +14,9 @@ import back_end.operands.immediate.ImmString;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
+import front_end.types.*;
+
+import java.beans.Expression;
 import java.util.Map;
 
 public class Utils {
@@ -135,6 +138,7 @@ public class Utils {
     printlnInstr.addInstr(new BL(Condition.NONE, "puts"));
     printlnInstr.addInstr(new MOV(RegisterManager.getResultReg(), new ImmInt(0)));
     printlnInstr.addInstr(new BL(Condition.NONE, "fflush"));
+    printlnInstr.addInstr(new POP(RegisterManager.PC));
     return printlnInstr;
   }
 
@@ -224,5 +228,27 @@ public class Utils {
     if (!CodeGen.lastFuncs.containsKey(s)) {
       CodeGen.lastFuncs.put(s, r);
     }
+  }
+
+  public static String getPrintFunctionName(TYPE type) {
+    String typeName = "";
+
+    if (type instanceof ARRAY) {
+      if (isString(type)) {
+        typeName = "string";
+      } else {
+        typeName = "reference";
+      }
+    } else if (type instanceof PAIR) {
+      typeName = "reference";
+    } else {
+      typeName = type.toString();
+    }
+
+    return "p_print_" + typeName; 
+  }
+
+  private static boolean isString(TYPE type) {
+    return ((ARRAY) type).getElemType() instanceof CHAR;
   }
 }

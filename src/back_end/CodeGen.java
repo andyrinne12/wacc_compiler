@@ -26,7 +26,10 @@ public class CodeGen {
   private static ImmString referenceFormat;
 
   public static ImmString addData(String text) {
-    ImmString data = new ImmString(text, dataCounter);
+    //discard the leading and trailing double-quotes or single quotes in the string.
+    String cleanedText = text.substring(1, text.length() - 1);
+
+    ImmString data = new ImmString(cleanedText, dataCounter);
     textData.add(data);
     dataCounter++;
     return data;
