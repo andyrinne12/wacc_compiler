@@ -29,8 +29,7 @@ public class ProgramAST extends ASTNode {
     main.endBody();
     CodeGen.funcBodies.add(main);
 
-    CodeGen.funcBodies.add(Utils.printBool());
-    CodeGen.funcBodies.add(Utils.printInt());
+    Utils.printFunctions();
   }
 
   @Override

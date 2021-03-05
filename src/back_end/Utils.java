@@ -8,6 +8,7 @@ import back_end.instructions.branch.BL;
 import back_end.instructions.logical.MOV;
 import back_end.instructions.store.LDR;
 import back_end.instructions.store.POP;
+import back_end.instructions.store.PUSH;
 import back_end.operands.immediate.ImmInt;
 import back_end.operands.immediate.ImmString;
 import back_end.operands.registers.OffsetRegister;
@@ -40,7 +41,8 @@ public class Utils {
   }
 
   public static FunctionBody printBool() {
-    FunctionBody printBool = new FunctionBody("print_bool", false, true, true);
+    FunctionBody printBool = new FunctionBody("print_bool", false, true, false);
+    printBool.addInstr(new PUSH(RegisterManager.LR));
     printBool.addInstr(new CMP(RegisterManager.getResultReg(), new ImmInt(0)));
     printBool.addInstr(new LDR(Condition.NE, RegisterManager.getResultReg(), MESSAGE));
     printBool.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(), MESSAGE));
@@ -49,7 +51,8 @@ public class Utils {
   }
 
   public static FunctionBody printString() {
-    FunctionBody printString = new FunctionBody("print_string", false, true, true);
+    FunctionBody printString = new FunctionBody("print_string", false, true, false);
+    printString.addInstr(new PUSH(RegisterManager.LR));
     printString.addInstr(new LDR(RegisterManager.getParamRegs().get(1),
         new OffsetRegister(RegisterManager.getResultReg())));
     printString
@@ -60,7 +63,8 @@ public class Utils {
   }
 
   public static FunctionBody printInt() {
-    FunctionBody printInt = new FunctionBody("print_int", false, true, true);
+    FunctionBody printInt = new FunctionBody("print_int", false, true, false);
+    printInt.addInstr(new PUSH(RegisterManager.LR));
     printInt
         .addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
     printInt.addInstr(new LDR(RegisterManager.getResultReg(), MESSAGE));
@@ -89,7 +93,8 @@ public class Utils {
   }
 
   public static FunctionBody printReference() {
-    FunctionBody printlnReference = new FunctionBody("print_reference", false, true, true);
+    FunctionBody printlnReference = new FunctionBody("print_reference", false, true, false);
+    printlnReference.addInstr(new PUSH(RegisterManager.LR));
     printlnReference.addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
     printlnReference.addInstr(new LDR(RegisterManager.getResultReg(), MESSAGE));
     printLast(printlnReference);
