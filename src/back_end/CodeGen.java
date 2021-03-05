@@ -52,7 +52,7 @@ public class CodeGen {
   public static String getLabel() {
     String newLabel = "L" + labelCounter;
     labelCounter++;
-    return "L" + newLabel;
+    return newLabel;
   }
 
   public static void writeToFile(String fileName) {

@@ -1,6 +1,13 @@
 package front_end.AST.statement;
 
+import back_end.CodeGen;
 import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.Label;
+import back_end.instructions.arithmetic.CMP;
+import back_end.instructions.branch.B;
+import back_end.instructions.branch.BL;
+import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.Register;
 import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.ExpressionAST;
@@ -31,7 +38,18 @@ public class IfAST extends StatementAST {
     } else if (isTrue()) {
       thenSeq.assemble(body, freeRegs);
     } else {
+      body.addInstr(new CMP(freeRegs.get(0), new ImmInt(false)));
+      String labelFalse = CodeGen.getLabel();
+      String labelContinue = CodeGen.getLabel();
 
+      body.addInstr(new B(Condition.EQ, labelFalse));
+      thenSeq.assemble(body, freeRegs);
+      body.addInstr(new BL(Condition.NONE, labelContinue));
+
+      body.addInstr(new Label(labelFalse));
+      elseSeq.assemble(body,freeRegs);
+
+      body.addInstr(new Label(labelContinue));
     }
   }
 

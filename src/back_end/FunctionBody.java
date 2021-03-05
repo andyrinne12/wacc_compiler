@@ -70,8 +70,11 @@ public class FunctionBody {
   @Override
   public String toString() {
     StringBuilder str = new StringBuilder();
-    for (Instruction instr : instrList) {
-      str.append('\t').append(instr).append('\n');
+    for (int i = 0; i < instrList.size(); i++) {
+      str.append('\t').append(instrList.get(i));
+      if (i < instrList.size() - 1) {
+        str.append('\n');
+      }
     }
     return str.toString();
   }

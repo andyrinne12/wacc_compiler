@@ -2,7 +2,7 @@ begin
   int x = 1;
   int a = 2;
   bool c = x + 5 == 3 * (a + 4);
-  if(true) then
+  if(a == 3) then
     a = 1
   else
     a = 3
