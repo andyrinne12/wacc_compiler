@@ -10,6 +10,7 @@ public class ImmString extends ImmValue {
     this.text = text;
     this.label = "msg_" + no;
     this.length = text.length();
+    if(this.text.charAt(length-1) == '0') this.length --;
   }
 
   public ImmString(String text, int no, int length) {
