@@ -52,7 +52,7 @@ public class SymbolTable {
     int offset = currJumpOffset;
     SymbolTable S = this;
     while (!S.stackOffsets.containsKey(name)) {
-      offset += S.frameSize - 4;
+      offset += S.frameSize;
       S = S.parentST;
     }
     offset += S.stackOffsets.get(name);
