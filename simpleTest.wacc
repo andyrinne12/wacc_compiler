@@ -1,8 +1,6 @@
 begin
-  int x = 1;
-  int a = 2;
-  bool c = x + 5 == 3 * (a + 4);
-  while (a == 3) do
-    c = c || !c
-  done
+  char c = 'c';
+  int[] a = [0,1,2,3,4];
+  read a[3];
+  read c
 end

@@ -10,13 +10,14 @@ import back_end.instructions.store.LDR;
 import back_end.instructions.store.POP;
 import back_end.instructions.store.PUSH;
 import back_end.operands.immediate.ImmInt;
-import back_end.operands.immediate.ImmString;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
-import front_end.types.*;
-
-import java.beans.Expression;
+import front_end.types.ARRAY;
+import front_end.types.CHAR;
+import front_end.types.INT;
+import front_end.types.PAIR;
+import front_end.types.TYPE;
 import java.util.Map;
 
 public class Utils {
@@ -33,11 +34,14 @@ public class Utils {
 
   public static void printFunctions() {
 
-    if (CodeGen.lastFuncs.containsKey("p_check_array_bounds") || CodeGen.lastFuncs.containsKey("p_check_null_pointer") ||
-        CodeGen.lastFuncs.containsKey("p_divide_by_zero") || CodeGen.lastFuncs.containsKey("p_integer_overflow") || 
-        CodeGen.lastFuncs.containsKey("p_free_pair") || CodeGen.lastFuncs.containsKey("p_free_array")) {
-          addFunc("p_throw_runtime_error", null);
-          addFunc("p_print_string", null);
+    if (CodeGen.lastFuncs.containsKey("p_check_array_bounds") || CodeGen.lastFuncs
+        .containsKey("p_check_null_pointer") ||
+        CodeGen.lastFuncs.containsKey("p_divide_by_zero") || CodeGen.lastFuncs
+        .containsKey("p_integer_overflow") ||
+        CodeGen.lastFuncs.containsKey("p_free_pair") || CodeGen.lastFuncs
+        .containsKey("p_free_array")) {
+      addFunc("p_throw_runtime_error", null);
+      addFunc("p_print_string", null);
     }
 
     for (Map.Entry<String, Register> entry : CodeGen.lastFuncs.entrySet()) {
@@ -101,8 +105,10 @@ public class Utils {
     FunctionBody printBool = new FunctionBody("print_bool", false, true, false);
     printBool.addInstr(new PUSH(RegisterManager.LR));
     printBool.addInstr(new CMP(RegisterManager.getResultReg(), new ImmInt(0)));
-    printBool.addInstr(new LDR(Condition.NE, RegisterManager.getResultReg(), CodeGen.checkTrueFormat()));
-    printBool.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(), CodeGen.checkFalseFormat()));
+    printBool
+        .addInstr(new LDR(Condition.NE, RegisterManager.getResultReg(), CodeGen.checkTrueFormat()));
+    printBool.addInstr(
+        new LDR(Condition.EQ, RegisterManager.getResultReg(), CodeGen.checkFalseFormat()));
     printLast(printBool);
     return printBool;
   }
@@ -130,19 +136,25 @@ public class Utils {
   }
 
   public static FunctionBody printRead(String type, Register register) {
-    FunctionBody printRead = new FunctionBody("read" + type, false, true, true);
-    printRead.addInstr(new MOV(RegisterManager.getResultReg(), register));
-    printRead.addInstr(new LDR(RegisterManager.getResultReg(),CodeGen.checkIntFormat()));
+    FunctionBody printRead = new FunctionBody("read_" + type, false, true, true);
+    printRead
+        .addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
+    printRead.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.checkIntFormat()));
 
-    printRead.addInstr(new ADD(false, RegisterManager.getResultReg(), RegisterManager.getResultReg(), new ImmInt(4)));
+    printRead.addInstr(
+        new ADD(false, RegisterManager.getResultReg(), RegisterManager.getResultReg(),
+            new ImmInt(4)));
     printRead.addInstr(new BL(Condition.NONE, "scanf"));
+    printRead.endBody();
     return printRead;
   }
 
   public static FunctionBody printlnInstr() {
     FunctionBody printlnInstr = new FunctionBody("print_ln", false, true, true);
     printlnInstr.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.checkEmptyFormat()));
-    printlnInstr.addInstr(new ADD(false, RegisterManager.getResultReg(), RegisterManager.getResultReg(), new ImmInt(4)));
+    printlnInstr.addInstr(
+        new ADD(false, RegisterManager.getResultReg(), RegisterManager.getResultReg(),
+            new ImmInt(4)));
     printlnInstr.addInstr(new BL(Condition.NONE, "puts"));
     printlnInstr.addInstr(new MOV(RegisterManager.getResultReg(), new ImmInt(0)));
     printlnInstr.addInstr(new BL(Condition.NONE, "fflush"));
@@ -153,7 +165,8 @@ public class Utils {
   public static FunctionBody printReference() {
     FunctionBody printlnReference = new FunctionBody("print_reference", false, true, false);
     printlnReference.addInstr(new PUSH(RegisterManager.LR));
-    printlnReference.addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
+    printlnReference
+        .addInstr(new MOV(RegisterManager.getParamRegs().get(1), RegisterManager.getResultReg()));
     printlnReference.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.checkRefFormat()));
     printLast(printlnReference);
     return printlnReference;
@@ -162,7 +175,8 @@ public class Utils {
   public static FunctionBody p_check_null_pointer() {
     FunctionBody checkNullPointer = new FunctionBody("check_null_pointer", false, true, true);
     checkNullPointer.addInstr(new CMP(RegisterManager.getResultReg(), new ImmInt(0)));
-    checkNullPointer.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(), CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0")));
+    checkNullPointer.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
+        CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0")));
     checkNullPointer.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));
     return checkNullPointer;
   }
@@ -179,12 +193,16 @@ public class Utils {
     FunctionBody checkBound = new FunctionBody("check_array_bounds", false, true, true);
 
     checkBound.addInstr(new CMP(RegisterManager.getResultReg(), new ImmInt(0)));
-    checkBound.addInstr(new LDR(Condition.LT, RegisterManager.getResultReg(), CodeGen.addData("ArrayIndexOutOfBoundsError: negative index\\n\\0")));
+    checkBound.addInstr(new LDR(Condition.LT, RegisterManager.getResultReg(),
+        CodeGen.addData("ArrayIndexOutOfBoundsError: negative index\\n\\0")));
     checkBound.addInstr(new BL(Condition.LT, "p_throw_runtime_error"));
-    checkBound.addInstr(new LDR(RegisterManager.getParamRegs().get(1), new OffsetRegister(RegisterManager.getParamRegs().get(1))));
+    checkBound.addInstr(new LDR(RegisterManager.getParamRegs().get(1),
+        new OffsetRegister(RegisterManager.getParamRegs().get(1))));
 
-    checkBound.addInstr(new CMP(RegisterManager.getResultReg(), RegisterManager.getParamRegs().get(1)));
-    checkBound.addInstr(new LDR(Condition.CS, RegisterManager.getResultReg(), CodeGen.addData("ArrayIndexOutOfBoundsError: index too large\\n\\0")));
+    checkBound
+        .addInstr(new CMP(RegisterManager.getResultReg(), RegisterManager.getParamRegs().get(1)));
+    checkBound.addInstr(new LDR(Condition.CS, RegisterManager.getResultReg(),
+        CodeGen.addData("ArrayIndexOutOfBoundsError: index too large\\n\\0")));
     checkBound.addInstr(new BL(Condition.CS, "p_throw_runtime_error"));
     return checkBound;
   }
@@ -192,22 +210,25 @@ public class Utils {
   public static FunctionBody p_divide_by_zero(Register register) {
     FunctionBody checkDivide = new FunctionBody("check_divide_by_zero", false, true, true);
     checkDivide.addInstr(new CMP(register, new ImmInt(0)));
-    checkDivide.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(), CodeGen.addData("DivideByZeroError: divide or modulo by zero\\n\\0")));
+    checkDivide.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
+        CodeGen.addData("DivideByZeroError: divide or modulo by zero\\n\\0")));
     checkDivide.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));
     return checkDivide;
   }
 
   public static FunctionBody p_integer_overflow() {
     FunctionBody overflow = new FunctionBody("throw_overflow_error", false, true, true);
-    overflow.addInstr(new LDR(RegisterManager.getResultReg(), CodeGen.addData("OverflowError: the result is too small/large to store in a " +
-        "4-byte signed-integer.\\\\n")));
+    overflow.addInstr(new LDR(RegisterManager.getResultReg(),
+        CodeGen.addData("OverflowError: the result is too small/large to store in a " +
+            "4-byte signed-integer.\\\\n")));
     overflow.addInstr(new BL(Condition.NONE, "p_throw_runtime_error"));
     return overflow;
   }
 
   private static void p_free(FunctionBody f) {
     f.addInstr(new CMP(RegisterManager.getResultReg(), new ImmInt(0)));
-    f.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(), CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0")));
+    f.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
+        CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0")));
     f.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));
   }
 
@@ -215,10 +236,13 @@ public class Utils {
   public static FunctionBody p_free_pair() {
     FunctionBody freePair = new FunctionBody("free_pair", false, true, true);
     p_free(freePair);
-    freePair.addInstr(new LDR(RegisterManager.getResultReg(), new OffsetRegister(RegisterManager.getResultReg())));
+    freePair.addInstr(new LDR(RegisterManager.getResultReg(),
+        new OffsetRegister(RegisterManager.getResultReg())));
     freePair.addInstr(new BL(Condition.NONE, "free"));
-    freePair.addInstr(new LDR(RegisterManager.getResultReg(), new OffsetRegister(RegisterManager.SP)));
-    freePair.addInstr(new LDR(RegisterManager.getResultReg(), new OffsetRegister(RegisterManager.getResultReg(),4)));
+    freePair
+        .addInstr(new LDR(RegisterManager.getResultReg(), new OffsetRegister(RegisterManager.SP)));
+    freePair.addInstr(new LDR(RegisterManager.getResultReg(),
+        new OffsetRegister(RegisterManager.getResultReg(), 4)));
     freePair.addInstr(new BL(Condition.NONE, "free"));
     freePair.addInstr(new POP(RegisterManager.getResultReg()));
     freePair.addInstr(new BL(Condition.NONE, "free"));
@@ -253,11 +277,23 @@ public class Utils {
       typeName = type.toString();
     }
 
-    if (typeName == "char") {
+    if (typeName.equals("char")) {
       return "putchar";
     }
 
-    return "p_print_" + typeName; 
+    return "p_print_" + typeName;
+  }
+
+  public static String getReadFunctionName(TYPE type) {
+    String funcName = "p_read_";
+    if (type instanceof CHAR) {
+      funcName += "char";
+    } else if (type instanceof INT) {
+      funcName += "int";
+    } else {
+      funcName += "TYPE PROBLEM. This should not be printed";
+    }
+    return funcName;
   }
 
   private static boolean isString(TYPE type) {
