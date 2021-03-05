@@ -128,7 +128,7 @@ public class Main {
     String assemblyFileName = tempFilename + ".s";
     CodeGen.writeToFile(assemblyFileName);
 
-    if (option == ASSEMBLE) {
+    if (option == ASSEMBLE || option == NO_OPTION) {
       InputStream input = null;
       try {
         input = new FileInputStream(assemblyFileName);
