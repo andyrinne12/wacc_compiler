@@ -19,7 +19,7 @@ import java.util.Map;
 public class Utils {
 
   public static final int EXIT_CODE = -1;
-  private static final ImmString MESSAGE = CodeGen.addData("UNDEFINED: IMPLEMENT ME PLS UwU");
+  //private static final ImmString MESSAGE = CodeGen.addData("UNDEFINED: IMPLEMENT ME PLS UwU");
   public static Instruction PUTCHAR = new BL(Condition.NONE, "putchar");
   public static Instruction MALLOC = new BL(Condition.NONE, "malloc");
   public static Instruction CHECK_ARRAY_BOUNDS = new BL(Condition.NONE, "p_check_array_bounds");
