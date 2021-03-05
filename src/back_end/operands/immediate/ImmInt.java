@@ -3,7 +3,6 @@ package back_end.operands.immediate;
 public class ImmInt extends ImmValue {
 
   private final int value;
-  private boolean isChar = false;
 
   public ImmInt(int value) {
     this.value = value;
@@ -15,16 +14,11 @@ public class ImmInt extends ImmValue {
 
   public ImmInt(char chr) {
     this.value = chr;
-    isChar = true;
   }
 
   @Override
   public String instrPrint() {
-    if (isChar) {
-      return "#'" + (char) value + "'";
-    } else {
-      return "#" + value;
-    }
+    return "#" + value;
   }
 
   public String ldrPrint() {

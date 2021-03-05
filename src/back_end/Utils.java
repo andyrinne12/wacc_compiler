@@ -185,7 +185,7 @@ public class Utils {
   }
 
   public static FunctionBody p_throw_runtime_error() {
-    FunctionBody runtimeError = new FunctionBody("throw_runtime_error", false, true, true);
+    FunctionBody runtimeError = new FunctionBody("throw_runtime_error", false, true, false);
     runtimeError.addInstr(new BL(Condition.NONE, "p_print_string"));
     runtimeError.addInstr(new MOV(RegisterManager.getResultReg(), new ImmInt(EXIT_CODE)));
     runtimeError.addInstr(new BL(Condition.NONE, "exit"));
@@ -222,7 +222,7 @@ public class Utils {
   }
 
   public static FunctionBody p_integer_overflow() {
-    FunctionBody overflow = new FunctionBody("throw_overflow_error", false, true, true);
+    FunctionBody overflow = new FunctionBody("throw_overflow_error", false, true, false);
     overflow.addInstr(new LDR(RegisterManager.getResultReg(),
         CodeGen.addData("OverflowError: the result is too small/large to store in a " +
             "4-byte signed-integer.\\n")));
