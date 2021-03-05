@@ -21,11 +21,14 @@ public class ImmInt extends ImmValue {
   @Override
   public String instrPrint() {
     if (isChar) {
-      return "#\'" + (char) value + "\'";
+      return "#'" + (char) value + "'";
+    } else {
+      return "#" + value;
     }
-    else {
-      return "=" + value;
-    }
+  }
+
+  public String ldrPrint() {
+    return "=" + value;
   }
 
   public int getValue() {

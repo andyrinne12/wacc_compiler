@@ -3,6 +3,7 @@ package back_end.instructions.store;
 import back_end.instructions.Condition;
 import back_end.instructions.arithmetic.ArithmeticInstr;
 import back_end.operands.Operand;
+import back_end.operands.immediate.ImmInt;
 
 public class LDR extends ArithmeticInstr {
 
@@ -21,6 +22,10 @@ public class LDR extends ArithmeticInstr {
 
   @Override
   public String instrPrint() {
+    if(address instanceof ImmInt){
+      ImmInt immInt = (ImmInt) address;
+      return String.format("%s%s %s, %s", name, cond, rd, immInt.ldrPrint());
+    }
     return String.format("%s%s %s, %s", name, cond, rd, address);
   }
 }

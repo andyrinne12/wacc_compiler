@@ -228,9 +228,7 @@ public class BinaryOpExprAST extends ExpressionAST {
     Integer lhs = null;
     if (expr1 instanceof BinaryOpExprAST) {
       if (((BinaryOpExprAST) expr1).returnType.equals("bool")) {
-        if (!isNull(expr1)) {
-          lhs = ((BinaryOpExprAST) expr1).booleanTranslation() ? 1 : 0;
-        }
+        lhs = ((BinaryOpExprAST) expr1).booleanTranslation() ? 1 : 0;
       } else { // return type is int
         lhs = ((BinaryOpExprAST) expr1).integerTranslation();
       }

@@ -42,8 +42,7 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       if (exprType instanceof BOOLEAN || exprType instanceof CHAR) {
         offset = -1;
       }
-      body.addInstr(new STR(freeRegs.get(0),
-          new OffsetRegister(RegisterManager.SP, offset, true)));
+      body.addInstr(new STR(freeRegs.get(0), new OffsetRegister(RegisterManager.SP, offset, true)));
       Visitor.ST.pushOffset(Math.abs(offset));
 
       totalOffset += Math.abs(offset);

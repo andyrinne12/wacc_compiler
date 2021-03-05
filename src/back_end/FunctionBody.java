@@ -16,18 +16,29 @@ public class FunctionBody {
   private final List<Instruction> instrList = new ArrayList<>();
   private final String name;
   private boolean main = false;
+  private boolean util = false;
+  private boolean pushPop = true;
 
-  public FunctionBody(String name, boolean main) {
-    this(name);
+  public FunctionBody(String name, boolean main, boolean util, boolean pushPop) {
     this.main = main;
+    this.util = util;
+    if (!main && util) {
+      this.name = "p_" + name;
+    } else {
+      this.name = name;
+    }
+    this.pushPop = pushPop;
+    Label title = new Label(this.name);
+    PUSH pushLink = new PUSH(RegisterManager.LR);
+    instrList.add(title);
+    if (pushPop) {
+      instrList.add(pushLink);
+    }
   }
 
   public FunctionBody(String name) {
-    this.name = name;
-    if (main) {
-      name = "f_" + name;
-    }
-    Label title = new Label(name);
+    this.name = "f_" + name;
+    Label title = new Label(this.name);
     PUSH pushLink = new PUSH(RegisterManager.LR);
     instrList.add(title);
     instrList.add(pushLink);
@@ -42,6 +53,9 @@ public class FunctionBody {
   }
 
   public void endBody() {
+    if (!pushPop) {
+      return;
+    }
     if (main) {
       instrList.add(new LDR(RegisterManager.getResultReg(), new ImmInt(0)));
     }
@@ -56,10 +70,12 @@ public class FunctionBody {
   @Override
   public String toString() {
     StringBuilder str = new StringBuilder();
-    for (Instruction instr : instrList) {
-      str.append('\t').append(instr).append('\n');
+    for (int i = 0; i < instrList.size(); i++) {
+      str.append('\t').append(instrList.get(i));
+      if (i < instrList.size() - 1) {
+        str.append('\n');
+      }
     }
-    str.append('\n');
     return str.toString();
   }
 }

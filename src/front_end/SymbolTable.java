@@ -65,8 +65,7 @@ public class SymbolTable {
       if (!(ident instanceof FUNCTION || ident == null)) {
         if (ident instanceof BOOLEAN || ident instanceof CHAR) {
           size += 1;
-        }
-        else {
+        } else {
           size += 4;
         }
       }
@@ -95,8 +94,7 @@ public class SymbolTable {
     IDENTIFIER ident = dictionary.get(name);
     if ((ident instanceof BOOLEAN) || (ident instanceof CHAR)) {
       nextOffset -= 1;
-    }
-    else {
+    } else {
       nextOffset -= 4;
     }
     stackOffsets.put(name, nextOffset);

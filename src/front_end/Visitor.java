@@ -9,9 +9,7 @@ import antlr.WACCParser.ArrayTypePETContext;
 import antlr.WACCParser.ArrayTypeTPContext;
 import antlr.WACCParser.AssignSTContext;
 import antlr.WACCParser.BeginSTContext;
-import antlr.WACCParser.BinOpEXPContext;
 import antlr.WACCParser.BoolEXPContext;
-import antlr.WACCParser.BoolOpEXPContext;
 import antlr.WACCParser.BracketEXPContext;
 import antlr.WACCParser.CharEXPContext;
 import antlr.WACCParser.ExitSTContext;
@@ -25,6 +23,10 @@ import antlr.WACCParser.IdentLHSContext;
 import antlr.WACCParser.IfSTContext;
 import antlr.WACCParser.InitSTContext;
 import antlr.WACCParser.NewPairRHSContext;
+import antlr.WACCParser.P1EXPContext;
+import antlr.WACCParser.P2EXPContext;
+import antlr.WACCParser.P3EXPContext;
+import antlr.WACCParser.P4EXPContext;
 import antlr.WACCParser.PairArrayATContext;
 import antlr.WACCParser.PairElemContext;
 import antlr.WACCParser.PairElemLHSContext;
@@ -328,15 +330,30 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public BinaryOpExprAST visitBinOpEXP(BinOpEXPContext ctx) {
+  public ASTNode visitP4EXP(P4EXPContext ctx) {
     return new BinaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr(0)),
-        (ExpressionAST) visit(ctx.expr(1)), ctx.binOp().getText());
+        (ExpressionAST) visit(ctx.expr(1)), ctx.p4op().getText());
+
   }
 
   @Override
-  public ASTNode visitBoolOpEXP(BoolOpEXPContext ctx) {
+  public ASTNode visitP3EXP(P3EXPContext ctx) {
     return new BinaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr(0)),
-        (ExpressionAST) visit(ctx.expr(1)), ctx.boolOp().getText());
+        (ExpressionAST) visit(ctx.expr(1)), ctx.p3op().getText());
+  }
+
+  @Override
+  public ASTNode visitP2EXP(P2EXPContext ctx) {
+    return new BinaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr(0)),
+        (ExpressionAST) visit(ctx.expr(1)), ctx.p2op().getText());
+
+  }
+
+  @Override
+  public ASTNode visitP1EXP(P1EXPContext ctx) {
+    return new BinaryOpExprAST(ctx, (ExpressionAST) visit(ctx.expr(0)),
+        (ExpressionAST) visit(ctx.expr(1)), ctx.p1op().getText());
+
   }
 
   @Override

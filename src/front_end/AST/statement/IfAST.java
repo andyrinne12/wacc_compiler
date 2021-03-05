@@ -1,9 +1,14 @@
 package front_end.AST.statement;
 
+import back_end.CodeGen;
 import back_end.FunctionBody;
+import back_end.instructions.Condition;
+import back_end.instructions.Label;
 import back_end.instructions.arithmetic.CMP;
+import back_end.instructions.branch.B;
+import back_end.instructions.branch.BL;
+import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.Register;
-import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
@@ -13,24 +18,48 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class IfAST extends StatementAST {
 
-  private final ExpressionAST expression;
+  private final ExpressionAST condition;
   private final StatementSequenceAST thenSeq;
   private final StatementSequenceAST elseSeq;
 
-  public IfAST(ParserRuleContext ctx, ExpressionAST expression, StatementSequenceAST thenSeq,
+  public IfAST(ParserRuleContext ctx, ExpressionAST condition, StatementSequenceAST thenSeq,
       StatementSequenceAST elseSeq) {
     super(ctx);
-    this.expression = expression;
+    this.condition = condition;
     this.thenSeq = thenSeq;
     this.elseSeq = elseSeq;
   }
 
   @Override
+  public void assemble(FunctionBody body, List<Register> freeRegs) {
+    /* If the condition is either true or false simplify */
+    if (isFalse()) {
+      elseSeq.assemble(body, freeRegs);
+    } else if (isTrue()) {
+      thenSeq.assemble(body, freeRegs);
+    } else {
+      condition.assemble(body, freeRegs);
+      body.addInstr(new CMP(freeRegs.get(0), new ImmInt(false)));
+      String labelFalse = CodeGen.getLabel();
+      String labelContinue = CodeGen.getLabel();
+
+      body.addInstr(new B(Condition.EQ, labelFalse));
+      thenSeq.assemble(body, freeRegs);
+      body.addInstr(new BL(Condition.NONE, labelContinue));
+
+      body.addInstr(new Label(labelFalse));
+      elseSeq.assemble(body, freeRegs);
+
+      body.addInstr(new Label(labelContinue));
+    }
+  }
+
+  @Override
   public void check() {
     //assure the validity of the expression
-    expression.check();
+    condition.check();
     IDENTIFIER ident = Visitor.ST.lookupAll("bool");
-    if (!expression.getIdentObj().equals(ident)) {
+    if (!condition.getIdentObj().equals(ident)) {
       error("If condition type is not boolean");
     }
 
@@ -40,23 +69,15 @@ public class IfAST extends StatementAST {
   }
 
   private boolean isTrue() {
-    if (expression instanceof BoolExprAST) {
-      return ((BoolExprAST) expression).getBoolVal() == true;
-    } else if (expression instanceof BinaryOpExprAST) {
-      if (((BinaryOpExprAST) expression).booleanTranslation() != null) {
-        return ((BinaryOpExprAST) expression).booleanTranslation();
-      }
+    if (condition instanceof BoolExprAST) {
+      return ((BoolExprAST) condition).getBoolVal();
     }
     return false;
   }
 
   private boolean isFalse() {
-    if (expression instanceof BoolExprAST) {
-      return ((BoolExprAST) expression).getBoolVal() == false;
-    } else if (expression instanceof BinaryOpExprAST) {
-      if (((BinaryOpExprAST) expression).booleanTranslation() != null) {
-        return !((BinaryOpExprAST) expression).booleanTranslation();
-      }
+    if (condition instanceof BoolExprAST) {
+      return !((BoolExprAST) condition).getBoolVal();
     }
     return false;
   }
