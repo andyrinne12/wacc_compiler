@@ -41,12 +41,15 @@ public class FunctionCallRightAST extends AssignmentRightAST {
       ExpressionAST expr = argList.get(i);
       expr.assemble(body, freeRegs);
 
+      Condition cond = Condition.NONE;
       int offset = -4;
       TYPE exprType = expr.getEvalType();
       if (exprType instanceof BOOLEAN || exprType instanceof CHAR) {
         offset = -1;
+        cond = Condition.B;
       }
-      body.addInstr(new STR(freeRegs.get(0), new OffsetRegister(RegisterManager.SP, offset, true)));
+      body.addInstr(
+          new STR(cond, freeRegs.get(0), new OffsetRegister(RegisterManager.SP, offset, true)));
       Visitor.ST.pushOffset(Math.abs(offset));
 
       totalOffset += Math.abs(offset);

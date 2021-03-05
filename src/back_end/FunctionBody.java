@@ -61,9 +61,6 @@ public class FunctionBody {
     }
     POP popLink = new POP(RegisterManager.PC);
     instrList.add(popLink);
-    if (!main && !util) {
-      instrList.add(popLink);
-    }
     if (!util) {
       instrList.add(Directive.DIR_LTORG);
     }
