@@ -4,6 +4,7 @@ import antlr.WACCLexer;
 import antlr.WACCParser;
 import back_end.CodeGen;
 import back_end.operands.registers.RegisterManager;
+import extension.InstructionEvaluation;
 import front_end.AST.ASTNode;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -29,7 +30,7 @@ public class Main {
 
   public static int EXIT_CODE = 0;
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
 
     String filename = "";
     int option = 0;
@@ -127,6 +128,7 @@ public class Main {
     String tempFilename = parts[parts.length - 1].split("\\.")[0];
     String assemblyFileName = tempFilename + ".s";
     CodeGen.writeToFile(assemblyFileName);
+    InstructionEvaluation.optimiseInstructions(assemblyFileName);
 
     if (option == ASSEMBLE || option == NO_OPTION) {
       InputStream input = null;
