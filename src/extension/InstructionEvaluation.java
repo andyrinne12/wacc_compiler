@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class InstructionEvaluation {
+ public class InstructionEvaluation {
 
   /*
    * Optimisation techniques that simplify the generated assembly code. The compiler is able to
@@ -17,7 +17,7 @@ public class InstructionEvaluation {
    * with the optimised assembly code.
    */
 
-  public static void optimiseInstructions(String file) throws IOException {
+   public static void optimiseInstructions(String file) throws IOException {
     File f = new File(file);
     File temp = new File(f.getAbsolutePath() + ".tmp");
 
@@ -35,19 +35,18 @@ public class InstructionEvaluation {
       /*
        * If there is a STR and then a LDR with the same register from the same address, the LDR is
        * redundant and can be deleted.
-       *  STR r1, [SP]
-       *  LDR r1, [SP]
+       *  STR r4, [SP]   in writeFST test
+       *  LDR r4, [SP]
        */
-      if (parts[0].equals("\tLDR") && prevLine != null) {
+      if (parts[0].equals("\t\tLDR") && prevLine != null) {
         String[] prevLineParts = prevLine.split(" ", 2);
         if (prevLineParts.length > 1 && parts[1].equals(prevLineParts[1])
-            && prevLineParts[0].equals("\tSTR")) {
+            && prevLineParts[0].equals("\t\tSTR")) {
           currLine = br.readLine();
         }
       }
 
       prevLine = currLine;
-
       pw.print(currLine + "\n");
       pw.flush();
 
