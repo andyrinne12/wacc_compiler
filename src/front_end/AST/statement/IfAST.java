@@ -13,6 +13,7 @@ import front_end.AST.expression.BoolExprAST;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.IDENTIFIER;
+
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -27,13 +28,14 @@ public class IfAST extends StatementAST {
     super(ctx);
     this.condition = condition;
     this.thenSeq = thenSeq;
-    this.elseSeq = elseSeq;
+    this.elseSeq = elseSeq; 
+    // extension: elseSeq would be null if the if-statement doesn't have an accompanying else-statement.
   }
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     /* If the condition is either true or false simplify */
-    if (isFalse()) {
+    if (isFalse() && elseSeq != null) {
       elseSeq.assemble(body, freeRegs);
     } else if (isTrue()) {
       thenSeq.assemble(body, freeRegs);
@@ -48,7 +50,10 @@ public class IfAST extends StatementAST {
       body.addInstr(new BL(Condition.NONE, labelContinue));
 
       body.addInstr(new Label(labelFalse));
-      elseSeq.assemble(body, freeRegs);
+
+      if (elseSeq != null) {
+        elseSeq.assemble(body, freeRegs);
+      }   
 
       body.addInstr(new Label(labelContinue));
     }
@@ -65,7 +70,9 @@ public class IfAST extends StatementAST {
 
     //check that the statements are valid
     thenSeq.check();
-    elseSeq.check();
+    if (elseSeq != null) {
+      elseSeq.check();
+    }
   }
 
   private boolean isTrue() {
@@ -83,6 +90,10 @@ public class IfAST extends StatementAST {
   }
 
   public boolean checkReturn() {
-    return thenSeq.checkReturn() && elseSeq.checkReturn();
+    boolean elseSeqCheckReturn = true;
+    if (elseSeq != null) {
+      elseSeqCheckReturn = elseSeq.checkReturn();
+    }
+    return thenSeq.checkReturn() && elseSeqCheckReturn;
   }
 }

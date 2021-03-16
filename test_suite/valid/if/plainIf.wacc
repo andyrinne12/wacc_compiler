@@ -1,0 +1,16 @@
+# Simple if statement without an accompanying else statement.
+
+# Output:
+# correct
+# yes!
+
+# Program:
+
+begin
+  int a = 13;	
+  if a == 13 
+  then 
+    println "correct"
+  fi;
+  println "yes!"
+end

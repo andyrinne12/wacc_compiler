@@ -34,6 +34,7 @@ stat: SKP                                 #skipST
    | PRINT expr                           #printST
    | PRINTLN expr                         #printlnST
    | IF expr THEN thenBody=statSeq ELSE elBody=statSeq FI #ifST
+   | IF expr THEN statSeq FI              #plainIfST
    | WHILE expr DO statSeq DONE           #whileST
    | BEGIN statSeq END                    #beginST
 ;
