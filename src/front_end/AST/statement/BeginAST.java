@@ -25,10 +25,10 @@ public class BeginAST extends StatementAST {
     return statSeq.checkReturn();
   }
 
+  // BeginAST's assemble() method is only called when we have nested begin-end statements within a program.
+  // For the outermost begin-end statement, the assemble() function of ProgramAST is called instead.
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
-    // an implementation is not needed.
-    // in ProgramAST's assemble(), a FunctionBody object is created, 
-    // which pushes the relevant initialization instructions into our global instructions list.
+    statSeq.assemble(body, freeRegs);
   }
 }
