@@ -21,7 +21,7 @@ THEN: 'then';
 ELSE: 'else';
 BREAK: 'break';
 
-SWTICH: 'switch';
+SWITCH: 'switch';
 CASE: 'case';
 DEFAULT: 'default';
 COLON: ':';
