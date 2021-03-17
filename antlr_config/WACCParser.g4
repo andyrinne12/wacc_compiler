@@ -38,8 +38,10 @@ stat: SKP                                 #skipST
    | WHILE expr DO statSeq DONE           #whileST
    | BEGIN statSeq END                    #beginST
    | BREAK                                #breakST
-   | SWITCH IDENT (CASE expr COLON caseBody=statSeq)* DEFAULT COLON defaultBody=statSeq     #switchCaseST  
+   | SWITCH IDENT (caseBody)* DEFAULT COLON defaultBody=statSeq     #switchCaseST  
 ;
+
+caseBody: CASE expr COLON statSeq;
 
 statSeq: stat (SEMI stat)*;
 
