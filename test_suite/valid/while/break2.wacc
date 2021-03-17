@@ -1,0 +1,18 @@
+# simple while loop with a break inside it.
+
+# Output:
+# 5
+
+# Program:
+
+begin
+    int i = 0;
+    while (i < 10) do
+        if i == 5
+        then
+            break
+        fi;
+        i = i + 1
+    done;
+    println i
+end

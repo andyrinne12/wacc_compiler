@@ -37,6 +37,7 @@ stat: SKP                                 #skipST
    | IF expr THEN statSeq FI              #plainIfST
    | WHILE expr DO statSeq DONE           #whileST
    | BEGIN statSeq END                    #beginST
+   | BREAK                                #breakST
 ;
 
 statSeq: stat (SEMI stat)*;

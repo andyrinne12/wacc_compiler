@@ -14,12 +14,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class StatementSequenceAST extends ScopingStatementAST {
 
   private final List<StatementAST> statementSeq;
+  private String endLabel; // allows break statements to know where to jump to, in order to exit the enclosing while loop.
 
   public StatementSequenceAST(ParserRuleContext ctx,
       SymbolTable parentSt, List<StatementAST> statementSeq) {
     super(ctx, parentSt);
     this.statementSeq = statementSeq;
-
   }
 
   @Override
@@ -31,6 +31,15 @@ public class StatementSequenceAST extends ScopingStatementAST {
           new SUB(false, RegisterManager.SP, RegisterManager.SP, new ImmInt(size)));
     }
     for (StatementAST stat : statementSeq) {
+
+      if (stat instanceof BreakAST) {
+        ((BreakAST) stat).setEndLabel(endLabel);
+      } else if (stat instanceof IfAST) {
+        ((IfAST) stat).setEndLabel(endLabel);
+      } else if (stat instanceof BeginAST) {
+        ((BeginAST) stat).setEndLabel(endLabel);
+      }
+
       stat.assemble(body, freeRegs);
     }
     if (size > 0) {
@@ -65,5 +74,9 @@ public class StatementSequenceAST extends ScopingStatementAST {
       }
     }
     return false;
+  }
+
+  public void setEndLabel(String endLabel) {
+    this.endLabel = endLabel;
   }
 }

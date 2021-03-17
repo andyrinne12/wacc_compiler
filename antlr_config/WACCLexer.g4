@@ -19,6 +19,12 @@ IF: 'if';
 FI: 'fi';
 THEN: 'then';
 ELSE: 'else';
+BREAK: 'break';
+
+SWTICH: 'switch';
+CASE: 'case';
+DEFAULT: 'default';
+COLON: ':';
 
 WHILE: 'while';
 DO: 'do';

@@ -23,6 +23,8 @@ public class IfAST extends StatementAST {
   private final StatementSequenceAST thenSeq;
   private final StatementSequenceAST elseSeq;
 
+  private String endLabel; // the endLabel of the enclosing while loop.
+
   public IfAST(ParserRuleContext ctx, ExpressionAST condition, StatementSequenceAST thenSeq,
       StatementSequenceAST elseSeq) {
     super(ctx);
@@ -34,8 +36,11 @@ public class IfAST extends StatementAST {
 
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
+    thenSeq.setEndLabel(endLabel); 
+
     /* If the condition is either true or false simplify */
     if (isFalse() && elseSeq != null) {
+      elseSeq.setEndLabel(endLabel);
       elseSeq.assemble(body, freeRegs);
     } else if (isTrue()) {
       thenSeq.assemble(body, freeRegs);
@@ -52,6 +57,7 @@ public class IfAST extends StatementAST {
       body.addInstr(new Label(labelFalse));
 
       if (elseSeq != null) {
+        elseSeq.setEndLabel(endLabel);
         elseSeq.assemble(body, freeRegs);
       }   
 
@@ -95,5 +101,9 @@ public class IfAST extends StatementAST {
       elseSeqCheckReturn = elseSeq.checkReturn();
     }
     return thenSeq.checkReturn() && elseSeqCheckReturn;
+  }
+
+  public void setEndLabel(String endLabel) {
+    this.endLabel = endLabel;
   }
 }

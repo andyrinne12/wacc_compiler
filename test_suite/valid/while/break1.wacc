@@ -1,0 +1,12 @@
+# simple while loop with a break inside it.
+
+# Output:
+# #empty#
+
+# Program:
+
+begin
+  while true do
+    break
+  done
+end

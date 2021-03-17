@@ -34,14 +34,20 @@ public class WhileAST extends StatementAST {
     String condLabel = CodeGen.getLabel();
     String bodyLabel = CodeGen.getLabel();
 
+    // a label that represents the end of the while loop. Useful for break statements to know where to jump to.
+    String endLabel = CodeGen.getLabel();
+
     body.addInstr(new B(Condition.NONE, condLabel));
     body.addInstr(new Label(bodyLabel));
+    statSeq.setEndLabel(endLabel);
     statSeq.assemble(body, freeRegs);
 
     body.addInstr(new Label(condLabel));
     expression.assemble(body, freeRegs);
     body.addInstr(new CMP(freeRegs.get(0), new ImmInt(true)));
     body.addInstr(new B(Condition.EQ, bodyLabel));
+     
+    body.addInstr(new Label(endLabel));
   }
 
   @Override

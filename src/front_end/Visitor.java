@@ -129,6 +129,26 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
+  public BreakAST visitBreakST(BreakSTContext ctx) {
+    checkForEnclosingWhileContext(ctx);
+    return new BreakAST(ctx);
+  }
+
+  private void checkForEnclosingWhileContext(ParserRuleContext ctx) {
+    ParserRuleContext parentContext = ctx.getParent();
+
+    while (!(parentContext instanceof WhileSTContext)) {
+      parentContext = parentContext.getParent();
+
+      if (parentContext instanceof ProgContext) {
+        error(ctx, "The break statement must be in a while loop");
+        break;
+      }
+    }
+
+  }
+
+  @Override
   public ASTNode visitWhileST(WhileSTContext ctx) {
     ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
     StatementSequenceAST statSeq = (StatementSequenceAST) visitStatSeq(ctx.statSeq());
