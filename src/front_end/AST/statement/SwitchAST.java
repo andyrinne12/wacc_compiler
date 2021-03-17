@@ -63,6 +63,7 @@ public class SwitchAST extends StatementAST {
         for (CaseAST individualCase: cases) {
             String caseLabel = CodeGen.getLabel();
             individualCase.setCaseLabel(caseLabel);
+            individualCase.setEndLabel(endLabel);
 
             individualCase.getCaseExpr().assemble(body, freeRegs1);
             Register caseRegister = freeRegs1.get(0); // register that holds the evaluated value of each case.

@@ -1,0 +1,29 @@
+# switch-case statements with breaks.
+
+# Output:
+# 30
+
+# Program:
+
+begin
+    int x = 3;
+    int y = 0;
+    switch x
+    do 
+        case 1:
+            y = 10;
+            break
+        case 2:
+            y = 20;
+            break
+        case 3:
+            y = 30;
+            break
+        case 4:
+            y = 40;
+            break
+        default:
+            y = 50     
+    done;
+    println y
+end

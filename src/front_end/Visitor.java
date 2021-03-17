@@ -130,18 +130,19 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public BreakAST visitBreakST(BreakSTContext ctx) {
-    checkForEnclosingWhileContext(ctx);
+    checkBreakStatement(ctx);
     return new BreakAST(ctx);
   }
 
-  private void checkForEnclosingWhileContext(ParserRuleContext ctx) {
+  // ensures that break statements are only used inside while loops, or within switch-case statements.
+  private void checkBreakStatement(ParserRuleContext ctx) {
     ParserRuleContext parentContext = ctx.getParent();
 
-    while (!(parentContext instanceof WhileSTContext)) {
+    while (!(parentContext instanceof WhileSTContext || parentContext instanceof SwitchCaseSTContext)) {
       parentContext = parentContext.getParent();
 
       if (parentContext instanceof ProgContext) {
-        error(ctx, "The break statement must be in a while loop");
+        error(ctx, "The break statement must be in a while loop or a switch-case statement.");
         break;
       }
     }

@@ -17,6 +17,7 @@ public class CaseAST extends ASTNode {
     private final StatementSequenceAST statSeq;
     private TYPE switchIdentType; // the type of the identifier in the switch statement
     private String caseLabel;
+    private String endLabel;
     
     public CaseAST(ParserRuleContext ctx, ExpressionAST caseExpr, StatementSequenceAST statSeq) {
         super(ctx);
@@ -42,6 +43,7 @@ public class CaseAST extends ASTNode {
     public void assemble(FunctionBody body, List<Register> freeRegs) {
         // only need to assemble the statement sequence. The caseExpr is assembled in SwitchAST.
         body.addInstr(new Label(caseLabel));
+        statSeq.setEndLabel(endLabel);
         statSeq.assemble(body, freeRegs);
     }
 
@@ -55,6 +57,10 @@ public class CaseAST extends ASTNode {
 
     public ExpressionAST getCaseExpr() {
         return caseExpr;
+    }
+
+    public void setEndLabel(String endLabel) {
+        this.endLabel = endLabel;
     }
 
 }
