@@ -1,0 +1,26 @@
+# the identifier given at switch isn't of a primitive type
+
+# Output:
+# #semantic_error#
+
+# Exit:
+# 200
+
+# Program:
+
+begin
+    int[] arr = [0];
+
+    int[] case1 = [0,1];
+    int[] case2 = [0];
+
+    switch arr
+    do 
+        case case1:
+            println "here"
+        case case2:
+            println "there"
+        default:
+            println "default"
+    done
+end

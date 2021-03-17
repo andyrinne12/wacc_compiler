@@ -177,6 +177,25 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
+  public SwitchAST visitSwitchCaseST(SwitchCaseSTContext ctx) {   
+    List<CaseAST> cases = new ArrayList<>();
+    for (CaseBodyContext caseCtx: ctx.caseBody()) {
+      cases.add(visitCaseBody(caseCtx));
+    }
+
+    StatementSequenceAST statSeq = (StatementSequenceAST) visitStatSeq(ctx.statSeq());
+
+    return new SwitchAST(ctx, ctx.IDENT().getText(), cases, statSeq);
+  }
+
+  @Override
+  public CaseAST visitCaseBody(CaseBodyContext ctx) {
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
+    StatementSequenceAST statSeq = (StatementSequenceAST) visit(ctx.statSeq());
+    return new CaseAST(ctx, expr, statSeq);
+  }
+
+  @Override
   public IfAST visitIfST(IfSTContext ctx) {
     ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
     StatementSequenceAST thenBody = (StatementSequenceAST) visit(ctx.thenBody);

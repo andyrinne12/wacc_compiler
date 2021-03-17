@@ -25,8 +25,15 @@ public class CaseAST extends ASTNode {
     @Override
     public void check() {
         // check that caseExpr is a valid expression
+        caseExpr.check();
+
         // check that caseExpr is of the same type as the switchIdentType
+        if (caseExpr.getEvalType() != switchIdentType) {
+            error("Type mismatch. Expected type: " + switchIdentType + "; Actual type: " + caseExpr.getEvalType());
+        }
+
         // check that the statements in statSeq are valid statements
+        statSeq.check();
     }
 
     @Override

@@ -1,0 +1,24 @@
+# 2 of the case expressions are of different types with the identifier at the switch statement.
+
+# Output:
+# #semantic_error#
+
+# Exit:
+# 200
+
+# Program:
+
+begin
+    int x = 1;
+    switch x
+    do 
+        case "randomString":
+            println "reached a randomString"
+        case 1:
+            println "reached 1, yay!"
+        case true:
+            println "reached true"
+        default:
+            println "default"
+    done
+end

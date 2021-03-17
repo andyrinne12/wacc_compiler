@@ -1,0 +1,20 @@
+# switch statement without default
+
+# Output:
+# #syntax_error#
+
+# Exit:
+# 100
+
+# Program:
+
+begin
+    int i = 10;
+    switch i
+    do 
+        case 5:
+            println 5
+        case 10:
+            println 10
+    done
+end
