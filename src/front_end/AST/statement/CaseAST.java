@@ -5,6 +5,7 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import back_end.FunctionBody;
+import back_end.instructions.Label;
 import back_end.operands.registers.Register;
 import front_end.AST.*;
 import front_end.AST.expression.ExpressionAST;
@@ -15,6 +16,7 @@ public class CaseAST extends ASTNode {
     private final ExpressionAST caseExpr;
     private final StatementSequenceAST statSeq;
     private TYPE switchIdentType; // the type of the identifier in the switch statement
+    private String caseLabel;
     
     public CaseAST(ParserRuleContext ctx, ExpressionAST caseExpr, StatementSequenceAST statSeq) {
         super(ctx);
@@ -38,11 +40,21 @@ public class CaseAST extends ASTNode {
 
     @Override
     public void assemble(FunctionBody body, List<Register> freeRegs) {
-        
+        // only need to assemble the statement sequence. The caseExpr is assembled in SwitchAST.
+        body.addInstr(new Label(caseLabel));
+        statSeq.assemble(body, freeRegs);
     }
 
     public void setSwitchIdentType(TYPE type) {
         switchIdentType = type;
+    }
+
+    public void setCaseLabel(String caseLabel) {
+        this.caseLabel = caseLabel;
+    }
+
+    public ExpressionAST getCaseExpr() {
+        return caseExpr;
     }
 
 }
