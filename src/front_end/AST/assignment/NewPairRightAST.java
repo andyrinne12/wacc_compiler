@@ -10,6 +10,8 @@ import back_end.operands.immediate.ImmInt;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.PAIR;
 import front_end.types.TYPE;
 import java.util.List;
@@ -33,8 +35,18 @@ public class NewPairRightAST extends AssignmentRightAST {
     body.addInstr(new MOV(Condition.NONE, false, freeRegs.get(0), RegisterManager.getResultReg()));
     List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
 
-    int size1 = (expr1.getEvalType() instanceof PAIR) ? 8 : 4;
-    int size2 = (expr2.getEvalType() instanceof PAIR) ? 8 : 4;
+    int size1 = 4;
+    int size2 = 4;
+    if (expr1.getEvalType() instanceof PAIR) {
+      size1 = 8;
+    } else if (expr1.getEvalType() instanceof BOOLEAN || expr1.getEvalType() instanceof CHAR) {
+      size1 = 1;
+    }
+    if (expr2.getEvalType() instanceof PAIR) {
+      size2 = 8;
+    } else if (expr2.getEvalType() instanceof BOOLEAN || expr2.getEvalType() instanceof CHAR) {
+      size2 = 1;
+    }
     expr1.assemble(body, freeRegs1);
     body.addInstr(
         new LDR(Condition.NONE, RegisterManager.getParamRegs().get(0), new ImmInt(size1)));

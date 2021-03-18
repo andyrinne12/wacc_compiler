@@ -1,6 +1,5 @@
 package front_end.AST.statement;
 
-import back_end.CodeGen;
 import back_end.FunctionBody;
 import back_end.Utils;
 import back_end.instructions.logical.MOV;
@@ -34,9 +33,6 @@ public class FreeAST extends StatementAST {
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(RegisterManager.SP)));
     body.addInstr(new MOV(RegisterManager.getResultReg(), freeRegs.get(0)));
-
-    body.addInstr(Utils.RUNTIME_ERROR);
-    // CodeGen.addData("\"NullReferenceError: dereference a null reference\\n\\0\"");
 
     if (expression.getEvalType() instanceof PAIR) {
       body.addInstr(Utils.FREE_PAIR);

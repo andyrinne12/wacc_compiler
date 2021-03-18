@@ -243,6 +243,7 @@ public class Utils {
   public static FunctionBody p_free_pair() {
     FunctionBody freePair = new FunctionBody("free_pair", false, true, true);
     p_free(freePair);
+    freePair.addInstr(new PUSH(RegisterManager.getResultReg()));
     freePair.addInstr(new LDR(RegisterManager.getResultReg(),
         new OffsetRegister(RegisterManager.getResultReg())));
     freePair.addInstr(new BL(Condition.NONE, "free"));
@@ -253,6 +254,7 @@ public class Utils {
     freePair.addInstr(new BL(Condition.NONE, "free"));
     freePair.addInstr(new POP(RegisterManager.getResultReg()));
     freePair.addInstr(new BL(Condition.NONE, "free"));
+    freePair.endBody();
     return freePair;
   }
 
