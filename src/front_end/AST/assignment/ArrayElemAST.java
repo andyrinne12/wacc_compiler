@@ -16,16 +16,17 @@ import back_end.operands.registers.ShiftedRegister;
 import front_end.AST.expression.ExpressionAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.INT;
 import front_end.types.TYPE;
 import java.util.List;
 
 public class ArrayElemAST extends AssignmentLeftAST {
 
+  private static boolean error;
   private final String arrayIdent;
   private final List<ExpressionAST> indices;
-
-  private static boolean error;
 
   public ArrayElemAST(ArrayElemContext ctx, List<ExpressionAST> indices) {
     super(ctx);
@@ -41,10 +42,11 @@ public class ArrayElemAST extends AssignmentLeftAST {
         new ImmInt(Visitor.ST.getIdentOffset(arrayIdent) + Visitor.ST
             .getJumpOffset())));
     List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
-    for (ExpressionAST expr : indices) {
+    for (int i = 0; i < indices.size(); i++) {
+      ExpressionAST expr = indices.get(0);
       expr.assemble(body, freeRegs1);
 
-      if(!error) {
+      if (!error) {
         CodeGen.addData("ArrayIndexOutOfBoundsError: negative index\\n\\0");
         CodeGen.addData("ArrayIndexOutOfBoundsError: index too large\\n\\0");
 
@@ -57,8 +59,13 @@ public class ArrayElemAST extends AssignmentLeftAST {
       body.addInstr(new MOV(RegisterManager.getParamRegs().get(1), freeRegs.get(0)));
       body.addInstr(Utils.CHECK_ARRAY_BOUNDS);
       body.addInstr(new ADD(false, freeRegs.get(0), freeRegs.get(0), new ImmInt(4)));
-      body.addInstr(new ADD(false, freeRegs.get(0), freeRegs.get(0),
-          new ShiftedRegister(freeRegs1.get(0), Shift.LSL, new ImmInt(2))));
+      if (i == indices.size() - 1 && (getEvalType() instanceof CHAR
+          || getEvalType() instanceof BOOLEAN)) {
+        body.addInstr(new ADD(false, freeRegs.get(0), freeRegs.get(0), freeRegs1.get(0)));
+      } else {
+        body.addInstr(new ADD(false, freeRegs.get(0), freeRegs.get(0),
+            new ShiftedRegister(freeRegs1.get(0), Shift.LSL, new ImmInt(2))));
+      }
     }
   }
 

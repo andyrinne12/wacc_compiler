@@ -182,6 +182,7 @@ public class Utils {
     checkNullPointer.addInstr(new LDR(Condition.EQ, RegisterManager.getResultReg(),
         CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0")));
     checkNullPointer.addInstr(new BL(Condition.EQ, "p_throw_runtime_error"));
+    checkNullPointer.endBody();
     return checkNullPointer;
   }
 

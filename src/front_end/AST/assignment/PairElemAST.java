@@ -19,10 +19,9 @@ import java.util.List;
 
 public class PairElemAST extends ASTNode {
 
+  private static boolean error;
   private final PairElemEnum elem;
   private final ExpressionAST identExp;
-
-  private static boolean error;
 
   public PairElemAST(PairElemContext ctx, ExpressionAST identExp) {
     super(ctx);
@@ -40,7 +39,7 @@ public class PairElemAST extends ASTNode {
     body.addInstr(new BL(Condition.NONE, "p_check_null_pointer"));
     body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0), elemOfs)));
 
-    if(!error) {
+    if (!error) {
       CodeGen.addData("NullReferenceError: dereference a null reference\\n\\0");
       Utils.addFunc("p_check_null_pointer", freeRegs.get(0));
       error = true;

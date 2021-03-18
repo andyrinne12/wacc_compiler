@@ -473,7 +473,6 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitArrayTypePET(ArrayTypePETContext ctx) {
-    System.out.println("in visitArrayTypePET");
     return new ArrayTypeAST(ctx, visitArrayTypePETHelper((PrimArrayATContext) ctx.arrayType()));
   }
 
