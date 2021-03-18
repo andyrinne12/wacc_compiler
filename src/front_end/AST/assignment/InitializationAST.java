@@ -6,13 +6,14 @@ import back_end.instructions.store.STR;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
-import front_end.AST.expression.BoolExprAST;
 import front_end.AST.statement.StatementAST;
 import front_end.AST.type.TypeAST;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.BOOLEAN;
 import front_end.types.CHAR;
+import front_end.types.INT;
+import front_end.types.POINTER;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -58,10 +59,21 @@ public class InitializationAST extends StatementAST {
       }
     }
     if (!actType.equalsType(rhsType)) {
-      error("Invalid type at initialization. Expected: " + actType + " actual: " + rhsType);
-      success = false;
+      if (actType instanceof POINTER) {
+        if (rhsType instanceof POINTER) {
+          warning("assignment from incompatible pointer type");
+        } else if (rhsType instanceof INT) {
+          warning("assignment to pointer from integer without a cast");
+        }
+      }
+      /* otherwise */
+      else {
+        error("Invalid type at initialization. Expected: " + actType + " actual: " + rhsType);
+        success = false;
+      }
     }
 
+    success:
     if (success) {
       Visitor.ST.add(ident.toString(), actType);
     }
@@ -72,7 +84,7 @@ public class InitializationAST extends StatementAST {
     rhs.assemble(body, freeRegs);
     int offset = Visitor.ST.storeVariable(ident.toString());
     Condition cond = Condition.NONE;
-    
+
     if ((rhs.getEvalType() instanceof BOOLEAN) || (rhs.getEvalType() instanceof CHAR)) {
       cond = Condition.B;
     }

@@ -1,16 +1,118 @@
 package front_end;
 
-import antlr.WACCParser.*;
+import antlr.WACCParser.ArgListContext;
+import antlr.WACCParser.ArrayElemContext;
+import antlr.WACCParser.ArrayElemEXPContext;
+import antlr.WACCParser.ArrayElemLHSContext;
+import antlr.WACCParser.ArrayLtrRHSContext;
+import antlr.WACCParser.ArrayTypePETContext;
+import antlr.WACCParser.ArrayTypeTPContext;
+import antlr.WACCParser.AssignSTContext;
+import antlr.WACCParser.BeginSTContext;
+import antlr.WACCParser.BoolEXPContext;
+import antlr.WACCParser.BracketEXPContext;
+import antlr.WACCParser.BreakSTContext;
+import antlr.WACCParser.CaseBodyContext;
+import antlr.WACCParser.CharEXPContext;
+import antlr.WACCParser.ExitSTContext;
+import antlr.WACCParser.ExpRHSContext;
+import antlr.WACCParser.ExprContext;
+import antlr.WACCParser.FreeSTContext;
+import antlr.WACCParser.FuncCallRHSContext;
+import antlr.WACCParser.FuncContext;
+import antlr.WACCParser.IdentEXPContext;
+import antlr.WACCParser.IdentLHSContext;
+import antlr.WACCParser.IfSTContext;
+import antlr.WACCParser.InitSTContext;
+import antlr.WACCParser.NewPairRHSContext;
+import antlr.WACCParser.P1EXPContext;
+import antlr.WACCParser.P2EXPContext;
+import antlr.WACCParser.P3EXPContext;
+import antlr.WACCParser.P4EXPContext;
+import antlr.WACCParser.PairArrayATContext;
+import antlr.WACCParser.PairElemContext;
+import antlr.WACCParser.PairElemLHSContext;
+import antlr.WACCParser.PairElemRHSContext;
+import antlr.WACCParser.PairLtrEXPContext;
+import antlr.WACCParser.PairTypeContext;
+import antlr.WACCParser.PairTypePETContext;
+import antlr.WACCParser.PairTypeTPContext;
+import antlr.WACCParser.ParamContext;
+import antlr.WACCParser.ParamListContext;
+import antlr.WACCParser.PlainIfSTContext;
+import antlr.WACCParser.PointerPTContext;
+import antlr.WACCParser.PointerTypePETContext;
+import antlr.WACCParser.PrimArrayATContext;
+import antlr.WACCParser.PrimPTContext;
+import antlr.WACCParser.PrimTypePETContext;
+import antlr.WACCParser.PrimTypeTPContext;
+import antlr.WACCParser.PrintSTContext;
+import antlr.WACCParser.PrintlnSTContext;
+import antlr.WACCParser.ProgContext;
+import antlr.WACCParser.ReadSTContext;
+import antlr.WACCParser.ReturnSTContext;
+import antlr.WACCParser.SignedIntEXPContext;
+import antlr.WACCParser.SkipSTContext;
+import antlr.WACCParser.StatContext;
+import antlr.WACCParser.StatSeqContext;
+import antlr.WACCParser.StrEXPContext;
+import antlr.WACCParser.SwitchCaseSTContext;
+import antlr.WACCParser.UnOpEXPContext;
+import antlr.WACCParser.WhileSTContext;
 import antlr.WACCParserBaseVisitor;
 import antlr.WACCParserVisitor;
 import front_end.AST.ASTNode;
 import front_end.AST.ProgramAST;
-import front_end.AST.assignment.*;
-import front_end.AST.expression.*;
-import front_end.AST.function.*;
-import front_end.AST.statement.*;
-import front_end.AST.type.*;
-import front_end.types.*;
+import front_end.AST.assignment.ArrayElemAST;
+import front_end.AST.assignment.ArrayLtrRightAST;
+import front_end.AST.assignment.AssignmentAST;
+import front_end.AST.assignment.AssignmentLeftAST;
+import front_end.AST.assignment.AssignmentRightAST;
+import front_end.AST.assignment.ExprRightAST;
+import front_end.AST.assignment.FunctionCallRightAST;
+import front_end.AST.assignment.IdentLeftAST;
+import front_end.AST.assignment.InitializationAST;
+import front_end.AST.assignment.NewPairRightAST;
+import front_end.AST.assignment.PairElemAST;
+import front_end.AST.assignment.PairElemLeftAST;
+import front_end.AST.assignment.PairElemRightAST;
+import front_end.AST.expression.ArrayElemExprAST;
+import front_end.AST.expression.BinaryOpExprAST;
+import front_end.AST.expression.BoolExprAST;
+import front_end.AST.expression.CharExprAST;
+import front_end.AST.expression.ExpressionAST;
+import front_end.AST.expression.IdentAST;
+import front_end.AST.expression.PairLtrExprAST;
+import front_end.AST.expression.SignedIntExprAST;
+import front_end.AST.expression.StringExprAST;
+import front_end.AST.expression.UnaryOpExprAST;
+import front_end.AST.function.FunctionDeclAST;
+import front_end.AST.function.ParamAST;
+import front_end.AST.function.ParamListAST;
+import front_end.AST.statement.BeginAST;
+import front_end.AST.statement.BreakAST;
+import front_end.AST.statement.CaseAST;
+import front_end.AST.statement.ExitAST;
+import front_end.AST.statement.FreeAST;
+import front_end.AST.statement.IfAST;
+import front_end.AST.statement.PrintAST;
+import front_end.AST.statement.PrintlnAST;
+import front_end.AST.statement.ReadAST;
+import front_end.AST.statement.ReturnAST;
+import front_end.AST.statement.SkipAST;
+import front_end.AST.statement.StatementAST;
+import front_end.AST.statement.StatementSequenceAST;
+import front_end.AST.statement.SwitchAST;
+import front_end.AST.statement.WhileAST;
+import front_end.AST.type.ArrayTypeAST;
+import front_end.AST.type.PairTypeAST;
+import front_end.AST.type.PointerTypeAST;
+import front_end.AST.type.PrimTypeAST;
+import front_end.AST.type.TypeAST;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
+import front_end.types.INT;
+import front_end.types.STRING;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -33,9 +135,14 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   // for semantic errors
   public static void error(ParserRuleContext ctx, String message) {
-    System.err.println("Error at " + ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
-        + " -- " + message);
+    System.err.println(ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
+        + "  error: " + message);
     Main.EXIT_CODE = 200;
+  }
+
+  public static void warning(ParserRuleContext ctx, String message) {
+    System.err.println(ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
+        + "  warning: " + message);
   }
 
   @Override
@@ -138,7 +245,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   private void checkBreakStatement(ParserRuleContext ctx) {
     ParserRuleContext parentContext = ctx.getParent();
 
-    while (!(parentContext instanceof WhileSTContext || parentContext instanceof SwitchCaseSTContext)) {
+    while (!(parentContext instanceof WhileSTContext
+        || parentContext instanceof SwitchCaseSTContext)) {
       parentContext = parentContext.getParent();
 
       if (parentContext instanceof ProgContext) {
@@ -178,15 +286,15 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
-  public SwitchAST visitSwitchCaseST(SwitchCaseSTContext ctx) {   
+  public SwitchAST visitSwitchCaseST(SwitchCaseSTContext ctx) {
     List<CaseAST> cases = new ArrayList<>();
-    for (CaseBodyContext caseCtx: ctx.caseBody()) {
+    for (CaseBodyContext caseCtx : ctx.caseBody()) {
       cases.add(visitCaseBody(caseCtx));
     }
 
     ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
     StatementSequenceAST statSeq = (StatementSequenceAST) visitStatSeq(ctx.statSeq());
-    
+
     return new SwitchAST(ctx, expr, cases, statSeq);
   }
 
@@ -340,6 +448,8 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     return new IdentAST(ctx, ctx.getText());
   }
 
+
+
   @Override
   public CharExprAST visitCharEXP(CharEXPContext ctx) {
     return new CharExprAST(ctx, ctx.getText());
@@ -467,6 +577,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   @Override
+  public ASTNode visitPointerTypePET(PointerTypePETContext ctx) {
+    return visit(ctx.pointerType());
+  }
+
+  @Override
   public ASTNode visitPairTypePET(PairTypePETContext ctx) {
     return new PairTypeAST(ctx, null, null);
   }
@@ -476,8 +591,18 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     return new ArrayTypeAST(ctx, visitArrayTypePETHelper((PrimArrayATContext) ctx.arrayType()));
   }
 
+  @Override
+  public ASTNode visitPointerPT(PointerPTContext ctx) {
+    return new PointerTypeAST(ctx, (TypeAST) visit(ctx.pointerType()));
+  }
+
+  @Override
+  public ASTNode visitPrimPT(PrimPTContext ctx) {
+    return new PointerTypeAST(ctx, new PrimTypeAST(ctx, ctx.TYPE().getText()));
+  }
+
   private TypeAST visitArrayTypePETHelper(PrimArrayATContext ctx) {
-    TypeAST elemType = (TypeAST) new PrimTypeAST(ctx, ctx.TYPE().getText());
+    TypeAST elemType = new PrimTypeAST(ctx, ctx.TYPE().getText());
     TypeAST arrayType = elemType;
     for (int i = 1; i < ctx.LSBR().size(); i++) {
       System.out.println(i);
@@ -487,6 +612,5 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     arrayType.check();
     return arrayType;
   }
-
 
 }

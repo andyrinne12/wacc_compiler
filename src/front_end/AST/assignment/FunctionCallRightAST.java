@@ -40,6 +40,7 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     for (int i = argList.size() - 1; i >= 0; i--) {
       ExpressionAST expr = argList.get(i);
       expr.assemble(body, freeRegs);
+      System.out.println(expr.getClass().getSimpleName());
 
       Condition cond = Condition.NONE;
       int offset = -4;

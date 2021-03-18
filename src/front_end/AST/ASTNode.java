@@ -28,6 +28,10 @@ public abstract class ASTNode {
     Visitor.error(ctx, msg);
   }
 
+  protected void warning(String msg) {
+    Visitor.warning(ctx, msg);
+  }
+
   public IDENTIFIER getIdentObj() {
     return identObj;
   }

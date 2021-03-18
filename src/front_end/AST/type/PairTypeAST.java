@@ -20,6 +20,7 @@ public class PairTypeAST extends TypeAST {
       typeObj = new PAIR(null, null);
       return;
     }
+    assert (type1 != null && type2 != null);
     type1.check();
     type2.check();
     typeObj = new PAIR(type1.typeObj, type2.typeObj);

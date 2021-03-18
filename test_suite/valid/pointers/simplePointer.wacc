@@ -1,0 +1,14 @@
+# Desc
+
+# Output:
+#
+
+# Program:
+
+begin
+  int* a = 0;
+  int x = 10;
+  a = &x;
+  *a = 5;
+  print *a
+end

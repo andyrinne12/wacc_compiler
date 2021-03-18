@@ -58,6 +58,7 @@ fragment ALPHA: [a-z] | [A-Z];
 
 PLUS: '+';
 MINUS: '-';
+AMPRS: '&';
 
 NOT: '!';
 LEN: 'len';

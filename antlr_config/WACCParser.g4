@@ -50,6 +50,8 @@ expr: BOOL_LTR                                                        #boolEXP
   | STR_LTR                                                           #strEXP
   | PAIR_LTR                                                          #pairLtrEXP
   | IDENT                                                             #identEXP
+  | pointerDeref                                                      #pointerDerefEXP
+  | addressRef                                                        #addressRefEXP
   | arrayElem                                                         #arrayElemEXP
   | (sign=(PLUS | MINUS)?) UINT_LTR {inBounds($sign, $UINT_LTR)}?     #signedIntEXP
   | LBR expr RBR                                                      #bracketEXP
@@ -60,9 +62,10 @@ expr: BOOL_LTR                                                        #boolEXP
   | expr p4op expr                                                    #p4EXP
 ;
 
-lhs: IDENT                           #identLHS
-  | arrayElem                        #arrayElemLHS
-  | pairElem                         #pairElemLHS
+lhs: IDENT                               #identLHS
+  | pointerDeref                         #pointerDerefLHS
+  | arrayElem                            #arrayElemLHS
+  | pairElem                             #pairElemLHS
 ;
 
 rhs: expr                                #expRHS
@@ -71,6 +74,16 @@ rhs: expr                                #expRHS
   | pairElem                             #pairElemRHS
   | CALL IDENT LBR argList? RBR          #funcCallRHS
 ;
+
+pointerDeref: STAR IDENT;
+addressRef: AMPRS IDENT
+  | AMPRS arrayElem
+  | AMPRS pairElem
+;
+
+arrayElem: IDENT (LSBR expr RSBR)+;
+pairElem: elem=(FST | SND) expr;
+
 
 func: type IDENT LBR paramList? RBR IS statSeq END;
 
@@ -81,21 +94,24 @@ paramList: param (CMA param)*;
 argList: expr (CMA expr)*;
 
 type: TYPE                          #primTypeTP
+  | pointerType                     #pointerTypeTP
   | arrayType                       #arrayTypeTP
   | pairType                        #pairTypeTP
 ;
 
-arrayElem: IDENT (LSBR expr RSBR)+;
-
 arrayType: TYPE (LSBR RSBR)+        #primArrayAT
-  |  pairType (LSBR RSBR)+          #pairArrayAT
+  | pointerType (LSBR RSBR)+        #pointerArrayAT
+  | pairType (LSBR RSBR)+           #pairArrayAT
  ;
-
-pairElem: elem=(FST | SND) expr;
 
 pairType: PAIR LBR pairElemType CMA pairElemType RBR;
 
+pointerType: TYPE STAR              #primPT
+  | pointerType STAR                #pointerPT
+;
+
 pairElemType: TYPE                  #primTypePET
+  | pointerType                     #pointerTypePET
   | PAIR                            #pairTypePET
   | arrayType                       #arrayTypePET
 ;

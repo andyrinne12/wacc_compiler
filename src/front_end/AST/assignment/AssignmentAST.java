@@ -12,6 +12,8 @@ import front_end.types.ARRAY;
 import front_end.types.BOOLEAN;
 import front_end.types.CHAR;
 import front_end.types.IDENTIFIER;
+import front_end.types.INT;
+import front_end.types.POINTER;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -65,6 +67,16 @@ public class AssignmentAST extends StatementAST {
       }
     }
     if (!lhsType.equalsType(rhsType)) {
+      if (lhsType instanceof POINTER) {
+        if (rhsType instanceof POINTER) {
+          warning("assignment from incompatible pointer type");
+          return;
+        } else if (rhsType instanceof INT) {
+          warning("assignment to pointer from integer without a cast");
+          return;
+        }
+      }
+      /* otherwise */
       error("Invalid type at assignment. Expected: " + lhsType + " actual: " + rhsType);
     }
   }
