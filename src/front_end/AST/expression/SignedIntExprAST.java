@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class SignedIntExprAST extends ExpressionAST {
 
-  private String intSign;
   private int value;
 
   public SignedIntExprAST(ParserRuleContext ctx, String intSign, String value) {

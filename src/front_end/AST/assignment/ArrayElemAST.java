@@ -43,7 +43,7 @@ public class ArrayElemAST extends AssignmentLeftAST {
             .getJumpOffset())));
     List<Register> freeRegs1 = freeRegs.subList(1, freeRegs.size());
     for (int i = 0; i < indices.size(); i++) {
-      ExpressionAST expr = indices.get(0);
+      ExpressionAST expr = indices.get(i);
       expr.assemble(body, freeRegs1);
 
       if (!error) {
