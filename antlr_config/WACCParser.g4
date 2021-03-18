@@ -38,7 +38,7 @@ stat: SKP                                 #skipST
    | WHILE expr DO statSeq DONE           #whileST
    | BEGIN statSeq END                    #beginST
    | BREAK                                #breakST
-   | SWITCH IDENT DO (caseBody)* DEFAULT COLON defaultBody=statSeq DONE     #switchCaseST  
+   | SWITCH expr DO (caseBody)* DEFAULT COLON defaultBody=statSeq DONE     #switchCaseST  
 ;
 
 caseBody: CASE expr COLON statSeq;

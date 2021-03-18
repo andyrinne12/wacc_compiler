@@ -184,10 +184,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
       cases.add(visitCaseBody(caseCtx));
     }
 
-    IdentAST ident = new IdentAST(ctx, ctx.IDENT().getText());
+    ExpressionAST expr = (ExpressionAST) visit(ctx.expr());
     StatementSequenceAST statSeq = (StatementSequenceAST) visitStatSeq(ctx.statSeq());
     
-    return new SwitchAST(ctx, ident, cases, statSeq);
+    return new SwitchAST(ctx, expr, cases, statSeq);
   }
 
   @Override
