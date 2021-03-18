@@ -1,10 +1,13 @@
 package front_end.AST.expression;
 
 import back_end.FunctionBody;
+import back_end.instructions.Condition;
 import back_end.instructions.store.LDR;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import front_end.AST.assignment.ArrayElemAST;
+import front_end.types.BOOLEAN;
+import front_end.types.CHAR;
 import front_end.types.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -22,7 +25,12 @@ public class ArrayElemExprAST extends ExpressionAST {
   @Override
   public void assemble(FunctionBody body, List<Register> freeRegs) {
     arrayElemAST.assemble(body, freeRegs);
-    body.addInstr(new LDR(freeRegs.get(0), new OffsetRegister(freeRegs.get(0), 0, false)));
+    Condition cond = Condition.NONE;
+    if (arrayElemAST.getEvalType() instanceof CHAR || arrayElemAST
+        .getEvalType() instanceof BOOLEAN) {
+      cond = Condition.SB;
+    }
+    body.addInstr(new LDR(cond, freeRegs.get(0), new OffsetRegister(freeRegs.get(0))));
   }
 
   @Override
