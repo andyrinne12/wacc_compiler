@@ -6,10 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
- public class InstructionEvaluation {
+public class InstructionEvaluation {
 
   /*
    * Optimisation techniques that simplify the generated assembly code. The compiler is able to
@@ -17,7 +15,7 @@ import java.nio.file.Paths;
    * with the optimised assembly code.
    */
 
-   public static void optimiseInstructions(String file) throws IOException {
+  public static void optimiseInstructions(String file) throws IOException {
     File f = new File(file);
     File temp = new File(f.getAbsolutePath() + ".tmp");
 
@@ -45,6 +43,26 @@ import java.nio.file.Paths;
           currLine = br.readLine();
         }
       }
+
+      /*
+       * LDR r2, =0
+       * ADDS r1, r1, r2
+       *   => the commands are deleted
+       */
+      if (parts[0].equals("\t\tLDR") && parts[1].endsWith("=0")) {
+        currLine = br.readLine();
+        String[] newParts = currLine.split(" ", 2);
+        String[] regs = newParts[1].split(", ");
+        if (regs.length == 3) {
+          if (newParts[0].equals("\t\tADDS")
+              && regs[0].equals(regs[1])
+              && regs[2].equals(parts[1].substring(0, 2))) {
+            currLine = br.readLine();
+          }
+        }
+      }
+
+
 
       prevLine = currLine;
       pw.print(currLine + "\n");
