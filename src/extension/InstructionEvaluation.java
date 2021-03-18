@@ -43,7 +43,20 @@ public class InstructionEvaluation {
           currLine = br.readLine();
         }
       }
-//
+
+      /*
+       * Double pop stack pointer:
+       *   POP {sp}
+       *   POP {sp}  => only one pop instruction is kept
+       */
+      if (parts[0].equals("\t\tPOP") && prevLine != null) {
+        String[] prevLineParts = prevLine.split(" ", 2);
+        if (prevLineParts.length > 0 && prevLineParts[0].equals("\t\tPOP")
+            && parts[1].equals(prevLineParts[1]) && parts[1].equals("{sp}")) {
+          currLine = br.readLine();
+        }
+      }
+
 //      /*
 //       * LDR r2, =0
 //       * ADDS r1, r1, r2
@@ -61,8 +74,6 @@ public class InstructionEvaluation {
 //          }
 //        }
 //      }
-
-
 
       prevLine = currLine;
       pw.print(currLine + "\n");
