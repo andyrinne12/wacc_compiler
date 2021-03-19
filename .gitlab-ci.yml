@@ -1,7 +1,5 @@
-build:
-  stage: build
-  script:
-    - make
+before_script:
+  - make
 
 test:
   stage: test
