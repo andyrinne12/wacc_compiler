@@ -66,6 +66,7 @@ public class InstructionEvaluation {
         String next = br.readLine();
         String[] newParts = next.split(" ", 2);
         String[] regs = newParts[1].split(", ");
+
         if (regs.length == 3) {
           if (newParts[0].equals("\t\tADDS")
               && regs[0].equals(regs[1])
@@ -73,8 +74,28 @@ public class InstructionEvaluation {
             currLine = br.readLine();
           }
         }
+
         pw.print(currLine + "\n");
         currLine = next;
+      }
+
+      /*
+       * LDR r5, =1
+       * SMULL r4, r5, r4, r5
+       *   => the commands are deleted (works only if we x * 1. not for x * y where y = 1)
+       */
+      if (parts[0].equals("\t\tLDR") && parts[1].endsWith("=1")) {
+        String next = br.readLine();
+        String[] newParts = next.split(" ", 2);
+        String[] regs = newParts[1].split(", ");
+
+        if (regs.length == 4) {
+          if (newParts[0].equals("\t\tSMULL")
+              && (regs[3].equals(parts[1].substring(0, 2))
+              || regs[2].equals(parts[1].substring(0, 2)))) {
+            currLine = br.readLine();
+          }
+        }
       }
 
       prevLine = currLine;
