@@ -1,6 +1,19 @@
+build:
+  stage: build
+  script:
+    - make
+
 test:
   stage: test
   script:
-    - make # build in the test stage to let the runner delete the executable afterwards
     - ./test_run
+  when:
+    manual
 
+test_extension:
+  stage: test
+  script:
+    - ./test_extension
+
+after_script:
+  - rm *.s

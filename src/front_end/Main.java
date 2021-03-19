@@ -139,11 +139,6 @@ public class Main {
         e.printStackTrace();
         System.exit(EXIT_CODE);
       }
-      try {
-        System.out.write(input.readAllBytes());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
       System.exit(EXIT_CODE);
     }
 

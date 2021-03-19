@@ -63,7 +63,7 @@ public class BinaryOpExprAST extends ExpressionAST {
     TYPE type1 = expr1.getEvalType();
 
     /* implicit cast from pointer to integer */
-    if (type1 instanceof POINTER) {
+    if (type1 instanceof POINTER || type1 instanceof ARRAY || type1 instanceof PAIR) {
       type1 = Visitor.ST.lookupAll("int").getType();
     }
 
@@ -80,7 +80,7 @@ public class BinaryOpExprAST extends ExpressionAST {
       TYPE type2 = expr2.getEvalType();
 
       /* implicit cast from pointer to integer */
-      if (type2 instanceof POINTER) {
+      if (type2 instanceof POINTER || type2 instanceof ARRAY || type2 instanceof PAIR) {
         type2 = Visitor.ST.lookupAll("int").getType();
       }
 

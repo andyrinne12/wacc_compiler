@@ -1,0 +1,95 @@
+#!/bin/bash
+EXTENSION_VALID_DIR='test_suite/extensions/valid'
+EXTENSION_SYNTAX_ERR_DIR='test_suite/extensions/invalid/syntaxErr'
+EXTENSION_SEMANTIC_ERR_DIR='test_suite/extensions/invalid/semanticErr'
+COMPILE='./compile'
+VALID_CODE=0
+INVALID_SYNTAX=100
+# shellcheck disable=SC2034
+INVALID_SEMANTIC=200
+TTOTAL=0
+TVALID=0
+
+TES1TOT=0
+TES2TOT=0
+TES3TOT=0
+
+TES1VAL=0
+TES2VAL=0
+TES3VAL=0
+
+compile_set() {
+  TOTAL=0
+  VALID=0
+  CUR_PATH=$1
+  REQ_CODE=$2
+  echo "Starting set $CUR_PATH"
+  # shellcheck disable=SC2044
+  for prog in $(find "$CUR_PATH" -name "*.wacc");
+  do
+    ((TOTAL+=1))
+    echo "Compiling: $prog"
+    $COMPILE "$prog"                       # Try to compile each program
+    EXIT_CODE=$?
+    if ((EXIT_CODE==REQ_CODE))
+      then
+        echo -e "   O Expected: $REQ_CODE Code: $EXIT_CODE $prog\n"
+        ((VALID+=1))
+      else
+        echo -e "   X Expected: $REQ_CODE Code: $EXIT_CODE $prog\n"
+    fi
+    echo "$VALID/$TOTAL in $CUR_PATH"
+  done
+  ((TTOTAL+=TOTAL))
+  ((TVALID+=VALID))
+}
+
+compile_parent_set(){
+  PARENT=$1
+  CODE=$2
+  for SUBPATH in $PARENT
+  do
+    compile_set "$SUBPATH" "$CODE"
+  done
+}
+
+#####################
+
+# Actual testing calls
+
+#####################
+
+ # compile for extensions
+compile_set "$EXTENSION_VALID_DIR" "$VALID_CODE"
+ ((TES1TOT=TTOTAL))
+ ((TES1VAL=TVALID))
+compile_set "$EXTENSION_SYNTAX_ERR_DIR" "$INVALID_SYNTAX"
+ ((TES2TOT=TTOTAL-TES1TOT))
+ ((TES2VAL=TVALID-TES1VAL))
+compile_set "$EXTENSION_SEMANTIC_ERR_DIR" "$INVALID_SEMANTIC"
+ ((TES3TOT=TTOTAL-TES1TOT-TES2TOT))
+ ((TES3VAL=TVALID-TES1VAL-TES2VAL))
+
+# compile all programs in the sub-folders (recursively) of $1 and check for code $2
+# compile_parent_set "$PARENTPATH" "$INVALID_SYNTAX"
+
+echo -e '\n=========='
+
+echo -e "$TVALID/$TTOTAL test passed!\n"
+
+echo -e "$TES1VAL/$TES1TOT extension valid tests"
+echo -e "$TES2VAL/$TES2TOT extension syntax errors tests"
+echo -e "$TES3VAL/$TES3TOT extension semantic errors tests\n"
+
+rm *.s
+
+if((TVALID!=TTOTAL))
+then
+  echo "Compiler is not perfect yet :( (1)"
+  echo -e '=========='
+  exit 1
+else
+  echo "Compiler works as expected yay : ) (0)"
+  echo -e '=========='
+  exit 0
+fi
