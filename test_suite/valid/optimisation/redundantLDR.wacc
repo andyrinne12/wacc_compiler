@@ -1,0 +1,16 @@
+# create a pair and write to its first element
+
+# Output:
+# 12
+# 5
+
+# Program:
+
+begin
+  pair(int, char) p = newpair(12, 'z') ;
+  int f = fst p ;
+  println f ;
+  fst p = 5 ;
+  f = fst p ;
+  println f
+end
