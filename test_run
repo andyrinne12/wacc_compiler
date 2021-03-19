@@ -2,6 +2,7 @@
 VALID_DIR='test_suite/valid'
 INVALID_SYNTAX_DIR='test_suite/invalid/syntaxErr'
 INVALID_SEMANTIC_DIR='test_suite/invalid/semanticErr'
+EXTENSION_DIR='test_suite/extensions'
 COMPILE='./compile'
 VALID_CODE=0
 INVALID_SYNTAX=100
@@ -11,8 +12,10 @@ TTOTAL=0
 TVALID=0
 TES1TOT=0
 TES2TOT=0
+TES3TOT=0
 TES1VAL=0
 TES2VAL=0
+TES3VAL=0
 
 compile_set() {
   TOTAL=0
@@ -67,6 +70,9 @@ compile_parent_set(){
  compile_set "$INVALID_SEMANTIC_DIR" "$INVALID_SEMANTIC"
  ((TES3TOT=TTOTAL-TES1TOT-TES2TOT))
  ((TES3VAL=TVALID-TES1VAL-TES2VAL))
+ compile_set "$EXTENSION_DIR"
+ ((TES4TOT=TTOTAL-TES1TOT-TES2TOT-TES3TOT))
+ ((TES4VAL=TVALID-TES1VAL-TES2VAL-TES3VAL))
 
 # compile all programs in the sub-folders (recursively) of $1 and check for code $2
 # compile_parent_set "$PARENTPATH" "$INVALID_SYNTAX"
@@ -77,7 +83,8 @@ echo -e "$TVALID/$TTOTAL test passed!\n"
 
 echo -e "$TES1VAL/$TES1TOT valid tests"
 echo -e "$TES2VAL/$TES2TOT syntax error tests"
-echo -e "$TES3VAL/$TES3TOT semantic errors tests\n"
+echo -e "$TES3VAL/$TES3TOT semantic errors tests"
+echo -e "$TES4VAL/$TES4TOT extension tests\n"
 
 if((TVALID!=TTOTAL))
 then
