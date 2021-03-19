@@ -96,9 +96,10 @@ public class InstructionEvaluation {
             currLine = br.readLine();
           }
         }
+        pw.print(currLine + "\n");
+        currLine = next;
       }
 
-      prevLine = currLine;
       pw.print(currLine + "\n");
       pw.flush();
 
