@@ -1,0 +1,12 @@
+# evaluating multiplication
+
+# Output:
+# 13
+
+# Program:
+
+begin
+  int x = 13 ;
+  int y = x * 1 ;
+  println y
+end

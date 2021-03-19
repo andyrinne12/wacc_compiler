@@ -6,10 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
- public class InstructionEvaluation {
+public class InstructionEvaluation {
 
   /*
    * Optimisation techniques that simplify the generated assembly code. The compiler is able to
@@ -17,7 +15,7 @@ import java.nio.file.Paths;
    * with the optimised assembly code.
    */
 
-   public static void optimiseInstructions(String file) throws IOException {
+  public static void optimiseInstructions(String file) throws IOException {
     File f = new File(file);
     File temp = new File(f.getAbsolutePath() + ".tmp");
 
@@ -43,6 +41,60 @@ import java.nio.file.Paths;
         if (prevLineParts.length > 1 && parts[1].equals(prevLineParts[1])
             && prevLineParts[0].equals("\t\tSTR")) {
           currLine = br.readLine();
+        }
+      }
+
+      /*
+       * Double pop stack pointer:
+       *   POP {sp}
+       *   POP {sp}  => only one pop instruction is kept
+       */
+      if (parts[0].equals("\t\tPOP") && prevLine != null) {
+        String[] prevLineParts = prevLine.split(" ", 2);
+        if (prevLineParts.length > 0 && prevLineParts[0].equals("\t\tPOP")
+            && parts[1].equals(prevLineParts[1]) && parts[1].equals("{sp}")) {
+          currLine = br.readLine();
+        }
+      }
+
+      /*
+       * LDR r2, =0
+       * ADDS r1, r1, r2
+       *   => the commands are deleted
+       */
+      if (parts[0].equals("\t\tLDR") && parts[1].endsWith("=0")) {
+        String next = br.readLine();
+        String[] newParts = next.split(" ", 2);
+        String[] regs = newParts[1].split(", ");
+
+        if (regs.length == 3) {
+          if (newParts[0].equals("\t\tADDS")
+              && regs[0].equals(regs[1])
+              && regs[2].equals(parts[1].substring(0, 2))) {
+            currLine = br.readLine();
+          }
+        }
+
+        pw.print(currLine + "\n");
+        currLine = next;
+      }
+
+      /*
+       * LDR r5, =1
+       * SMULL r4, r5, r4, r5
+       *   => the commands are deleted (works only if we x * 1. not for x * y where y = 1)
+       */
+      if (parts[0].equals("\t\tLDR") && parts[1].endsWith("=1")) {
+        String next = br.readLine();
+        String[] newParts = next.split(" ", 2);
+        String[] regs = newParts[1].split(", ");
+
+        if (regs.length == 4) {
+          if (newParts[0].equals("\t\tSMULL")
+              && (regs[3].equals(parts[1].substring(0, 2))
+              || regs[2].equals(parts[1].substring(0, 2)))) {
+            currLine = br.readLine();
+          }
         }
       }
 
