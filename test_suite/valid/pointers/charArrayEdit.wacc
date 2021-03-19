@@ -1,0 +1,19 @@
+# Create an array of characters and use a pointer to change its elements
+
+# Output:
+# "success"
+
+# Program:
+
+begin
+  char[] word = ['s','z','c','x','e','s','t'];
+
+  int* p1 = &word[1];
+  *p1 = 'u';
+  p1 = &word[3];
+  *p1 = 'c';
+  p1 = &word[6];
+  *p1 = 's';
+
+  println word
+end

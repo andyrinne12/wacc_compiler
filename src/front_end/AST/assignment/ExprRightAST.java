@@ -30,4 +30,8 @@ public class ExprRightAST extends AssignmentRightAST {
   public TYPE getEvalType() {
     return expr.getEvalType();
   }
+
+  public ExpressionAST getExpr() {
+    return expr;
+  }
 }

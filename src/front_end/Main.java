@@ -27,6 +27,7 @@ public class Main {
   public final static int SEMANTIC_CHECK = 3; // Perform semantic check and build AST
   public final static int ASSEMBLE = 4;       // Generate assembly code for the program
   public final static int RUN = 5;            // Run the generated program using qemu
+  public static final boolean WARNINGS_DISABLED = true;
 
   public static int EXIT_CODE = 0;
 

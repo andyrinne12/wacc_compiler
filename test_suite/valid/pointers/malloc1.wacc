@@ -1,0 +1,13 @@
+# Allocate an integer dynamically and change its value
+
+# Output:
+# 13
+
+# Program:
+
+begin
+  int* p = call malloc(4);
+  *p = 13;
+  print *p;
+  free p
+end

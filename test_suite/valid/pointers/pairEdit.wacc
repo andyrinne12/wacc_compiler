@@ -1,0 +1,26 @@
+# Create an pair of characters dynamically and use a pointer to change its elements
+
+# Output:
+# "ok"
+
+# Program:
+
+begin
+  pair(char,char) w = null;
+  w = newpair('n','o');
+
+  int* p = w;
+
+  int* p1 = *p;
+  *p1 = 'o';
+
+  p = p + 4;
+  p1 = *p;
+  *p1 = 'k';
+
+  char c1 = fst w;
+  char c2 = snd w;
+
+  print c1;
+  print c2
+end

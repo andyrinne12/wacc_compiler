@@ -1,6 +1,7 @@
 package front_end.AST.assignment;
 
 import back_end.FunctionBody;
+import back_end.Utils;
 import back_end.instructions.Condition;
 import back_end.instructions.arithmetic.ADD;
 import back_end.instructions.branch.BL;
@@ -24,6 +25,7 @@ public class FunctionCallRightAST extends AssignmentRightAST {
 
   private final String ident;
   private final List<ExpressionAST> argList;
+  private final String MALLOC = "malloc";
 
   public FunctionCallRightAST(ParserRuleContext ctx, String ident,
       List<ExpressionAST> argList) {
@@ -37,10 +39,14 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     assert (identObj != null);
     int totalOffset = 0;
 
+    if (ident.equals(MALLOC)) {
+      malloc(body, freeRegs);
+      return;
+    }
+
     for (int i = argList.size() - 1; i >= 0; i--) {
       ExpressionAST expr = argList.get(i);
       expr.assemble(body, freeRegs);
-      System.out.println(expr.getClass().getSimpleName());
 
       Condition cond = Condition.NONE;
       int offset = -4;
@@ -85,7 +91,6 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     }
   }
 
-
   @Override
   public TYPE getEvalType() {
     if (identObj == null) {
@@ -93,5 +98,12 @@ public class FunctionCallRightAST extends AssignmentRightAST {
     }
     FUNCTION func = (FUNCTION) identObj;
     return func.getReturnType();
+  }
+
+  private void malloc(FunctionBody body, List<Register> freeRegs) {
+    argList.get(0).assemble(body, freeRegs);
+    body.addInstr(new MOV(RegisterManager.getResultReg(), freeRegs.get(0)));
+    body.addInstr(Utils.MALLOC);
+    body.addInstr(new MOV(freeRegs.get(0), RegisterManager.getResultReg()));
   }
 }

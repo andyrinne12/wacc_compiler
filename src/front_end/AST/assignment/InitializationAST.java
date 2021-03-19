@@ -6,6 +6,7 @@ import back_end.instructions.store.STR;
 import back_end.operands.registers.OffsetRegister;
 import back_end.operands.registers.Register;
 import back_end.operands.registers.RegisterManager;
+import front_end.AST.expression.AddressRefExprAST;
 import front_end.AST.statement.StatementAST;
 import front_end.AST.type.TypeAST;
 import front_end.Visitor;
@@ -63,7 +64,14 @@ public class InitializationAST extends StatementAST {
         if (rhsType instanceof POINTER) {
           warning("assignment from incompatible pointer type");
         } else if (rhsType instanceof INT) {
-          warning("assignment to pointer from integer without a cast");
+          if (rhs instanceof ExprRightAST) {
+            ExprRightAST expr = (ExprRightAST) rhs;
+            if (!(expr.getExpr() instanceof AddressRefExprAST)) {
+              warning("assignment to pointer from integer without a cast");
+            }
+          } else {
+            warning("assignment to pointer from integer without a cast");
+          }
         }
       }
       /* otherwise */
@@ -73,7 +81,6 @@ public class InitializationAST extends StatementAST {
       }
     }
 
-    success:
     if (success) {
       Visitor.ST.add(ident.toString(), actType);
     }

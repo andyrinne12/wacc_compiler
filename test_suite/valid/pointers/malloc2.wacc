@@ -1,0 +1,26 @@
+# Allocate more integers dynamically and change their value
+
+# Output:
+# 14
+# 13
+# &addr&
+# &addr&
+
+# Program:
+
+begin
+  int* p = call malloc(8);
+  int** pp = &p;
+
+  *p = 13;
+  p = p + 4;
+  *p = 14;
+
+  println *p;
+  p = p - 4;
+  println *p;
+
+  println p;
+  println pp;
+  free p
+end

@@ -1,5 +1,7 @@
 package front_end;
 
+import antlr.WACCParser.AddressRefContext;
+import antlr.WACCParser.AddressRefEXPContext;
 import antlr.WACCParser.ArgListContext;
 import antlr.WACCParser.ArrayElemContext;
 import antlr.WACCParser.ArrayElemEXPContext;
@@ -40,6 +42,10 @@ import antlr.WACCParser.PairTypeTPContext;
 import antlr.WACCParser.ParamContext;
 import antlr.WACCParser.ParamListContext;
 import antlr.WACCParser.PlainIfSTContext;
+import antlr.WACCParser.PointerArrayATContext;
+import antlr.WACCParser.PointerDerefContext;
+import antlr.WACCParser.PointerDerefEXPContext;
+import antlr.WACCParser.PointerDerefLHSContext;
 import antlr.WACCParser.PointerPTContext;
 import antlr.WACCParser.PointerTypePETContext;
 import antlr.WACCParser.PrimArrayATContext;
@@ -76,6 +82,8 @@ import front_end.AST.assignment.NewPairRightAST;
 import front_end.AST.assignment.PairElemAST;
 import front_end.AST.assignment.PairElemLeftAST;
 import front_end.AST.assignment.PairElemRightAST;
+import front_end.AST.assignment.PointerDerefAST;
+import front_end.AST.expression.AddressRefExprAST;
 import front_end.AST.expression.ArrayElemExprAST;
 import front_end.AST.expression.BinaryOpExprAST;
 import front_end.AST.expression.BoolExprAST;
@@ -83,6 +91,7 @@ import front_end.AST.expression.CharExprAST;
 import front_end.AST.expression.ExpressionAST;
 import front_end.AST.expression.IdentAST;
 import front_end.AST.expression.PairLtrExprAST;
+import front_end.AST.expression.PointerDerefExprAST;
 import front_end.AST.expression.SignedIntExprAST;
 import front_end.AST.expression.StringExprAST;
 import front_end.AST.expression.UnaryOpExprAST;
@@ -111,9 +120,13 @@ import front_end.AST.type.PrimTypeAST;
 import front_end.AST.type.TypeAST;
 import front_end.types.BOOLEAN;
 import front_end.types.CHAR;
+import front_end.types.FUNCTION;
 import front_end.types.INT;
+import front_end.types.PARAM;
+import front_end.types.POINTER;
 import front_end.types.STRING;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -130,6 +143,10 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     Top_ST.add("bool", new BOOLEAN());
     Top_ST.add("string", new STRING());
 
+    FUNCTION function = new FUNCTION(new POINTER(null),
+        Collections.singletonList(new PARAM(Top_ST.lookup("int").getType())));
+    Top_ST.add("malloc", function);
+
     ST = new SymbolTable(Top_ST);
   }
 
@@ -141,6 +158,9 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   }
 
   public static void warning(ParserRuleContext ctx, String message) {
+    if (Main.WARNINGS_DISABLED) {
+      return;
+    }
     System.err.println(ctx.start.getLine() + ":" + ctx.start.getCharPositionInLine()
         + "  warning: " + message);
   }
@@ -448,7 +468,15 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
     return new IdentAST(ctx, ctx.getText());
   }
 
+  @Override
+  public ASTNode visitPointerDerefEXP(PointerDerefEXPContext ctx) {
+    return new PointerDerefExprAST(ctx, (PointerDerefAST) visitPointerDeref(ctx.pointerDeref()));
+  }
 
+  @Override
+  public ASTNode visitAddressRefEXP(AddressRefEXPContext ctx) {
+    return visitAddressRef(ctx.addressRef());
+  }
 
   @Override
   public CharExprAST visitCharEXP(CharEXPContext ctx) {
@@ -458,6 +486,11 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   @Override
   public IdentLeftAST visitIdentLHS(IdentLHSContext ctx) {
     return new IdentLeftAST(ctx, ctx.IDENT().getText());
+  }
+
+  @Override
+  public ASTNode visitPointerDerefLHS(PointerDerefLHSContext ctx) {
+    return visitPointerDeref(ctx.pointerDeref());
   }
 
   @Override
@@ -494,6 +527,16 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
   @Override
   public ASTNode visitPairElemRHS(PairElemRHSContext ctx) {
     return visitPairElem(ctx.pairElem());
+  }
+
+  @Override
+  public ASTNode visitPointerDeref(PointerDerefContext ctx) {
+    return new PointerDerefAST(ctx, (AssignmentLeftAST) visit(ctx.lhs()));
+  }
+
+  @Override
+  public ASTNode visitAddressRef(AddressRefContext ctx) {
+    return new AddressRefExprAST(ctx, (AssignmentLeftAST) visit(ctx.lhs()));
   }
 
   @Override
@@ -544,7 +587,18 @@ public class Visitor extends WACCParserBaseVisitor<ASTNode> implements WACCParse
 
   @Override
   public ASTNode visitPrimArrayAT(PrimArrayATContext ctx) {
-    TypeAST elemType = (TypeAST) new PrimTypeAST(ctx, ctx.TYPE().getText());
+    TypeAST elemType = new PrimTypeAST(ctx, ctx.TYPE().getText());
+    TypeAST arrayType = elemType;
+    for (int i = 0; i < ctx.LSBR().size(); i++) {
+      arrayType = new ArrayTypeAST(ctx, elemType);
+      elemType = arrayType;
+    }
+    return arrayType;
+  }
+
+  @Override
+  public ASTNode visitPointerArrayAT(PointerArrayATContext ctx) {
+    TypeAST elemType = (TypeAST) visit(ctx.pointerType());
     TypeAST arrayType = elemType;
     for (int i = 0; i < ctx.LSBR().size(); i++) {
       arrayType = new ArrayTypeAST(ctx, elemType);

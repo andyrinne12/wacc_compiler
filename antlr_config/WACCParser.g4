@@ -75,11 +75,8 @@ rhs: expr                                #expRHS
   | CALL IDENT LBR argList? RBR          #funcCallRHS
 ;
 
-pointerDeref: STAR IDENT;
-addressRef: AMPRS IDENT
-  | AMPRS arrayElem
-  | AMPRS pairElem
-;
+pointerDeref: STAR lhs;
+addressRef: AMPRS lhs;
 
 arrayElem: IDENT (LSBR expr RSBR)+;
 pairElem: elem=(FST | SND) expr;

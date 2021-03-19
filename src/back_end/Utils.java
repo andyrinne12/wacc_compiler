@@ -18,6 +18,8 @@ import front_end.types.ARRAY;
 import front_end.types.CHAR;
 import front_end.types.INT;
 import front_end.types.PAIR;
+import front_end.types.POINTER;
+import front_end.types.STRING;
 import front_end.types.TYPE;
 import java.util.Map;
 
@@ -282,6 +284,19 @@ public class Utils {
       }
     } else if (type instanceof PAIR) {
       typeName = "reference";
+    } else if (type instanceof POINTER) {
+      POINTER pt = (POINTER) type;
+      if (pt.getObjectType() instanceof STRING) {
+        typeName = "string";
+      } else if (pt.getObjectType().getType() instanceof ARRAY) {
+        if (isString(pt.getObjectType())) {
+          typeName = "string";
+        } else {
+          typeName = "reference";
+        }
+      } else {
+        typeName = "reference";
+      }
     } else {
       typeName = type.toString();
     }

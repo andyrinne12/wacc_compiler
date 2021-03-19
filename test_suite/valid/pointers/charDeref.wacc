@@ -1,0 +1,15 @@
+# Use a pointer to an character to change its value
+
+# Output:
+# a
+# z
+
+# Program:
+
+begin
+  char a = 'a';
+  int* p = &a;
+  println a;
+  *p = 'z';
+  println a
+end

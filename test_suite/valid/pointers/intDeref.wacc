@@ -1,0 +1,13 @@
+# Use a pointer to an integer to change its value
+
+# Output:
+# 5
+
+# Program:
+
+begin
+  int a = 10;
+  int* p = &a;
+  *p = 5;
+  print a
+end

@@ -10,10 +10,12 @@ import back_end.operands.registers.RegisterManager;
 import front_end.AST.expression.ExpressionAST;
 import front_end.types.ARRAY;
 import front_end.types.PAIR;
+import front_end.types.POINTER;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FreeAST extends StatementAST {
+
   private ExpressionAST expression;
 
   public FreeAST(ParserRuleContext ctx, ExpressionAST expression) {
@@ -24,8 +26,9 @@ public class FreeAST extends StatementAST {
   @Override
   public void check() {
     expression.check();
-    if(!(expression.getIdentObj() instanceof PAIR)) {
-      error("the only expression that can be freed is a pair type");
+    if (!(expression.getIdentObj() instanceof PAIR || expression
+        .getIdentObj() instanceof POINTER)) {
+      error("the only expression that can be freed is a pair type or a memory address");
     }
   }
 

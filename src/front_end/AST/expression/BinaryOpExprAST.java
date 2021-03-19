@@ -22,6 +22,7 @@ import back_end.operands.registers.ShiftedRegister;
 import front_end.Visitor;
 import front_end.types.ARRAY;
 import front_end.types.PAIR;
+import front_end.types.POINTER;
 import front_end.types.TYPE;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class BinaryOpExprAST extends ExpressionAST {
 
-  private String binaryOp;
-  private ExpressionAST expr1;
-  private ExpressionAST expr2;
-  private List<TYPE> expectedElemTypes;
-  private String returnType;
-
-  private final int SHIFT_VALUE = 31;
   protected static boolean overflow;
+  private final String binaryOp;
+  private final ExpressionAST expr1;
+  private final ExpressionAST expr2;
+  private final List<TYPE> expectedElemTypes;
+  private String returnType;
 
   public BinaryOpExprAST(ParserRuleContext ctx, ExpressionAST expr1, ExpressionAST expr2,
       String binaryOp) {
@@ -62,6 +61,12 @@ public class BinaryOpExprAST extends ExpressionAST {
     }
 
     TYPE type1 = expr1.getEvalType();
+
+    /* implicit cast from pointer to integer */
+    if (type1 instanceof POINTER) {
+      type1 = Visitor.ST.lookupAll("int").getType();
+    }
+
     boolean expr1CorrectType = false;
 
     for (TYPE t : expectedElemTypes) {
@@ -73,6 +78,13 @@ public class BinaryOpExprAST extends ExpressionAST {
 
     if (expr1CorrectType) {
       TYPE type2 = expr2.getEvalType();
+
+      /* implicit cast from pointer to integer */
+      if (type2 instanceof POINTER) {
+        type2 = Visitor.ST.lookupAll("int").getType();
+      }
+
+
       if (!type1.equalsType(type2)) {
         error("Both LHS and RHS expressions have different types." +
             "\nExpected: " + expr1.getEvalType() +
@@ -156,11 +168,13 @@ public class BinaryOpExprAST extends ExpressionAST {
     expr2.assemble(body, freeRegs1);
     Register rhsReg = freeRegs1.get(0);
 
+    int SHIFT_VALUE = 31;
     switch (binaryOp) {
       case "+":
         body.addInstr(new ADD(true, lhsReg, lhsReg, rhsReg));
         body.addInstr(new BL(Condition.VS, "p_throw_overflow_error"));
-        Utils.addFunc("p_integer_overflow", null); // p_throw_overflow_error doesn't need a register.
+        Utils
+            .addFunc("p_integer_overflow", null); // p_throw_overflow_error doesn't need a register.
         break;
       case "-":
         body.addInstr(new SUB(true, lhsReg, lhsReg, rhsReg));
@@ -169,10 +183,11 @@ public class BinaryOpExprAST extends ExpressionAST {
         break;
       case "*":
         body.addInstr(new SMULL(lhsReg, rhsReg, lhsReg, rhsReg));
-        body.addInstr(new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
+        body.addInstr(
+            new CMP(rhsReg, new ShiftedRegister(lhsReg, Shift.ASR, new ImmInt(SHIFT_VALUE))));
         body.addInstr(new BL(Condition.NE, "p_throw_overflow_error"));
 
-        if(!overflow) {
+        if (!overflow) {
           CodeGen.addData("OverflowError: the result is too small/large to store in a" +
               "4-byte signed-integer.\\n");
           Utils.addFunc("p_integer_overflow", lhsReg);
@@ -188,7 +203,8 @@ public class BinaryOpExprAST extends ExpressionAST {
         body.addInstr(new MOV(R1, rhsReg));
         body.addInstr(new BL(Condition.NONE, "p_check_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idiv"));
-        body.addInstr(new MOV(lhsReg, R0)); // obtain the result of the division from R0, and put it into lhsReg.
+        body.addInstr(new MOV(lhsReg,
+            R0)); // obtain the result of the division from R0, and put it into lhsReg.
         Utils.addFunc("p_divide_by_zero", null);
         break;
       case "%":
@@ -199,7 +215,8 @@ public class BinaryOpExprAST extends ExpressionAST {
         body.addInstr(new MOV(R1, rhsReg));
         body.addInstr(new BL(Condition.NONE, "p_check_divide_by_zero"));
         body.addInstr(new BL(Condition.NONE, "__aeabi_idivmod"));
-        body.addInstr(new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
+        body.addInstr(
+            new MOV(lhsReg, R1)); // obtain the result of the mod from R1, and put it into lhsReg.
         Utils.addFunc("p_divide_by_zero", null);
         break;
       case ">":
@@ -310,20 +327,20 @@ public class BinaryOpExprAST extends ExpressionAST {
     Integer result = null;
     Integer rhs = null;
     Integer lhs = null;
-    if(expr1 instanceof BinaryOpExprAST) {
+    if (expr1 instanceof BinaryOpExprAST) {
       lhs = ((BinaryOpExprAST) expr1).integerTranslation();
-    } else if(expr1 instanceof SignedIntExprAST) {
+    } else if (expr1 instanceof SignedIntExprAST) {
       lhs = ((SignedIntExprAST) expr1).getValue();
     }
 
-    if(expr2 instanceof BinaryOpExprAST) {
+    if (expr2 instanceof BinaryOpExprAST) {
       rhs = ((BinaryOpExprAST) expr2).integerTranslation();
-    } else if(expr2 instanceof SignedIntExprAST) {
+    } else if (expr2 instanceof SignedIntExprAST) {
       rhs = ((SignedIntExprAST) expr2).getValue();
     }
 
-    if(lhs != null && rhs != null) {
-      switch(binaryOp) {
+    if (lhs != null && rhs != null) {
+      switch (binaryOp) {
         case "+":
           result = lhs + rhs;
           break;
@@ -334,12 +351,12 @@ public class BinaryOpExprAST extends ExpressionAST {
           result = lhs * rhs;
           break;
         case "/":
-          if(rhs != 0) {
+          if (rhs != 0) {
             result = lhs / rhs;
           }
           break;
         case "%":
-          if(rhs != 0) {
+          if (rhs != 0) {
             result = lhs % rhs;
           }
           break;

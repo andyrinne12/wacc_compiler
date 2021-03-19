@@ -1,0 +1,18 @@
+# Print a string and a char array using pointers
+
+# Output:
+# hiroi
+# akai
+
+# Program:
+
+begin
+  char[] w1 = ['h','i','r','o','i'];
+  string w2 = "akai";
+
+  string* p1 = w1;
+  string* p2 = w2;
+
+  println p1;
+  println p2
+end

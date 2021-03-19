@@ -13,7 +13,7 @@ public class POINTER extends TYPE {
   }
 
   public TYPE getObjectType() {
-    return objectType;
+    return objectType.getType();
   }
 
   @Override
