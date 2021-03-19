@@ -1,0 +1,11 @@
+# simple integer calculation
+
+# Output:
+# 0
+
+# Program:
+
+begin
+  int x = 0 ;
+  println 0
+end

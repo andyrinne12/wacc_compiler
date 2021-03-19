@@ -1,0 +1,16 @@
+# simple integer calculation
+
+# Output:
+# 21
+
+# Program:
+
+begin
+  int x = 21 ;
+  char a = 'z' ;
+  char b = 's' ;
+  int z = x + 0 ;
+  a = b ;
+  println z ;
+  println a
+end

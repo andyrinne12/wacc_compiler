@@ -1,0 +1,10 @@
+# simple skip program with in-line comment
+
+# Output:
+# #empty#
+
+# Program:
+
+begin 
+  skip # this is a comment which will become a LDR r0, =0 and should not be deleted
+end
